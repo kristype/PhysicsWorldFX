@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.AnchorPane?>
+<?import framework.PhysicsWorld?>
+<?import shapes.PhysicsRectangle?>
+
+<?import application.AppController?>
+
+<PhysicsWorld xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.AppController"
+			  fx:id="world"
+			  prefHeight="600" prefWidth="800" >
+	<children>
+		<PhysicsRectangle fx:id="rectangle1" height="40" width="40" layoutX="0" layoutY="0" />
+		<PhysicsRectangle fx:id="rectangle2" height="40" width="40" layoutX="50" layoutY="0" />
+	</children>
+</PhysicsWorld>
+
