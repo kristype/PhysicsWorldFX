@@ -20,15 +20,16 @@ public class AppController {
 	}
 	
 	@FXML
-	private void initialize(){
-		world.requestFocus();
-
+	private void initialize(){		
 		
-		rectangle1.SetSpeed(10, 10);
 	}
 	
 	public PhysicsWorld getWorld(){
 		return world;
+	}
+
+	public void handleDirection(int i, int j) {
+		rectangle1.ApplyForce(i, j);
 	}
 	
 }
