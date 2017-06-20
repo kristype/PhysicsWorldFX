@@ -15,9 +15,9 @@ public class FixtureDefBean<S extends Styleable> extends Box2dBean<S> {
 
 	public FixtureDefBean(S owner, StyleablePropertyFactory<S> spf) {
 		super(owner, spf);
-		this.density = createStyleableNumberProperty("density", s -> densityProperty(), 1.0);
+		this.density = createStyleableNumberProperty("density", s -> densityProperty(), 0.0);
 		this.friction = createStyleableNumberProperty("friction", s -> frictionProperty(), 0.0);
-		this.restitution = createStyleableNumberProperty("restitution", s -> restitutionProperty(), 0.0);
+		this.restitution = createStyleableNumberProperty("restitution", s -> restitutionProperty(), 1.0);
 		this.sensor = createStyleableBooleanProperty("sensor", s -> sensorProperty(), false);
 	}
 

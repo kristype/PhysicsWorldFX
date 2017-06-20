@@ -7,7 +7,7 @@ import javafx.animation.AnimationTimer;
 public class AnimationTimerFactory {
 	public AnimationTimer CreateTimer(float timeStep, Consumer<Float> action){
 		return new AnimationTimer() {
-			private long last;
+			private long last = -1;
 
 			@Override
 			public void handle(long now) {

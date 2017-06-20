@@ -12,7 +12,6 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.layout.Region;
 import javafx.scene.shape.Line;
 
 public class CoordinateConverter {
@@ -23,7 +22,7 @@ public class CoordinateConverter {
 	
 	public CoordinateConverter(PhysicsWorld world) {
 		this.world = world;
-		float scale = world.getGameWorldScale();
+		float scale = world.getPhysicsScale();
 		OBBViewportTransform obb = new OBBViewportTransform();
 		obb.setTransform(new Mat22((float) scale, 0.0f, 0.0f, (float) scale));
 		obb.setCenter((float) (world.getWidth() / 2), (float) (world.getHeight() / 2));
@@ -50,7 +49,14 @@ public class CoordinateConverter {
 		viewportTransform.getScreenToWorld(fx2worldTemp2, result);
 		return new Point2D(result.x, result.y);
 	}
-	
+
+	public double fxScaleToWorld(double value){
+		Vec2 result = fx2worldTemp1;
+		fx2worldTemp2.set((float) value, (float) 0);
+		viewportTransform.getScreenVectorToWorld(fx2worldTemp2, result);
+		return result.x;
+	}
+
 	public Point2D fxVec2world(double x, double y) {
 		Vec2 result = fx2worldTemp1;
 		fx2worldTemp2.set((float) x, (float) y);

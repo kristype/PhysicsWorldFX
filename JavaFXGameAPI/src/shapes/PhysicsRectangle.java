@@ -13,15 +13,15 @@ import javafx.css.StyleableProperty;
 import javafx.css.StyleablePropertyFactory;
 import javafx.scene.shape.Rectangle;
 
-public class PhysicsRectangle extends Rectangle implements BodyDefBeanOwner, FixtureDefBeanOwner {
+public class PhysicsRectangle extends Rectangle implements BodyDefBeanOwner, FixtureDefBeanOwner, PhysicsShape {
 	private Body body;
 	
 	public void setup(Body body) {
 		this.body = body;
 	}
 
-	public void SetSpeed(float vx, float vy) {
-		body.setLinearVelocity(new Vec2(vx, vy));
+	public void setSpeed(float vx, float vy) {
+	    body.setLinearVelocity(new Vec2(vx, vy));
 	}
 	
 	public void ApplyForce(float vx, float vy) {
@@ -38,9 +38,9 @@ public class PhysicsRectangle extends Rectangle implements BodyDefBeanOwner, Fix
 	private BodyDefBean<PhysicsRectangle> bodyDefBean;
 	
 	public PhysicsRectangle() {
-		getStyleClass().add("body");
-		this.fixtureDefBean = new FixtureDefBean<PhysicsRectangle>(this, SPF);
-		this.bodyDefBean = new BodyDefBean<PhysicsRectangle>(this, SPF);
+		getStyleClass().add("rectangleBody");
+		this.fixtureDefBean = new FixtureDefBean<>(this, SPF);
+		this.bodyDefBean = new BodyDefBean<>(this, SPF);
 	}
 	
 	@Override

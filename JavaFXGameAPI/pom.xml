@@ -10,17 +10,18 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.5.1</version>
         <configuration>
-          <source/>
-          <target/>
+          <source>1.8</source>
+          <target>1.8</target>
         </configuration>
       </plugin>
     </plugins>
   </build>
-  <dependencies>
+<dependencies>
   	<dependency>
-  		<groupId>org.jbox2d</groupId>
-  		<artifactId>jbox2d-library</artifactId>
-  		<version>2.2.1.1</version>
+        <groupId>org.jbox2d</groupId>
+        <artifactId>jbox2d-library</artifactId>
+        <version>2.2.1.1</version>
+        <type>jar</type>
   	</dependency>
   </dependencies>
 </project>
