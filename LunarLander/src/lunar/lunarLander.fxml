@@ -1,0 +1,41 @@
+<?import bodies.ShapeContainer?>
+<?import framework.PhysicsWorld?>
+<?import shapes.PhysicsPolygon?>
+<?import java.lang.*?>
+<?import shapes.PhysicsRectangle?>
+<PhysicsWorld xmlns:fx="http://javafx.com/fxml" fx:controller="lunar.Controller" fx:id="world" prefWidth="640" prefHeight="480"
+              gravityX="0" gravityY="-20" physicsScale="15" onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp" >
+    <PhysicsRectangle height="30" width="30" layoutX="320" layoutY="140" ></PhysicsRectangle>
+    <ShapeContainer bodyType="NonMovable" fx:id="triangleContainer" layoutX="310" layoutY="240" >
+        <PhysicsPolygon layoutX="0" layoutY="30">
+            <points>
+
+                <Double fx:value="0.0" />
+                <Double fx:value="30.0" />
+
+                <Double fx:value="30.0" />
+                <Double fx:value="30.0" />
+
+                <Double fx:value="15.0" />
+                <Double fx:value="0.0" />
+            </points>
+        </PhysicsPolygon>
+        <PhysicsPolygon layoutX="30" layoutY="30">
+            <points>
+                <Double fx:value="0.0" />
+                <Double fx:value="30.0" />
+
+                <Double fx:value="30.0" />
+                <Double fx:value="30.0" />
+
+                <Double fx:value="15.0" />
+                <Double fx:value="0.0" />
+            </points>
+        </PhysicsPolygon>
+
+
+    </ShapeContainer>
+
+    <!--<PhysicsRectangle bodyType="NonMovable" layoutX="300" layoutY="440" width="100" height="30" />-->
+</PhysicsWorld>
+

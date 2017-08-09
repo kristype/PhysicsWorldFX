@@ -1,10 +1,18 @@
 package shapes;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import bodies.BodyDefBean;
+import bodies.BodyDefBeanOwner;
+import framework.ChangedEvent;
+import framework.ChangedEventListener;
+import framework.SimulationType;
+import javafx.geometry.Point2D;
+import javafx.scene.shape.Polygon;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.BodyType;
 
 import javafx.beans.value.ObservableValue;
 import javafx.css.CssMetaData;
@@ -12,20 +20,63 @@ import javafx.css.Styleable;
 import javafx.css.StyleableProperty;
 import javafx.css.StyleablePropertyFactory;
 import javafx.scene.shape.Rectangle;
+import utilites.CoordinateConverter;
 
 public class PhysicsRectangle extends Rectangle implements BodyDefBeanOwner, FixtureDefBeanOwner, PhysicsShape {
-	private Body body;
-	
-	public void setup(Body body) {
+
+    private Body body;
+	private CoordinateConverter coordinateConverter;
+
+	private List<ChangedEventListener> sizeChangedListeners;
+	private List<ChangedEventListener> layoutChangedListeners;
+
+	public void setup(Body body, CoordinateConverter coordinateConverter){
 		this.body = body;
+		this.coordinateConverter = coordinateConverter;
+	}
+
+	private void raiseEvent(List<ChangedEventListener> eventListeners){
+        ChangedEvent event = new ChangedEvent(this);
+        Iterator i = eventListeners.iterator();
+        while(i.hasNext())  {
+            ((ChangedEventListener) i.next()).handleChangedEvent(event);
+        }
+    }
+
+	public void addLayoutChangedEventListener(ChangedEventListener listener)  {
+		layoutChangedListeners.add(listener);
+	}
+	public void removeLayoutChangedListener(ChangedEventListener listener)   {
+		layoutChangedListeners.remove(listener);
+	}
+
+	public void addSizeChangedEventListener(ChangedEventListener listener)  {
+		sizeChangedListeners.add(listener);
+	}
+	public void removeSizeChangedEventListener(ChangedEventListener listener)   {
+		sizeChangedListeners.remove(listener);
+	}
+
+	public Point2D getSpeed() {
+		if (body != null){
+			Vec2 velocity = body.getLinearVelocity();
+			return coordinateConverter.fxVec2world(velocity.x, velocity.y);
+		}
+		return null;
 	}
 
 	public void setSpeed(float vx, float vy) {
-	    body.setLinearVelocity(new Vec2(vx, vy));
+		if (body != null){
+			Vec2 scaled = coordinateConverter.scaleVecToWorld(vx, vy);
+			body.setLinearVelocity(scaled);
+		}
 	}
 	
-	public void ApplyForce(float vx, float vy) {
-		body.applyForceToCenter(new Vec2(vx, vy));	
+	public void applyForce(float vx, float vy) {
+		if (body != null){
+			Vec2 scaled = coordinateConverter.scaleVecToWorld(vx, vy);
+			body.applyForceToCenter(scaled);
+		}
 	}
 
 	private static final StyleablePropertyFactory<PhysicsRectangle> SPF = new StyleablePropertyFactory<>(Rectangle.getClassCssMetaData());
@@ -41,6 +92,14 @@ public class PhysicsRectangle extends Rectangle implements BodyDefBeanOwner, Fix
 		getStyleClass().add("rectangleBody");
 		this.fixtureDefBean = new FixtureDefBean<>(this, SPF);
 		this.bodyDefBean = new BodyDefBean<>(this, SPF);
+
+		sizeChangedListeners = new ArrayList<>();
+		layoutChangedListeners = new ArrayList<>();
+		layoutXProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
+		layoutYProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
+		rotateProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
+		widthProperty().addListener((observable, oldValue, newValue) -> raiseEvent(sizeChangedListeners));
+		heightProperty().addListener((observable, oldValue, newValue) -> raiseEvent(sizeChangedListeners));
 	}
 	
 	@Override
@@ -58,13 +117,13 @@ public class PhysicsRectangle extends Rectangle implements BodyDefBeanOwner, Fix
 		return getClassCssMetaData();
 	}
 
-	public StyleableProperty<BodyType> bodyTypeProperty() {
+	public StyleableProperty<SimulationType> bodyTypeProperty() {
 		return bodyDefBean.bodyTypeProperty();
 	}
-	public final BodyType getBodyType() {
+	public final SimulationType getBodyType() {
 		return bodyDefBean.getBodyType();
 	}
-	public final void setBodyType(BodyType bodyType) {
+	public final void setBodyType(SimulationType bodyType) {
 		bodyDefBean.setBodyType(bodyType);
 	}
 	

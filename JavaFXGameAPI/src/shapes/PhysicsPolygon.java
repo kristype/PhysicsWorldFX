@@ -6,12 +6,13 @@ import framework.ChangedEvent;
 import framework.ChangedEventListener;
 import framework.SimulationType;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.css.CssMetaData;
 import javafx.css.Styleable;
 import javafx.css.StyleableProperty;
 import javafx.css.StyleablePropertyFactory;
 import javafx.geometry.Point2D;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import utilites.CoordinateConverter;
@@ -20,17 +21,17 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class PhysicsCircle extends Circle implements BodyDefBeanOwner, FixtureDefBeanOwner, PhysicsShape {
+public class PhysicsPolygon extends Polygon implements BodyDefBeanOwner, FixtureDefBeanOwner, PhysicsShape {
 
     private Body body;
     private CoordinateConverter coordinateConverter;
+
     private List<ChangedEventListener> sizeChangedListeners;
     private List<ChangedEventListener> layoutChangedListeners;
 
-    public void setup(Body body, CoordinateConverter coordinateConverter) {
+    public void setup(Body body, CoordinateConverter coordinateConverter){
         this.body = body;
         this.coordinateConverter = coordinateConverter;
-
     }
 
     private void raiseEvent(List<ChangedEventListener> eventListeners){
@@ -77,25 +78,26 @@ public class PhysicsCircle extends Circle implements BodyDefBeanOwner, FixtureDe
         }
     }
 
-    private static final StyleablePropertyFactory<PhysicsCircle> SPF = new StyleablePropertyFactory<>(Circle.getClassCssMetaData());
+    private static final StyleablePropertyFactory<PhysicsPolygon> SPF = new StyleablePropertyFactory<>(Polygon.getClassCssMetaData());
 
     public static  List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
         return SPF.getCssMetaData();
     }
 
-    private FixtureDefBean<PhysicsCircle> fixtureDefBean;
-    private BodyDefBean<PhysicsCircle> bodyDefBean;
+    private FixtureDefBean<PhysicsPolygon> fixtureDefBean;
+    private BodyDefBean<PhysicsPolygon> bodyDefBean;
 
-    public PhysicsCircle() {
-        getStyleClass().add("circleBody");
-        this.fixtureDefBean = new FixtureDefBean<PhysicsCircle>(this, SPF);
-        this.bodyDefBean = new BodyDefBean<PhysicsCircle>(this, SPF);
+    public PhysicsPolygon() {
+        getStyleClass().add("physicsPolygon");
+        this.fixtureDefBean = new FixtureDefBean<>(this, SPF);
+        this.bodyDefBean = new BodyDefBean<>(this, SPF);
+
         sizeChangedListeners = new ArrayList<>();
         layoutChangedListeners = new ArrayList<>();
         layoutXProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
         layoutYProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
         rotateProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
-        radiusProperty().addListener((observable, oldValue, newValue) -> raiseEvent(sizeChangedListeners));
+        getPoints().addListener((ListChangeListener<? super Double>) e -> raiseEvent(sizeChangedListeners));
     }
 
     @Override

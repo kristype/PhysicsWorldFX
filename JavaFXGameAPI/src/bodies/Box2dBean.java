@@ -1,4 +1,4 @@
-package shapes;
+package bodies;
 
 import java.util.function.Function;
 

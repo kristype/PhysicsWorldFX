@@ -1,5 +1,6 @@
 package shapes;
 
+import bodies.Box2dBean;
 import org.jbox2d.dynamics.FixtureDef;
 
 import javafx.css.Styleable;

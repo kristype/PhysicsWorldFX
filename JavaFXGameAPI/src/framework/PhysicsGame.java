@@ -1,57 +1,71 @@
 package framework;
 
+import bodies.BodyDefBeanOwner;
+import bodies.ShapeContainer;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.layout.Region;
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.collision.Manifold;
-import org.jbox2d.collision.shapes.PolygonShape;
-import org.jbox2d.common.Settings;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
-import org.jbox2d.dynamics.BodyDef;
-import org.jbox2d.dynamics.FixtureDef;
-import org.jbox2d.dynamics.World;
+import org.jbox2d.dynamics.*;
 import org.jbox2d.dynamics.contacts.Contact;
-import shapes.PhysicsRectangle;
 import shapes.PhysicsShape;
 import utilites.AnimationTimerFactory;
 import utilites.CoordinateConverter;
 import utilites.ShapeResolver;
+import utilites.SimulationTypeToBodyTypeConverter;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class PhysicsGame {
 	
 	private AnimationTimerFactory animationTimerFactory;
 	private CoordinateConverter coordinateConverter;
-	
+	private SimulationTypeToBodyTypeConverter typeConverter;
+
 	private AnimationTimer worldTimer;
-	private AnimationTimer renderTimer;
-	
+
 	private World world;
-	PhysicsWorld gameWorld;
+    private PhysicsWorld gameWorld;
 	
 	private float timeStep = 1000f / 60f;
-	
-	HashMap<Node, Body> nodeBodyMap = new HashMap<Node, Body>();
-	private ShapeResolver shapeResolver;
 
-	public PhysicsGame(){
-		animationTimerFactory = new AnimationTimerFactory();
+    private HashMap<Node, Body> nodeBodyMap = new HashMap<>();
+    private HashMap<Node, Fixture> nodeFixtureMap = new HashMap<>();
+
+
+    private ArrayList<Node> addQueue = new ArrayList<>();
+    private ArrayList<Node> layoutChangeQueue = new ArrayList<>();
+    private ArrayList<Node> sizeChangeQueue = new ArrayList<>();
+    private ArrayList<Body> destroyQueue = new ArrayList<>();
+
+	private ShapeResolver shapeResolver;
+    private Region gameContainer;
+
+    private boolean isUpdating;
+
+    public PhysicsGame(){
+	    animationTimerFactory = new AnimationTimerFactory();
+        typeConverter = new SimulationTypeToBodyTypeConverter();
 	}
 
-	public void load(Parent gameContainer){
+	public void load(Region gameContainer){
+
+	    this.gameContainer = gameContainer;
 
 	    this.gameWorld = findWorld(gameContainer);
 
 		if(this.gameWorld != null){
 			world = new World(new Vec2(gameWorld.getGravityX(), gameWorld.getGravityY()));
+
+			gameWorld.addAddEventListener(e -> addQueue.add(e.getNode()));
+			gameWorld.addRemoveEventListener(e -> remove(e.getNode()));
+
 			world.setContactListener(new ContactListener() {
                 @Override
                 public void beginContact(Contact contact) {
@@ -81,26 +95,92 @@ public class PhysicsGame {
                 }
             });
 
-            coordinateConverter = new CoordinateConverter(this.gameWorld);
+            coordinateConverter = new CoordinateConverter(this.gameWorld, this.gameContainer);
 			shapeResolver = new ShapeResolver(coordinateConverter);
 			
-			for (Node node : this.gameWorld.getChildrenUnmodifiable()){
-				if(node instanceof PhysicsShape){
-					addBody((PhysicsShape) node, node);
-				}
-			}
+            add(gameWorld);
 			
 			worldTimer = animationTimerFactory.CreateTimer(timeStep,t -> {
-				world.step(t / 1000f, 8, 3);
-                updateNodePositions();
-				gameWorld.fireEvent(new PhysicsEvent(PhysicsEvent.PHYSICS_STEP));
-			});
-			
-			renderTimer = animationTimerFactory.CreateTimer(timeStep,t -> {
 
+				//Update physics
+			    world.step(t / 1000f, 8, 3);
+                //Update render positions
+                isUpdating = true;
+			    updateNodePositions();
+			    isUpdating = false;
+
+                destroyQueuedBodies();
+                addQueuedNodes();
+                handleQueuedPositionUpdates();
+                handleQueuedSizeUpdates();
+
+                gameWorld.fireEvent(new PhysicsEvent(PhysicsEvent.PHYSICS_STEP));
 			});
 		}
 	}
+
+    private void handleQueuedPositionUpdates() {
+        if (!layoutChangeQueue.isEmpty()) {
+            for (Node node : layoutChangeQueue) {
+                Body body = nodeBodyMap.get(node);
+                Point2D bodyPosition = getBodyPosition(node);
+
+                float angle = (float)((node.getRotate() / 180) * Math.PI);
+                body.setTransform(new Vec2((float) bodyPosition.getX(), (float) bodyPosition.getY()), angle);
+            }
+            layoutChangeQueue.clear();
+        }
+    }
+
+    private void handleQueuedSizeUpdates() {
+        if (!sizeChangeQueue.isEmpty()) {
+            for (Node node : sizeChangeQueue) {
+                shapeResolver.updateShape(node, nodeFixtureMap.get(node));
+            }
+            sizeChangeQueue.clear();
+        }
+    }
+
+    private void addQueuedNodes() {
+        if (!addQueue.isEmpty()){
+            for (Node node : addQueue) {
+                add(node);
+            }
+            addQueue.clear();
+        }
+    }
+
+    private void destroyQueuedBodies() {
+        if (!destroyQueue.isEmpty()) {
+            for (Body body : destroyQueue) {
+                world.destroyBody(body);
+            }
+            destroyQueue.clear();
+        }
+    }
+
+    private void remove(Node node) {
+	    if (nodeBodyMap.containsKey(node)){
+            Body body = nodeBodyMap.get(node);
+            destroyQueue.add(body);
+            nodeBodyMap.remove(node);
+        }
+    }
+
+    private void add(Node node){
+        if(node instanceof PhysicsShape){
+            addBody((PhysicsShape) node, node);
+        }else if (node instanceof Parent){
+            if (node instanceof ShapeContainer){
+                addShapeContainer((ShapeContainer) node);
+            }else{
+                for(Node childNode : ((Parent)node).getChildrenUnmodifiable()){
+                    add(childNode);
+                }
+            }
+
+        }
+    }
 
     private PhysicsWorld findWorld(Parent gameContainer) {
 	    if (gameContainer instanceof PhysicsWorld){
@@ -127,39 +207,60 @@ public class PhysicsGame {
 		}
 	}
 
+    private void addShapeContainer(ShapeContainer node) {
+        Body body = createBody(node, node);
+        for (Node child : node.getChildrenUnmodifiable()){
+            if (child instanceof PhysicsShape)
+                addFixtureToBody((PhysicsShape) child, child, body);
+        }
+        node.setup(body, coordinateConverter);
+    }
+
 	private void addBody(PhysicsShape physicsShape, Node node){
-		BodyDef bodyDefinition = physicsShape.getBodyDefBean().createBodyDef();
-		Bounds bounds = node.getBoundsInLocal();
-		double cx = (bounds.getMinX() + bounds.getMaxX()) / 2, cy = (bounds.getMinY() + bounds.getMaxY()) / 2;
-		double childX = node.getLayoutX() + cx, childY = node.getLayoutY() + cy;
-
-		Point2D bodyPosition = coordinateConverter.fxPoint2world(childX, childY, node.getParent());
-		bodyDefinition.position.set((float) bodyPosition.getX(), (float) bodyPosition.getY());
-
-		Body body = world.createBody(bodyDefinition);
-
-		FixtureDef fixtureDef = physicsShape.getFixtureDefBean().createFixtureDef();
-		fixtureDef.shape = shapeResolver.ResolveShape(node);
-		
-		body.createFixture(fixtureDef);
-
-		this.nodeBodyMap.put(node, body);
-
-		physicsShape.setup(body);
+        Body body = createBody(physicsShape, node);
+        addFixtureToBody(physicsShape, node, body);
 	}
-	
-	public void startWorld(){
-		System.out.println("Starting world");
-		renderTimer.start();
-	}
-	
-	public void startRenderer() {
+
+    private void addFixtureToBody(PhysicsShape physicsShape, Node node, Body body) {
+        FixtureDef fixtureDef = physicsShape.getFixtureDefBean().createFixtureDef();
+        fixtureDef.shape = shapeResolver.ResolveShape(node);
+        Fixture fixture = body.createFixture(fixtureDef);
+
+        physicsShape.setup(body, coordinateConverter);
+
+        physicsShape.addSizeChangedEventListener(e -> {
+            if (!isUpdating)
+                sizeChangeQueue.add(e.getNode());
+        });
+        physicsShape.addLayoutChangedEventListener(e -> {
+            if(!isUpdating)
+                layoutChangeQueue.add(e.getNode());
+        });
+        nodeFixtureMap.put(node, fixture);
+    }
+
+    private Body createBody(BodyDefBeanOwner bodyDefOwner, Node node) {
+        BodyDef bodyDefinition = bodyDefOwner.getBodyDefBean().createBodyDef(typeConverter);
+        Point2D bodyPosition = getBodyPosition(node);
+        bodyDefinition.position.set((float) bodyPosition.getX(), (float) bodyPosition.getY());
+        Body body = world.createBody(bodyDefinition);
+        this.nodeBodyMap.put(node, body);
+        return body;
+    }
+
+    private Point2D getBodyPosition(Node node) {
+        Bounds bounds = node.getBoundsInLocal();
+        double cx = (bounds.getMinX() + bounds.getMaxX()) / 2, cy = (bounds.getMinY() + bounds.getMaxY()) / 2;
+        double childX = node.getLayoutX() + cx, childY = node.getLayoutY() + cy;
+        return coordinateConverter.fxPoint2world(childX, childY, node.getParent());
+    }
+
+    public void startRenderer() {
 		System.out.println("Starting renderer");
 		worldTimer.start();
 	}
-	
+
 	public void startGame(){
-		startWorld();
 		startRenderer();
 	}
 	
@@ -168,14 +269,8 @@ public class PhysicsGame {
 		worldTimer.stop();
 	}
 	
-	public void stopRenderer() {
-		System.out.println("Stopping renderer");
-		renderTimer.stop();
-	}
-	
 	public void stopGame(){
 		stopWorld();
-		stopRenderer();
 	}
 	
 	private void updateNodePositions(){

@@ -2,6 +2,7 @@ package utilites;
 
 import java.util.List;
 
+import javafx.scene.layout.Region;
 import org.jbox2d.common.IViewportTransform;
 import org.jbox2d.common.Mat22;
 import org.jbox2d.common.OBBViewportTransform;
@@ -16,17 +17,17 @@ import javafx.scene.shape.Line;
 
 public class CoordinateConverter {
 	
-	private PhysicsWorld world;
-	
+	private Region root;
+
 	private IViewportTransform viewportTransform;
 	
-	public CoordinateConverter(PhysicsWorld world) {
-		this.world = world;
+	public CoordinateConverter(PhysicsWorld world, Region root) {
+		this.root = root;
 		float scale = world.getPhysicsScale();
 		OBBViewportTransform obb = new OBBViewportTransform();
 		obb.setTransform(new Mat22((float) scale, 0.0f, 0.0f, (float) scale));
-		obb.setCenter((float) (world.getWidth() / 2), (float) (world.getHeight() / 2));
-		obb.setExtents((float) (world.getWidth() / 2), (float) (world.getHeight() / 2));
+		obb.setCenter((float) (root.getWidth() / 2), (float) (root.getHeight() / 2));
+		obb.setExtents((float) (root.getWidth() / 2), (float) (root.getHeight() / 2));
 		obb.setYFlip(true);
 		this.viewportTransform = obb;
 	}
@@ -38,7 +39,7 @@ public class CoordinateConverter {
 	private Vec2 fx2worldTemp1 = new Vec2(), fx2worldTemp2 = new Vec2();
 	
 	public Point2D fxPoint2world(double x, double y, Parent context) {
-		while (context != null && context != world) {
+		while (context != null && context != root) {
 			Bounds bounds = context.getBoundsInParent();
 			x += bounds.getMinX();
 			y += bounds.getMinY();
@@ -70,16 +71,33 @@ public class CoordinateConverter {
 		Vec2 result = world2fxTemp1;
 		world2fxTemp2.set((float) x, (float) y);
 		viewportTransform.getWorldToScreen(new Vec2((float) x, (float) y), result);
-		return new Point2D(result.x, result.y);
-	}
-	
-	public Point2D scaleVecToWorld(double x, double y){
-		Vec2 result = world2fxTemp1;
-		viewportTransform.getScreenVectorToWorld(new Vec2((float) x, (float) y), result);
-		return new Point2D(result.x, result.y);
+
+		float xResult = result.x;
+		float yResult = result.y;
+
+		while (context != null && context != root) {
+			Bounds bounds = context.getBoundsInParent();
+			xResult -= bounds.getMinX();
+			yResult -= bounds.getMinY();
+			context = context.getParent();
+		}
+
+		return new Point2D(xResult, yResult);
 	}
 
-	//
+    public Point2D scaleWorldToFx(double x, double y) {
+        Vec2 result = world2fxTemp1;
+        world2fxTemp2.set((float) x, (float) y);
+        viewportTransform.getWorldToScreen(new Vec2((float) x, (float) y), result);
+
+        return new Point2D( Math.abs(result.x), Math.abs(result.x));
+    }
+	
+	public Vec2 scaleVecToWorld(double x, double y){
+		Vec2 result = world2fxTemp1;
+		viewportTransform.getScreenVectorToWorld(new Vec2((float) x, (float) y), result);
+		return new Vec2(Math.abs(result.x), Math.abs(result.y));
+	}
 
 	public Vec2 set2Point(Vec2 vec, double x, double y) {
 		Point2D result = fxVec2world(x, y);

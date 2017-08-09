@@ -1,15 +1,15 @@
-package shapes;
+package bodies;
 
-import org.jbox2d.dynamics.BodyDef;
-import org.jbox2d.dynamics.BodyType;
-
+import framework.SimulationType;
 import javafx.css.Styleable;
 import javafx.css.StyleableProperty;
 import javafx.css.StyleablePropertyFactory;
+import org.jbox2d.dynamics.BodyDef;
+import utilites.SimulationTypeToBodyTypeConverter;
 
 public class BodyDefBean<S extends Styleable> extends Box2dBean<S> {
 
-	private final StyleableProperty<BodyType> bodyType;
+	private final StyleableProperty<SimulationType> bodyType;
 	private final StyleableProperty<Number> linearDamping;
 	private final StyleableProperty<Number> angularDamping;
 	private final StyleableProperty<Number> gravityScale;
@@ -20,7 +20,7 @@ public class BodyDefBean<S extends Styleable> extends Box2dBean<S> {
 
 	public BodyDefBean(S owner, StyleablePropertyFactory<S> spf) {
 		super(owner, spf);
-		this.bodyType = createStyleableEnumProperty("bodyType", s -> bodyTypeProperty(), BodyType.class, BodyType.STATIC);
+		this.bodyType = createStyleableEnumProperty("bodyType", s -> bodyTypeProperty(), SimulationType.class, SimulationType.Full);
 		this.linearDamping = createStyleableNumberProperty("linearDamping", s -> linearDampingProperty(), 0.0);
 		this.angularDamping = createStyleableNumberProperty("angularDamping", s -> angularDampingProperty(), 0.0);
 		this.gravityScale = createStyleableNumberProperty("gravityScale", s -> gravityScaleProperty(), 1.0);
@@ -30,9 +30,9 @@ public class BodyDefBean<S extends Styleable> extends Box2dBean<S> {
 		this.active = createStyleableBooleanProperty("active", s -> activeProperty(), true);
 	}
 
-	public BodyDef createBodyDef() {
+	public BodyDef createBodyDef(SimulationTypeToBodyTypeConverter converter) {
 		BodyDef bodyDef = new BodyDef();
-		bodyDef.type = this.getBodyType();
+		bodyDef.type = converter.Convert(this.getBodyType());
 		bodyDef.linearDamping= this.getLinearDamping();
 		bodyDef.angularDamping = this.getAngularDamping();
 		bodyDef.gravityScale= this.getGravityScale();
@@ -43,13 +43,13 @@ public class BodyDefBean<S extends Styleable> extends Box2dBean<S> {
 		return bodyDef;
 	}
 
-	public StyleableProperty<BodyType> bodyTypeProperty() {
+	public StyleableProperty<SimulationType> bodyTypeProperty() {
 		return bodyType;
 	}
-	public final BodyType getBodyType() {
+	public final SimulationType getBodyType() {
 		return bodyTypeProperty().getValue();
 	}
-	public final void setBodyType(BodyType bodyType) {
+	public final void setBodyType(SimulationType bodyType) {
 		bodyTypeProperty().setValue(bodyType);
 	}
 	

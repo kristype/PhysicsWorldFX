@@ -1,4 +1,4 @@
-package shapes;
+package bodies;
 
 import javafx.css.Styleable;
 
