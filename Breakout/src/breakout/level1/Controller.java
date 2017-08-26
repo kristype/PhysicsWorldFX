@@ -6,11 +6,17 @@ import framework.PhysicsWorld;
 import framework.SimulationType;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import shapes.PhysicsCircle;
 import shapes.PhysicsRectangle;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import static framework.PhysicsWorldHelper.*;
 
 public class Controller {
 
@@ -19,6 +25,9 @@ public class Controller {
     public PhysicsWorld world;
     public PhysicsRectangle floor;
     public Pane brickContainer;
+    public PhysicsRectangle wallLeft;
+    public PhysicsRectangle wallRight;
+
 
     private boolean movePaddleLeft;
     private boolean movePaddleRight;
@@ -34,6 +43,7 @@ public class Controller {
             for (int i = 0; i < 10; i++) {
                 double height = 20;
                 PhysicsRectangle brick = new PhysicsRectangle();
+                brick.getStyleClass().add("brick");
                 brick.setBodyType(SimulationType.NonMovable);
                 brick.setStroke(Color.BLACK);
                 brick.setFill(colors[j]);
@@ -44,11 +54,13 @@ public class Controller {
                 brickContainer.getChildren().add(brick);
             }
         }
-
+        //setOnTick
         world.addEventHandler(PhysicsEvent.PHYSICS_STEP, event -> {
             setPaddleSpeed(paddle);
         });
 
+        //setOnCollision
+        //Forutsigbar rekkef;lge
         world.addEventHandler(CollisionEvent.COLLISION, event -> {
             handleCollision(event.getObject1(), event.getObject2());
             handleCollision(event.getObject2(), event.getObject1());
@@ -57,7 +69,8 @@ public class Controller {
 
     private void handleCollision(Node object1, Node object2) {
         if (object1 == ball){
-            if (brickContainer.getChildrenUnmodifiable().contains(object2)){
+            //if (brickContainer.getChildrenUnmodifiable().contains(object2)){
+            if (hasStyle(object2, "brick")){
                 world.remove(object2);
                 brickContainer.getChildren().remove(object2);
 
@@ -70,37 +83,24 @@ public class Controller {
     }
 
     private void setPaddleSpeed(PhysicsRectangle paddle) {
-        if (movePaddleLeft && paddle.getLayoutX() > 11){
-            paddle.setSpeed(-80f, 0f);
-        }else if (movePaddleRight && (paddle.getLayoutX() + paddle.getWidth()) < 629){
-            paddle.setSpeed(80f, 0f);
+        if (pressedKeys.contains(KeyCode.LEFT) && !physicsNodesOverlap(wallLeft, paddle)){
+            paddle.setSpeed(-800f, 0f);
+        }else if (pressedKeys.contains(KeyCode.RIGHT) && !physicsNodesOverlap(wallRight, paddle)){ //Overlap sjekk
+            paddle.setSpeed(800f, 0f);
         }else{
             paddle.setSpeed(0f, 0f);
         }
     }
 
+    private Collection<KeyCode> pressedKeys = new ArrayList<>();
+
     public void handleKeyUp(KeyEvent keyEvent) {
-        switch(keyEvent.getCode()) {
-            case A:
-                movePaddleLeft = false;
-                break;
-            case D:
-                movePaddleRight = false;
-                break;
-        }
+        pressedKeys.remove(keyEvent.getCode());
     }
 
     public void handleKeyDown(KeyEvent keyEvent) {
-        switch(keyEvent.getCode()) {
-            case A:
-                movePaddleLeft = true;
-                break;
-            case D:
-                movePaddleRight = true;
-                break;
-            case SPACE:
-                ball.setSpeed(25.0f, 25.0f);
-                break;
+        if (!pressedKeys.contains(keyEvent.getCode())){
+            pressedKeys.add(keyEvent.getCode());
         }
     }
 }

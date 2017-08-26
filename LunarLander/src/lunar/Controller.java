@@ -1,45 +1,57 @@
 package lunar;
 
-import bodies.ShapeContainer;
+import bodies.ShapeComposition;
+import com.sun.javafx.geom.Point2D;
 import framework.CollisionEvent;
 import framework.PhysicsEvent;
 import framework.PhysicsWorld;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import shapes.PhysicsCircle;
-import shapes.PhysicsRectangle;
+import shapes.PhysicsPolygon;
+
+import static framework.PhysicsWorldHelper.*;
 
 public class Controller {
 
-    public ShapeContainer triangleContainer;
+    public static final int singleThrust = 100;
+    public static final int fullThrustForce = 400;
+
+    @FXML private PhysicsWorld world;
+    @FXML private ShapeComposition triangleContainer;
+    @FXML private PhysicsPolygon leftThruster;
+    @FXML private PhysicsPolygon rightThruster;
+    @FXML private PhysicsPolygon landerBody;
 
     @FXML
     private void initialize() {
+        world.addEventHandler(PhysicsEvent.PHYSICS_STEP, event -> {
+            if (KeyIsDown(KeyCode.RIGHT)){
+                Point2D vector = getVectorForDegrees(triangleContainer.getRotate(), singleThrust);
+                leftThruster.applyForce(vector.x, vector.y);
+            }
+            else if (KeyIsDown(KeyCode.LEFT)){
+                Point2D vector = getVectorForDegrees(triangleContainer.getRotate(), singleThrust);
+                rightThruster.applyForce(vector.x, vector.y);
+            }
+            else if (KeyIsDown(KeyCode.UP)){
+                Point2D vector = getVectorForDegrees(triangleContainer.getRotate(), fullThrustForce);
+                leftThruster.applyForce(vector.x, vector.y);
+                rightThruster.applyForce(vector.x, vector.y);
+            }
+        });
+
+        world.addEventHandler(CollisionEvent.COLLISION, event -> {
+
+        });
     }
 
-    public void handleKeyUp(KeyEvent keyEvent) {
-        switch (keyEvent.getCode()){
-            case UP:
-
-                triangleContainer.setSpeed(0, 50);
-                break;
-            case LEFT:
-                triangleContainer.setRotationSpeed(10);
-                break;
-
-            case RIGHT:
-                triangleContainer.setRotationSpeed(-10);
-                break;
-            default:
-                break;
-        }
+    @FXML
+    private void handleKeyUp(KeyEvent keyEvent) {
+        RegisterKeyUp(keyEvent.getCode());
     }
 
-    public void handleKeyDown(KeyEvent keyEvent) {
-
+    @FXML private void handleKeyDown(KeyEvent keyEvent) {
+        registerKeyDown(keyEvent.getCode());
     }
-
-
 }

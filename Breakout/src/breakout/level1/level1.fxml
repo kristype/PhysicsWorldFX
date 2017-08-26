@@ -4,7 +4,6 @@
 <PhysicsWorld xmlns:fx="http://javafx.com/fxml" fx:controller="breakout.level1.Controller"
               maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0"
               fx:id="world" gravityX="0" gravityY="0" physicsScale="15" onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp">
-    <children>
 
         <PhysicsRectangle fx:id="wallLeft" bodyType="NonMovable" fill="black" layoutX="0" layoutY="0" width="10" height="480"  />
         <PhysicsRectangle fx:id="wallRight" bodyType="NonMovable" fill="black" layoutX="630" layoutY="0" width="10" height="480"  />
@@ -20,5 +19,4 @@
         </Pane>
 
         <PhysicsRectangle fx:id="paddle" bodyType="Movable" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="20.0" layoutX="270.0" layoutY="400.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
-    </children>
 </PhysicsWorld>

@@ -1,7 +1,7 @@
 package framework;
 
 import bodies.BodyDefBeanOwner;
-import bodies.ShapeContainer;
+import bodies.ShapeComposition;
 import javafx.animation.AnimationTimer;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -35,14 +35,13 @@ public class PhysicsGame {
 	
 	private float timeStep = 1000f / 60f;
 
-    private HashMap<Node, Body> nodeBodyMap = new HashMap<>();
-    private HashMap<Node, Fixture> nodeFixtureMap = new HashMap<>();
+    private Map<Node, Body> nodeBodyMap = new HashMap<>();
+    private Map<Node, Fixture> nodeFixtureMap = new HashMap<>();
 
-
-    private ArrayList<Node> addQueue = new ArrayList<>();
-    private ArrayList<Node> layoutChangeQueue = new ArrayList<>();
-    private ArrayList<Node> sizeChangeQueue = new ArrayList<>();
-    private ArrayList<Body> destroyQueue = new ArrayList<>();
+    private Collection<Node> addQueue = new ArrayList<>();
+    private Collection<Node> layoutChangeQueue = new ArrayList<>();
+    private Collection<Node> sizeChangeQueue = new ArrayList<>();
+    private Collection<Body> destroyQueue = new ArrayList<>();
 
 	private ShapeResolver shapeResolver;
     private Region gameContainer;
@@ -57,7 +56,6 @@ public class PhysicsGame {
 	public void load(Region gameContainer){
 
 	    this.gameContainer = gameContainer;
-
 	    this.gameWorld = findWorld(gameContainer);
 
 		if(this.gameWorld != null){
@@ -69,6 +67,7 @@ public class PhysicsGame {
 			world.setContactListener(new ContactListener() {
                 @Override
                 public void beginContact(Contact contact) {
+
                     Body body1 = contact.getFixtureA().getBody();
                     Body body2 = contact.getFixtureB().getBody();
                     Optional<Map.Entry<Node, Body>> node1 = nodeBodyMap.entrySet().stream().filter(e -> e.getValue() == body1).findFirst();
@@ -116,6 +115,9 @@ public class PhysicsGame {
 
                 gameWorld.fireEvent(new PhysicsEvent(PhysicsEvent.PHYSICS_STEP));
 			});
+
+			//instantiate the static class
+			PhysicsWorldHelper.setup(world, nodeBodyMap);
 		}
 	}
 
@@ -124,8 +126,8 @@ public class PhysicsGame {
             for (Node node : layoutChangeQueue) {
                 Body body = nodeBodyMap.get(node);
                 Point2D bodyPosition = getBodyPosition(node);
+                float angle = (float)(Math.toRadians(node.getRotate()));
 
-                float angle = (float)((node.getRotate() / 180) * Math.PI);
                 body.setTransform(new Vec2((float) bodyPosition.getX(), (float) bodyPosition.getY()), angle);
             }
             layoutChangeQueue.clear();
@@ -171,8 +173,8 @@ public class PhysicsGame {
         if(node instanceof PhysicsShape){
             addBody((PhysicsShape) node, node);
         }else if (node instanceof Parent){
-            if (node instanceof ShapeContainer){
-                addShapeContainer((ShapeContainer) node);
+            if (node instanceof ShapeComposition){
+                addShapeContainer((ShapeComposition) node);
             }else{
                 for(Node childNode : ((Parent)node).getChildrenUnmodifiable()){
                     add(childNode);
@@ -207,7 +209,7 @@ public class PhysicsGame {
 		}
 	}
 
-    private void addShapeContainer(ShapeContainer node) {
+    private void addShapeContainer(ShapeComposition node) {
         Body body = createBody(node, node);
         for (Node child : node.getChildrenUnmodifiable()){
             if (child instanceof PhysicsShape)

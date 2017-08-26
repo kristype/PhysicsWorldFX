@@ -6,7 +6,6 @@ import javafx.css.Styleable;
 import javafx.css.StyleableProperty;
 import javafx.css.StyleablePropertyFactory;
 import javafx.geometry.Point2D;
-import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
@@ -14,14 +13,14 @@ import utilites.CoordinateConverter;
 
 import java.util.List;
 
-public class ShapeContainer extends Pane implements BodyDefBeanOwner {
+public class ShapeComposition extends Pane implements BodyDefBeanOwner {
 
     private final BodyDefBean bodyDefBean;
     private Body body;
     private CoordinateConverter coordinateConverter;
 
-    public ShapeContainer() {
-        getStyleClass().add("shapeContainer");
+    public ShapeComposition() {
+        getStyleClass().add("shapeComposition");
         this.bodyDefBean = new BodyDefBean<>(this, SPF);
     }
 
@@ -64,7 +63,7 @@ public class ShapeContainer extends Pane implements BodyDefBeanOwner {
         return bodyDefBean;
     }
 
-    private static final StyleablePropertyFactory<ShapeContainer> SPF = new StyleablePropertyFactory<>(Pane.getClassCssMetaData());
+    private static final StyleablePropertyFactory<ShapeComposition> SPF = new StyleablePropertyFactory<>(Pane.getClassCssMetaData());
 
     public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
         return SPF.getCssMetaData();

@@ -1,20 +1,18 @@
 package utilites;
 
-import javafx.collections.ObservableList;
+import bodies.ShapeComposition;
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.common.Vec2;
-import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.Fixture;
 import shapes.PhysicsCircle;
 import shapes.PhysicsPolygon;
 import shapes.PhysicsRectangle;
 
-import java.util.ArrayList;
+import java.util.List;
 
 
 public class ShapeResolver {
@@ -45,30 +43,86 @@ public class ShapeResolver {
             circleShape.setRadius((float) world / 2f);
             shape = circleShape;
         } else if (node instanceof PhysicsPolygon) {
-
-            PolygonShape polygonShape = new PolygonShape();
-            PhysicsPolygon physicsPolygon = (PhysicsPolygon) node;
-            int size = physicsPolygon.getPoints().size();
-            int vertices = size / 2;
-            Vec2[] convertedCoordinates = new Vec2[vertices];
-            ObservableList<Double> points = physicsPolygon.getPoints();
-
-            double maxY = 0;
-            for (int i = 0; i < vertices; i++) {
-                maxY = Math.max(points.get(i * 2 +1), maxY);
-            }
-
-            for (int i = 0; i < vertices; i++) {
-                int pairIndex = i * 2;
-                double xValue = points.get(pairIndex);
-                double yValue = maxY - points.get(pairIndex+1);
-                convertedCoordinates[i] = converter.scaleVecToWorld(xValue, yValue);
-            }
-            polygonShape.set(convertedCoordinates, vertices);
-            shape = polygonShape;
+            shape = mapPolygon((PhysicsPolygon) node);
         }
         return shape;
 
+    }
+
+    private Vec2[] toVec2(double...points) {
+        Vec2[] vertices = new Vec2[points.length / 2];
+        for (int i = 0; i < points.length; i += 2) {
+            vertices[i / 2] = converter.scaleVecToWorld(points[i], points[i + 1]);
+        }
+        return vertices;
+    }
+
+    private Shape mapPolygon(PhysicsPolygon node) {
+
+        Vec2[] vertices;
+        if (node.getParent() instanceof ShapeComposition){
+            ShapeComposition parent = (ShapeComposition) node.getParent();
+            Bounds bounds = parent.getBoundsInLocal();
+            double hWidth = bounds.getWidth() /2;
+            double hHeight = bounds.getHeight() /2;
+
+            double[] points = getTranslatedPoints(node.getPoints(), node.getLayoutX(), node.getLayoutY(), hWidth, hHeight);
+            vertices = toVec2(points);
+
+            setLocalCenterOffsetForChild(node, vertices);
+
+        } else {
+            Bounds bounds = node.getBoundsInLocal();
+            double hWidth = bounds.getWidth() /2;
+            double hHeight = bounds.getWidth() /2;;
+
+            double[] points = getTranslatedPoints(node.getPoints(), 0, 0, hWidth, hHeight);
+            vertices = toVec2(points);
+        }
+
+        PolygonShape polygon = new PolygonShape();
+        polygon.set(vertices, vertices.length);
+        return polygon;
+    }
+
+    private void setLocalCenterOffsetForChild(PhysicsPolygon node, Vec2[] vertices) {
+        float minX = Float.MAX_VALUE;
+        float maxX = -Float.MAX_VALUE;
+        float minY = Float.MAX_VALUE;
+        float maxY = -Float.MAX_VALUE;
+
+        for (int i = 0; i < vertices.length; i++){
+            Vec2 vertex = vertices[i];
+            minX = Math.min(minX, vertex.x);
+            maxX = Math.max(maxX, vertex.x);
+            minY = Math.min(minY, vertex.y);
+            maxY = Math.max(maxY, vertex.y);
+        }
+
+        node.setLocalCenterOffset(new Vec2(getOffset(minX, maxX), getOffset(minY, maxY)));
+    }
+
+    private float getOffset(float min, float max) {
+        return min >= 0 ? min + (max - min) /2 : max + (min - max) / 2;
+    }
+
+    private double[] getTranslatedPoints(List<? extends Number> nodePoints, double dx, double dy, double cX, double cY
+    ) {
+        double[] points = new double[nodePoints.size()];
+        for (int i = 0; i < points.length; i++) {
+            points[i] = nodePoints.get(i).doubleValue();
+        }
+        translate(points, dx, dy, cX, cY);
+        return points;
+    }
+
+    private void translate(double[] points, double dx, double dy, double cX, double cY) {
+        double offsetX = dx - cX;
+        double offsetY = dy - cY;
+        for (int i = 0; i < points.length; i += 2) {
+            points[i] += offsetX;
+            points[i + 1] = -(offsetY + points[i + 1]);
+        }
     }
 
     public void updateShape(Node node, Fixture fixture) {

@@ -20,12 +20,13 @@ public class CoordinateConverter {
 	private Region root;
 
 	private IViewportTransform viewportTransform;
-	
+	private final float physicsScale;
+
 	public CoordinateConverter(PhysicsWorld world, Region root) {
 		this.root = root;
-		float scale = world.getPhysicsScale();
+		physicsScale = world.getPhysicsScale();
 		OBBViewportTransform obb = new OBBViewportTransform();
-		obb.setTransform(new Mat22((float) scale, 0.0f, 0.0f, (float) scale));
+		obb.setTransform(new Mat22((float) physicsScale, 0.0f, 0.0f, (float) physicsScale));
 		obb.setCenter((float) (root.getWidth() / 2), (float) (root.getHeight() / 2));
 		obb.setExtents((float) (root.getWidth() / 2), (float) (root.getHeight() / 2));
 		obb.setYFlip(true);
@@ -94,9 +95,8 @@ public class CoordinateConverter {
     }
 	
 	public Vec2 scaleVecToWorld(double x, double y){
-		Vec2 result = world2fxTemp1;
-		viewportTransform.getScreenVectorToWorld(new Vec2((float) x, (float) y), result);
-		return new Vec2(Math.abs(result.x), Math.abs(result.y));
+
+		return new Vec2((float)x / physicsScale,(float) y /physicsScale);
 	}
 
 	public Vec2 set2Point(Vec2 vec, double x, double y) {

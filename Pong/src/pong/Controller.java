@@ -6,20 +6,22 @@ import framework.PhysicsWorld;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyEvent;
 import shapes.PhysicsCircle;
 import shapes.PhysicsRectangle;
 
 public class Controller {
 
-    public PhysicsRectangle paddle1;
-    public PhysicsRectangle paddle2;
-    public PhysicsRectangle wallLeft;
-    public PhysicsRectangle wallRight;
-    public PhysicsCircle ball;
-    public PhysicsWorld world;
-    public PhysicsRectangle roof;
-    public PhysicsRectangle floor;
+    @FXML private PhysicsRectangle paddle1;
+    @FXML private PhysicsRectangle paddle2;
+    @FXML private PhysicsRectangle wallLeft;
+    @FXML private PhysicsRectangle wallRight;
+    @FXML private PhysicsCircle ball;
+    @FXML private PhysicsWorld world;
+    @FXML private PhysicsRectangle roof;
+    @FXML private PhysicsRectangle floor;
+    @FXML private Label score;
 
     private boolean movePaddle1Up;
     private boolean movePaddle2Up;
@@ -28,8 +30,6 @@ public class Controller {
 
     private int leftScore = 0;
     private int rightScore = 0;
-
-    private StringProperty score = new SimpleStringProperty();
 
     @FXML
     private void initialize() {
@@ -62,7 +62,7 @@ public class Controller {
     }
 
     private void updateScore() {
-        score.setValue("Left: "+ leftScore + " Right: " +rightScore);
+        score.setText("Left: "+ leftScore + " Right: " +rightScore);
     }
 
     private void setPaddleSpeed(PhysicsRectangle paddle, boolean movePaddleUp, boolean movePaddleDown) {
@@ -76,7 +76,8 @@ public class Controller {
         }
     }
 
-    public void handleKeyUp(KeyEvent keyEvent) {
+    @FXML
+    private void handleKeyUp(KeyEvent keyEvent) {
         switch(keyEvent.getCode()) {
             case A:
                 movePaddle1Up = false;
@@ -93,7 +94,8 @@ public class Controller {
         }
     }
 
-    public void handleKeyDown(KeyEvent keyEvent) {
+    @FXML
+    private void handleKeyDown(KeyEvent keyEvent) {
         switch(keyEvent.getCode()) {
             case A:
                 movePaddle1Up = true;
@@ -111,17 +113,5 @@ public class Controller {
                 ball.setSpeed(25.0f, 25.0f);
                 break;
         }
-    }
-
-    public String getScore() {
-        return score.get();
-    }
-
-    public StringProperty scoreProperty() {
-        return score;
-    }
-
-    public void setScore(String score) {
-        this.score.set(score);
     }
 }

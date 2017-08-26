@@ -71,12 +71,35 @@ public class PhysicsPolygon extends Polygon implements BodyDefBeanOwner, Fixture
         }
     }
 
-    public void applyForce(float vx, float vy) {
-        if (body != null){
-            Vec2 scaled = coordinateConverter.scaleVecToWorld(vx, vy);
-            body.applyForceToCenter(scaled);
+    public void applyForceUp(float vx, float vy){
+        if (body != null) {
+            Vec2 worldForce = coordinateConverter.scaleVecToWorld(vx, vy);
+            applyForce(body.getWorldVector(worldForce));
         }
     }
+
+    public void applyForce(float vx, float vy) {
+        if (body != null){
+            Vec2 worldForce = coordinateConverter.scaleVecToWorld(vx, vy);
+            applyForce(worldForce);
+        }
+    }
+
+    private void applyForce(Vec2 worldForce) {
+        Vec2 worldCenter = body.getWorldCenter();
+
+        double radians = body.getAngle() % (2*Math.PI);
+        float cos = (float) Math.cos(radians);
+        float sin = (float) Math.sin(radians);
+
+        float xRotation = cos * localCenterOffset.x - sin * localCenterOffset.y;
+        float yRotation = (sin * localCenterOffset.x) + cos * localCenterOffset.y;
+
+        Vec2 offsetWorldCenter = new Vec2(xRotation + worldCenter.x, yRotation + worldCenter.y);
+        body.applyForce(worldForce, offsetWorldCenter);
+    }
+
+    private Vec2 localCenterOffset = new Vec2(0, 0);
 
     private static final StyleablePropertyFactory<PhysicsPolygon> SPF = new StyleablePropertyFactory<>(Polygon.getClassCssMetaData());
 
@@ -237,5 +260,9 @@ public class PhysicsPolygon extends Polygon implements BodyDefBeanOwner, Fixture
     }
     public final void setSensor(boolean sensor) {
         this.fixtureDefBean.setSensor(sensor);
+    }
+
+    public void setLocalCenterOffset(Vec2 vec) {
+        this.localCenterOffset = vec;
     }
 }
