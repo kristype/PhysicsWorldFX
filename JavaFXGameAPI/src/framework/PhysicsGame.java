@@ -3,6 +3,7 @@ package framework;
 import bodies.BodyDefBeanOwner;
 import bodies.ShapeComposition;
 import javafx.animation.AnimationTimer;
+import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -15,10 +16,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 import org.jbox2d.dynamics.contacts.Contact;
 import shapes.PhysicsShape;
-import utilites.AnimationTimerFactory;
-import utilites.CoordinateConverter;
-import utilites.ShapeResolver;
-import utilites.SimulationTypeToBodyTypeConverter;
+import utilites.*;
 
 import java.util.*;
 
@@ -26,27 +24,29 @@ public class PhysicsGame {
 	
 	private AnimationTimerFactory animationTimerFactory;
 	private CoordinateConverter coordinateConverter;
+    private PhysicsShapeHelper physicsShapeHelper;
+
 	private SimulationTypeToBodyTypeConverter typeConverter;
 
 	private AnimationTimer worldTimer;
+    private World world;
 
-	private World world;
     private PhysicsWorld gameWorld;
-	
+
 	private float timeStep = 1000f / 60f;
-
     private Map<Node, Body> nodeBodyMap = new HashMap<>();
-    private Map<Node, Fixture> nodeFixtureMap = new HashMap<>();
 
+    private Map<Node, Fixture> nodeFixtureMap = new HashMap<>();
     private Collection<Node> addQueue = new ArrayList<>();
     private Collection<Node> layoutChangeQueue = new ArrayList<>();
     private Collection<Node> sizeChangeQueue = new ArrayList<>();
+
     private Collection<Body> destroyQueue = new ArrayList<>();
+    private ShapeResolver shapeResolver;
 
-	private ShapeResolver shapeResolver;
     private Region gameContainer;
-
     private boolean isUpdating;
+    private Action onLevelEndListener;
 
     public PhysicsGame(){
 	    animationTimerFactory = new AnimationTimerFactory();
@@ -63,6 +63,12 @@ public class PhysicsGame {
 
 			gameWorld.addAddEventListener(e -> addQueue.add(e.getNode()));
 			gameWorld.addRemoveEventListener(e -> remove(e.getNode()));
+			gameWorld.setOnLevelEnd(() -> {
+                if (onLevelEndListener != null){
+                    stopGame();
+                    onLevelEndListener.action();
+                }
+            });
 
 			world.setContactListener(new ContactListener() {
                 @Override
@@ -74,7 +80,10 @@ public class PhysicsGame {
                     Optional<Map.Entry<Node, Body>> node2 = nodeBodyMap.entrySet().stream().filter(e -> e.getValue() == body2).findFirst();
 
                     if (node1.isPresent() && node2.isPresent()) {
-                        gameWorld.fireEvent(new CollisionEvent(CollisionEvent.COLLISION, node1.get().getKey(), node2.get().getKey()));
+                        EventHandler<? super CollisionEvent> handler = gameWorld.getOnCollision();
+                        if (handler != null){
+                            handler.handle(new CollisionEvent(CollisionEvent.COLLISION, node1.get().getKey(), node2.get().getKey()));
+                        }
                     }
                 }
 
@@ -95,6 +104,7 @@ public class PhysicsGame {
             });
 
             coordinateConverter = new CoordinateConverter(this.gameWorld, this.gameContainer);
+            physicsShapeHelper = new PhysicsShapeHelper(coordinateConverter);
 			shapeResolver = new ShapeResolver(coordinateConverter);
 			
             add(gameWorld);
@@ -113,11 +123,14 @@ public class PhysicsGame {
                 handleQueuedPositionUpdates();
                 handleQueuedSizeUpdates();
 
-                gameWorld.fireEvent(new PhysicsEvent(PhysicsEvent.PHYSICS_STEP));
+                EventHandler<? super PhysicsEvent> handler = gameWorld.getOnPhysicsStep();
+                if (handler != null){
+                    handler.handle(new PhysicsEvent(PhysicsEvent.PHYSICS_STEP));
+                }
 			});
 
 			//instantiate the static class
-			PhysicsWorldHelper.setup(world, nodeBodyMap);
+			PhysicsWorldHelper.setup(world, nodeBodyMap, nodeFixtureMap);
 		}
 	}
 
@@ -199,23 +212,13 @@ public class PhysicsGame {
         return null;
     }
 
-    public void debugStep() {
-		System.out.println("Step:");
-		world.step(timeStep, 8, 3);
-		updateNodePositions();
-		for(Body body : nodeBodyMap.values()){
-			Vec2 pos = body.getPosition();
-			System.out.println(pos.x + " "+ pos.y);
-		}
-	}
-
     private void addShapeContainer(ShapeComposition node) {
         Body body = createBody(node, node);
         for (Node child : node.getChildrenUnmodifiable()){
             if (child instanceof PhysicsShape)
                 addFixtureToBody((PhysicsShape) child, child, body);
         }
-        node.setup(body, coordinateConverter);
+        node.setup(body, physicsShapeHelper);
     }
 
 	private void addBody(PhysicsShape physicsShape, Node node){
@@ -228,7 +231,7 @@ public class PhysicsGame {
         fixtureDef.shape = shapeResolver.ResolveShape(node);
         Fixture fixture = body.createFixture(fixtureDef);
 
-        physicsShape.setup(body, coordinateConverter);
+        physicsShape.setup(body, physicsShapeHelper);
 
         physicsShape.addSizeChangedEventListener(e -> {
             if (!isUpdating)
@@ -257,23 +260,14 @@ public class PhysicsGame {
         return coordinateConverter.fxPoint2world(childX, childY, node.getParent());
     }
 
-    public void startRenderer() {
-		System.out.println("Starting renderer");
-		worldTimer.start();
-	}
+    public void startGame(){
+        worldTimer.start();
+    }
 
-	public void startGame(){
-		startRenderer();
-	}
-	
-	public void stopWorld(){
-		System.out.println("Stopping world");
-		worldTimer.stop();
-	}
-	
-	public void stopGame(){
-		stopWorld();
-	}
+    public void stopGame(){
+        worldTimer.stop();
+        worldTimer = null;
+    }
 	
 	private void updateNodePositions(){
 		for (Node node : nodeBodyMap.keySet()){
@@ -286,4 +280,8 @@ public class PhysicsGame {
 			node.setRotate(fxAngle);
 		}
 	}
+
+    public void setOnLevelEnd(Action onLevelEndListener) {
+        this.onLevelEndListener = onLevelEndListener;
+    }
 }

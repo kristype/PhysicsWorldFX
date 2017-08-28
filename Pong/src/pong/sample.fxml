@@ -7,7 +7,7 @@
 <?import javafx.geometry.Insets?>
 <StackPane alignment="TOP_LEFT" xmlns:fx="http://javafx.com/fxml" fx:controller="pong.Controller" >
     <PhysicsWorld fx:id="world"   prefWidth="640" prefHeight="480"
-                  gravityX="0" gravityY="0" physicsScale="15" onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp" >
+                  gravityX="0" gravityY="0" physicsScale="15" onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp" onPhysicsStep="#handlePhysicsStep" onCollision="#handleCollision" >
 
         <PhysicsRectangle fx:id="paddle1" fill="black" bodyType="Movable" width="20" height="60" />
         <PhysicsRectangle fx:id="paddle2" fill="black" bodyType="Movable" width="20" height="60" />

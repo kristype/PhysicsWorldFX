@@ -1,6 +1,10 @@
 package framework;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.event.EventHandler;
 import javafx.scene.Node;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
@@ -13,6 +17,9 @@ public class PhysicsWorld extends Pane {
     private float gravityY = 0f;
 
     private float physicsScale = 30f;
+    private SimpleObjectProperty<EventHandler<? super PhysicsEvent>> physicsStepProperty = new SimpleObjectProperty<>(null);
+    private SimpleObjectProperty<EventHandler<? super CollisionEvent>> collisionProperty = new SimpleObjectProperty<>(null);
+    private Action onLevelEnd;
 
     public PhysicsWorld(){
         setFocusTraversable(true);
@@ -76,6 +83,42 @@ public class PhysicsWorld extends Pane {
         while(i.hasNext())  {
             ((ChangedEventListener) i.next()).handleChangedEvent(event);
         }
+    }
+
+    public final void setOnPhysicsStep(
+            EventHandler<? super PhysicsEvent> value) {
+        onPhysicsStepProperty().set(value);
+    }
+
+    public final EventHandler<? super PhysicsEvent> getOnPhysicsStep() {
+        return onPhysicsStepProperty().get();
+    }
+
+    public final ObjectProperty<EventHandler<? super PhysicsEvent>>
+    onPhysicsStepProperty() {
+        return physicsStepProperty;
+    }
+
+    public final void setOnCollision(EventHandler<? super CollisionEvent> value) {
+        onCollisionProperty().set(value);
+    }
+
+    public final EventHandler<? super CollisionEvent> getOnCollision() {
+        return onCollisionProperty().get();
+    }
+
+    public final ObjectProperty<EventHandler<? super CollisionEvent>> onCollisionProperty() {
+        return collisionProperty;
+    }
+
+    public void endLevel(){
+        if (onLevelEnd != null){
+            onLevelEnd.action();
+        }
+    }
+
+    void setOnLevelEnd(Action onLevelEnd) {
+        this.onLevelEnd = onLevelEnd;
     }
 }
 

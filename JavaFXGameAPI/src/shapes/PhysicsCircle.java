@@ -15,6 +15,7 @@ import javafx.scene.shape.Circle;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import utilites.CoordinateConverter;
+import utilites.PhysicsShapeHelper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,14 +24,34 @@ import java.util.List;
 public class PhysicsCircle extends Circle implements BodyDefBeanOwner, FixtureDefBeanOwner, PhysicsShape {
 
     private Body body;
-    private CoordinateConverter coordinateConverter;
     private List<ChangedEventListener> sizeChangedListeners;
     private List<ChangedEventListener> layoutChangedListeners;
+    private PhysicsShapeHelper helper;
+    private Vec2 localCenterOffset = new Vec2();
 
-    public void setup(Body body, CoordinateConverter coordinateConverter) {
+    public void setup(Body body, PhysicsShapeHelper helper){
         this.body = body;
-        this.coordinateConverter = coordinateConverter;
+        this.helper = helper;
+    }
 
+    @Override
+    public void applyForce(float vx, float vy) {
+        helper.applyForce(body, localCenterOffset, vx, vy);
+    }
+
+    @Override
+    public void applyForceUp(float vx, float vy) {
+        helper.applyForceUp(body, localCenterOffset, vx, vy);
+    }
+
+    @Override
+    public Point2D getSpeed() {
+        return helper.getSpeed(body);
+    }
+
+    @Override
+    public void setSpeed(float x, float y) {
+        helper.setSpeed(body, x, y);
     }
 
     private void raiseEvent(List<ChangedEventListener> eventListeners){
@@ -53,28 +74,6 @@ public class PhysicsCircle extends Circle implements BodyDefBeanOwner, FixtureDe
     }
     public void removeSizeChangedEventListener(ChangedEventListener listener)   {
         sizeChangedListeners.remove(listener);
-    }
-
-    public Point2D getSpeed() {
-        if (body != null){
-            Vec2 velocity = body.getLinearVelocity();
-            return coordinateConverter.fxVec2world(velocity.x, velocity.y);
-        }
-        return null;
-    }
-
-    public void setSpeed(float vx, float vy) {
-        if (body != null){
-            Vec2 scaled = coordinateConverter.scaleVecToWorld(vx, vy);
-            body.setLinearVelocity(scaled);
-        }
-    }
-
-    public void applyForce(float vx, float vy) {
-        if (body != null){
-            Vec2 scaled = coordinateConverter.scaleVecToWorld(vx, vy);
-            body.applyForceToCenter(scaled);
-        }
     }
 
     private static final StyleablePropertyFactory<PhysicsCircle> SPF = new StyleablePropertyFactory<>(Circle.getClassCssMetaData());
@@ -131,6 +130,26 @@ public class PhysicsCircle extends Circle implements BodyDefBeanOwner, FixtureDe
     }
     public final void setLinearDamping(Float linearDamping) {
         bodyDefBean.setLinearDamping(linearDamping);
+    }
+
+    public StyleableProperty<Number> linearVelocityXProperty() {
+        return bodyDefBean.linearVelocityXProperty();
+    }
+    public final Float getLinearVelocityX() {
+        return bodyDefBean.getLinearVelocityX();
+    }
+    public final void setLinearVelocityX(Float linearVelocityX) {
+        bodyDefBean.setLinearVelocityX(linearVelocityX);
+    }
+
+    public StyleableProperty<Number> linearVelocityYProperty() {
+        return bodyDefBean.linearVelocityYProperty();
+    }
+    public final Float getLinearVelocityY() {
+        return bodyDefBean.getLinearVelocityY();
+    }
+    public final void setLinearVelocityY(Float linearVelocityY) {
+        bodyDefBean.setLinearVelocityY(linearVelocityY);
     }
 
     public StyleableProperty<Number> angularDampingProperty() {

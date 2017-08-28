@@ -1,6 +1,7 @@
 package utilites;
 
 import bodies.ShapeComposition;
+import com.sun.javafx.geom.Point2D;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import org.jbox2d.collision.shapes.CircleShape;
@@ -11,8 +12,11 @@ import org.jbox2d.dynamics.Fixture;
 import shapes.PhysicsCircle;
 import shapes.PhysicsPolygon;
 import shapes.PhysicsRectangle;
+import shapes.PhysicsShape;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 public class ShapeResolver {
@@ -63,6 +67,7 @@ public class ShapeResolver {
         if (node.getParent() instanceof ShapeComposition){
             ShapeComposition parent = (ShapeComposition) node.getParent();
             Bounds bounds = parent.getBoundsInLocal();
+
             double hWidth = bounds.getWidth() /2;
             double hHeight = bounds.getHeight() /2;
 
@@ -74,7 +79,7 @@ public class ShapeResolver {
         } else {
             Bounds bounds = node.getBoundsInLocal();
             double hWidth = bounds.getWidth() /2;
-            double hHeight = bounds.getWidth() /2;;
+            double hHeight = bounds.getHeight() /2;
 
             double[] points = getTranslatedPoints(node.getPoints(), 0, 0, hWidth, hHeight);
             vertices = toVec2(points);
@@ -118,10 +123,18 @@ public class ShapeResolver {
 
     private void translate(double[] points, double dx, double dy, double cX, double cY) {
         double offsetX = dx - cX;
-        double offsetY = dy - cY;
+        double offsetY = cY - dy/2 - cY;
+
+        double maxY = -Double.MAX_VALUE;
+        double minY = Double.MAX_VALUE;
+        for (int i = 0; i < points.length; i += 2) {
+            minY = Math.min(minY, points[i + 1]);
+            maxY = Math.max(maxY, points[i + 1]);
+        }
+
         for (int i = 0; i < points.length; i += 2) {
             points[i] += offsetX;
-            points[i + 1] = -(offsetY + points[i + 1]);
+            points[i + 1] = (offsetY + ((maxY - minY) - points[i + 1]));
         }
     }
 

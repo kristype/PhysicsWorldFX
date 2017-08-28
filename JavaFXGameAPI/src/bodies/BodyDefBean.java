@@ -4,6 +4,8 @@ import framework.SimulationType;
 import javafx.css.Styleable;
 import javafx.css.StyleableProperty;
 import javafx.css.StyleablePropertyFactory;
+import javafx.geometry.Point2D;
+import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyDef;
 import utilites.SimulationTypeToBodyTypeConverter;
 
@@ -11,6 +13,8 @@ public class BodyDefBean<S extends Styleable> extends Box2dBean<S> {
 
 	private final StyleableProperty<SimulationType> bodyType;
 	private final StyleableProperty<Number> linearDamping;
+	private final StyleableProperty<Number> linearVelocityX;
+	private final StyleableProperty<Number> linearVelocityY;
 	private final StyleableProperty<Number> angularDamping;
 	private final StyleableProperty<Number> gravityScale;
 	private final StyleableProperty<Boolean> allowSleep;
@@ -22,6 +26,8 @@ public class BodyDefBean<S extends Styleable> extends Box2dBean<S> {
 		super(owner, spf);
 		this.bodyType = createStyleableEnumProperty("bodyType", s -> bodyTypeProperty(), SimulationType.class, SimulationType.Full);
 		this.linearDamping = createStyleableNumberProperty("linearDamping", s -> linearDampingProperty(), 0.0);
+		this.linearVelocityX = createStyleableNumberProperty("linearVelocityX", s -> linearVelocityXProperty(), 0.0);
+		this.linearVelocityY = createStyleableNumberProperty("linearVelocityY", s -> linearVelocityYProperty(), 0.0);
 		this.angularDamping = createStyleableNumberProperty("angularDamping", s -> angularDampingProperty(), 0.0);
 		this.gravityScale = createStyleableNumberProperty("gravityScale", s -> gravityScaleProperty(), 1.0);
 		this.allowSleep = createStyleableBooleanProperty("allowSleep", s -> allowSleepProperty(), true);
@@ -34,6 +40,7 @@ public class BodyDefBean<S extends Styleable> extends Box2dBean<S> {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = converter.Convert(this.getBodyType());
 		bodyDef.linearDamping= this.getLinearDamping();
+		bodyDef.linearVelocity= new Vec2(getLinearVelocityX(), getLinearVelocityY());
 		bodyDef.angularDamping = this.getAngularDamping();
 		bodyDef.gravityScale= this.getGravityScale();
 		bodyDef.allowSleep = this.isAllowSleep();
@@ -61,6 +68,26 @@ public class BodyDefBean<S extends Styleable> extends Box2dBean<S> {
 	}
 	public final void setLinearDamping(Float linearDamping) {
 		linearDampingProperty().setValue(linearDamping);
+	}
+
+	public StyleableProperty<Number> linearVelocityXProperty() {
+		return linearVelocityX;
+	}
+	public final Float getLinearVelocityX() {
+		return linearVelocityXProperty().getValue().floatValue();
+	}
+	public final void setLinearVelocityX(Float linearVelocityX) {
+		linearVelocityXProperty().setValue(linearVelocityX);
+	}
+
+	public StyleableProperty<Number> linearVelocityYProperty() {
+		return linearVelocityY;
+	}
+	public final Float getLinearVelocityY() {
+		return linearVelocityYProperty().getValue().floatValue();
+	}
+	public final void setLinearVelocityY(Float linearVelocityY) {
+		linearVelocityYProperty().setValue(linearVelocityY);
 	}
 
 	public StyleableProperty<Number> angularDampingProperty() {

@@ -13,24 +13,17 @@ import javafx.scene.paint.Color;
 import shapes.PhysicsCircle;
 import shapes.PhysicsRectangle;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import static framework.PhysicsWorldHelper.*;
 
 public class Controller {
 
-    public PhysicsRectangle paddle;
-    public PhysicsCircle ball;
-    public PhysicsWorld world;
-    public PhysicsRectangle floor;
-    public Pane brickContainer;
-    public PhysicsRectangle wallLeft;
-    public PhysicsRectangle wallRight;
-
-
-    private boolean movePaddleLeft;
-    private boolean movePaddleRight;
+    @FXML private PhysicsRectangle paddle;
+    @FXML private PhysicsCircle ball;
+    @FXML private PhysicsWorld world;
+    @FXML private PhysicsRectangle floor;
+    @FXML private Pane brickContainer;
+    @FXML private PhysicsRectangle wallLeft;
+    @FXML private PhysicsRectangle wallRight;
 
     private boolean paddleIsResized = false;
 
@@ -54,22 +47,41 @@ public class Controller {
                 brickContainer.getChildren().add(brick);
             }
         }
-        //setOnTick
-        world.addEventHandler(PhysicsEvent.PHYSICS_STEP, event -> {
-            setPaddleSpeed(paddle);
-        });
+    }
 
-        //setOnCollision
-        //Forutsigbar rekkef;lge
-        world.addEventHandler(CollisionEvent.COLLISION, event -> {
-            handleCollision(event.getObject1(), event.getObject2());
-            handleCollision(event.getObject2(), event.getObject1());
-        });
+    @FXML
+    private void handleKeyUp(KeyEvent keyEvent) {
+        registerKeyReleased(keyEvent.getCode());
+    }
+
+    @FXML
+    private void handleKeyDown(KeyEvent keyEvent) {
+        registerKeyPressed(keyEvent.getCode());
+    }
+
+    @FXML
+    private void handleStep(PhysicsEvent physicsEvent) {
+        setPaddleSpeed(paddle);
+    }
+
+    private void setPaddleSpeed(PhysicsRectangle paddle) {
+        if (keyIsPressed(KeyCode.LEFT) && !physicsNodesTouching(wallLeft, paddle)){
+            paddle.setSpeed(-800f, 0f);
+        }else if (keyIsPressed(KeyCode.RIGHT) && !physicsNodesTouching(wallRight, paddle)){
+            paddle.setSpeed(800f, 0f);
+        }else{
+            paddle.setSpeed(0f, 0f);
+        }
+    }
+
+    @FXML
+    private void handleCollision(CollisionEvent collisionEvent) {
+        handleCollision(collisionEvent.getObject1(), collisionEvent.getObject2());
+        handleCollision(collisionEvent.getObject2(), collisionEvent.getObject1());
     }
 
     private void handleCollision(Node object1, Node object2) {
         if (object1 == ball){
-            //if (brickContainer.getChildrenUnmodifiable().contains(object2)){
             if (hasStyle(object2, "brick")){
                 world.remove(object2);
                 brickContainer.getChildren().remove(object2);
@@ -79,28 +91,6 @@ public class Controller {
                     paddleIsResized = true;
                 }
             }
-        }
-    }
-
-    private void setPaddleSpeed(PhysicsRectangle paddle) {
-        if (pressedKeys.contains(KeyCode.LEFT) && !physicsNodesOverlap(wallLeft, paddle)){
-            paddle.setSpeed(-800f, 0f);
-        }else if (pressedKeys.contains(KeyCode.RIGHT) && !physicsNodesOverlap(wallRight, paddle)){ //Overlap sjekk
-            paddle.setSpeed(800f, 0f);
-        }else{
-            paddle.setSpeed(0f, 0f);
-        }
-    }
-
-    private Collection<KeyCode> pressedKeys = new ArrayList<>();
-
-    public void handleKeyUp(KeyEvent keyEvent) {
-        pressedKeys.remove(keyEvent.getCode());
-    }
-
-    public void handleKeyDown(KeyEvent keyEvent) {
-        if (!pressedKeys.contains(keyEvent.getCode())){
-            pressedKeys.add(keyEvent.getCode());
         }
     }
 }

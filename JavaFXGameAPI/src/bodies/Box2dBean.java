@@ -5,6 +5,7 @@ import java.util.function.Function;
 import javafx.css.Styleable;
 import javafx.css.StyleableProperty;
 import javafx.css.StyleablePropertyFactory;
+import javafx.geometry.Point2D;
 
 public class Box2dBean<S extends Styleable> {
 
