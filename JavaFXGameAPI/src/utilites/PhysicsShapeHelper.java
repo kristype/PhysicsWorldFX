@@ -3,7 +3,6 @@ package utilites;
 import javafx.geometry.Point2D;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
-import sun.jvm.hotspot.gc_implementation.parallelScavenge.ParallelScavengeHeap;
 
 /**
  * Created by Kristian on 26/08/2017.

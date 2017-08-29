@@ -125,7 +125,7 @@ public class PhysicsPolygon extends Polygon implements BodyDefBeanOwner, Fixture
         bodyDefBean.setBodyType(bodyType);
     }
 
-    public StyleableProperty<Number> linearDampingProperty() {
+    public ObservableValue<Float> linearDampingProperty() {
         return bodyDefBean.linearDampingProperty();
     }
     public final Float getLinearDamping() {

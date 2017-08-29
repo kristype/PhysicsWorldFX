@@ -18,7 +18,7 @@ public class MenuController {
     @FXML private HBox root;
 
     private String[] levels = new String[]{"level1.fxml","level2.fxml","level3.fxml"};
-    private int currentLevel = 0;
+    private int currentLevel = 2;
 
     private Stage stage;
     private PhysicsGame game;
@@ -62,9 +62,10 @@ public class MenuController {
             stage.show();
 
             game.load(root);
+            game.enableDebug();
             game.startGame();
         }catch (IOException e){
-            System.out.println("Exception");
+            System.out.println(e.getMessage());
         }
     }
 

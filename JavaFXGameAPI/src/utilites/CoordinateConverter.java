@@ -19,7 +19,7 @@ public class CoordinateConverter {
 	
 	private Region root;
 
-	private IViewportTransform viewportTransform;
+	private OBBViewportTransform viewportTransform;
 	private final float physicsScale;
 
 	public CoordinateConverter(PhysicsWorld world, Region root) {
@@ -33,7 +33,7 @@ public class CoordinateConverter {
 		this.viewportTransform = obb;
 	}
 
-	public IViewportTransform getViewportTransform() {
+	public OBBViewportTransform getViewportTransform() {
 		return viewportTransform;
 	}
 
@@ -85,57 +85,14 @@ public class CoordinateConverter {
 
 		return new Point2D(xResult, yResult);
 	}
-
-    public Point2D scaleWorldToFx(double x, double y) {
-        Vec2 result = world2fxTemp1;
-        world2fxTemp2.set((float) x, (float) y);
-        viewportTransform.getWorldToScreen(new Vec2((float) x, (float) y), result);
-
-        return new Point2D( Math.abs(result.x), Math.abs(result.x));
-    }
 	
 	public Vec2 scaleVecToWorld(double x, double y){
-
 		return new Vec2((float)x / physicsScale,(float) y /physicsScale);
 	}
 
-	public Vec2 set2Point(Vec2 vec, double x, double y) {
-		Point2D result = fxVec2world(x, y);
-		vec.set((float) result.getX(), (float) result.getY());
-		return vec;
-	}
-	
-	public Vec2 set2Start(Vec2 vec, Line line) {
-		Point2D result = fxVec2world(line.getStartX(), line.getStartX());
-		vec.set((float) result.getX(), (float) result.getY());
-		return vec;
-	}
-	public Vec2 fromStart(Line line) {
-		return set2Start(new Vec2(), line);
-	}
-
-	public Vec2 set2End(Vec2 vec, Line line) {
-		Point2D result = fxVec2world(line.getStartX(), line.getStartY());
-		vec.set((float) result.getX(), (float) result.getY());
-		return vec;
-	}
-	public Vec2 fromEnd(Line line) {
-		return set2End(new Vec2(), line);
-	}
-	
-	public Vec2[] set2Points(Vec2[] vertices, double... points) {
-		for (int i = 0; i < points.length; i += 2) {
-			Point2D result = fxVec2world(points[i], points[i + 1]);
-			vertices[i / 2] = new Vec2((float) result.getX(), (float) result.getY());
-		}
-		return vertices;
-	}
-
-	public Vec2[] set2Points(Vec2[] vertices, List<? extends Number> points) {
-		for (int i = 0; i < points.size(); i += 2) {
-			Point2D result = fxVec2world(points.get(i).doubleValue(), points.get(i + 1).doubleValue());
-			vertices[i / 2] = new Vec2((float) result.getX(), (float) result.getY());
-		}
-		return vertices;
+	public Vec2 convertToPhysicsCoordinates(double x, double y){
+		Vec2 argWorld = new Vec2();
+		viewportTransform.getWorldToScreen(new Vec2((float)x, (float)y), argWorld);
+		return argWorld;
 	}
 }

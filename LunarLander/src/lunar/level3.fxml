@@ -5,10 +5,11 @@
 
 <?import shapes.PhysicsRectangle?>
 <?import javafx.scene.shape.Polygon?>
+<?import shapes.PhysicsPolyline?>
 <PhysicsWorld xmlns:fx="http://javafx.com/fxml" fx:controller="lunar.GameController" fx:id="world" prefWidth="640" prefHeight="480"
               gravityX="0" gravityY="-5" physicsScale="15" onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp"
               onPhysicsStep="#handleStep" >
-    <ShapeComposition bodyType="Full" fx:id="lander" layoutX="40" layoutY="40" >
+    <ShapeComposition bodyType="Full" fx:id="lander" layoutX="0" layoutY="20" linearVelocityX="10" >
         <PhysicsPolygon fx:id="leftThruster" layoutX="0" layoutY="18" restitution="0" density="0.2" friction="1" >
             <points>
                 <Double fx:value="0.0" />
@@ -74,8 +75,39 @@
         </Polygon>
 
     </ShapeComposition>
-    <PhysicsRectangle bodyType="NonMovable" layoutX="0" layoutY="400" width="300" height="10" fill="black" friction="1" restitution="0" />
-    <PhysicsRectangle bodyType="NonMovable" layoutX="300" layoutY="400" width="70" height="10" fill="darkblue" friction="1" restitution="0" fx:id="landingPad" />
-    <PhysicsRectangle bodyType="NonMovable" layoutX="370" layoutY="400" width="270" height="10" fill="black" friction="1" restitution="0" />
+
+    <PhysicsPolyline bodyType="NonMovable" layoutX="0" layoutY="470" restitution="0" >
+        <points>
+            <Double fx:value="0.0" />
+            <Double fx:value="0.0" />
+
+            <Double fx:value="100.0" />
+            <Double fx:value="-200.0" />
+
+            <Double fx:value="200.0" />
+            <Double fx:value="-250.0" />
+
+            <Double fx:value="400.0" />
+            <Double fx:value="-400.0" />
+
+            <Double fx:value="450.0" />
+            <Double fx:value="-200.0" />
+
+            <Double fx:value="500.0" />
+            <Double fx:value="0.0" />
+
+        </points>
+    </PhysicsPolyline>
+    <PhysicsRectangle bodyType="NonMovable" layoutX="500" layoutY="470" width="70" height="10" fill="darkblue" friction="1" restitution="0" fx:id="landingPad" />
+    <PhysicsPolyline bodyType="NonMovable" layoutX="570" layoutY="470" restitution="0" >
+        <points>
+            <Double fx:value="0.0" />
+            <Double fx:value="0.0" />
+
+            <Double fx:value="70.0" />
+            <Double fx:value="-20.0" />
+
+        </points>
+    </PhysicsPolyline>
 </PhysicsWorld>
 

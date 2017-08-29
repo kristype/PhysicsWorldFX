@@ -6,28 +6,29 @@ import framework.ChangedEvent;
 import framework.ChangedEventListener;
 import framework.SimulationType;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.css.CssMetaData;
 import javafx.css.Styleable;
 import javafx.css.StyleableProperty;
 import javafx.css.StyleablePropertyFactory;
 import javafx.geometry.Point2D;
-import javafx.scene.shape.Circle;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Polyline;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
-import utilites.CoordinateConverter;
 import utilites.PhysicsShapeHelper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class PhysicsCircle extends Circle implements BodyDefBeanOwner, FixtureDefBeanOwner, PhysicsShape {
+public class PhysicsPolyline extends Polyline implements BodyDefBeanOwner, FixtureDefBeanOwner, PhysicsShape {
 
     private Body body;
+
     private List<ChangedEventListener> sizeChangedListeners;
     private List<ChangedEventListener> layoutChangedListeners;
     private PhysicsShapeHelper helper;
-    private Vec2 localCenterOffset = new Vec2();
 
     public void setup(Body body, PhysicsShapeHelper helper){
         this.body = body;
@@ -76,25 +77,28 @@ public class PhysicsCircle extends Circle implements BodyDefBeanOwner, FixtureDe
         sizeChangedListeners.remove(listener);
     }
 
-    private static final StyleablePropertyFactory<PhysicsCircle> SPF = new StyleablePropertyFactory<>(Circle.getClassCssMetaData());
+    private Vec2 localCenterOffset = new Vec2(0, 0);
+
+    private static final StyleablePropertyFactory<PhysicsPolyline> SPF = new StyleablePropertyFactory<>(Polygon.getClassCssMetaData());
 
     public static  List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
         return SPF.getCssMetaData();
     }
 
-    private FixtureDefBean<PhysicsCircle> fixtureDefBean;
-    private BodyDefBean<PhysicsCircle> bodyDefBean;
+    private FixtureDefBean<PhysicsPolyline> fixtureDefBean;
+    private BodyDefBean<PhysicsPolyline> bodyDefBean;
 
-    public PhysicsCircle() {
-        getStyleClass().add("circleBody");
-        this.fixtureDefBean = new FixtureDefBean<PhysicsCircle>(this, SPF);
-        this.bodyDefBean = new BodyDefBean<PhysicsCircle>(this, SPF);
+    public PhysicsPolyline() {
+        getStyleClass().add("physicsPolyline");
+        this.fixtureDefBean = new FixtureDefBean<>(this, SPF);
+        this.bodyDefBean = new BodyDefBean<>(this, SPF);
+
         sizeChangedListeners = new ArrayList<>();
         layoutChangedListeners = new ArrayList<>();
         layoutXProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
         layoutYProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
         rotateProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
-        radiusProperty().addListener((observable, oldValue, newValue) -> raiseEvent(sizeChangedListeners));
+        getPoints().addListener((ListChangeListener<? super Double>) e -> raiseEvent(sizeChangedListeners));
     }
 
     @Override

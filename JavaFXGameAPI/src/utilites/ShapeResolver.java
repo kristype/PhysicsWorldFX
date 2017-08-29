@@ -1,22 +1,19 @@
 package utilites;
 
 import bodies.ShapeComposition;
-import com.sun.javafx.geom.Point2D;
+import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
+import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Fixture;
-import shapes.PhysicsCircle;
-import shapes.PhysicsPolygon;
-import shapes.PhysicsRectangle;
-import shapes.PhysicsShape;
+import shapes.*;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.lang.reflect.Array;
+import java.util.*;
 
 
 public class ShapeResolver {
@@ -32,25 +29,43 @@ public class ShapeResolver {
         Bounds bounds = node.getBoundsInLocal();
         Shape shape = null;
         if (node instanceof PhysicsRectangle) {
-
-            PolygonShape polygonShape = new PolygonShape();
-            float hWidth = (float) bounds.getWidth() / 2f;
-            float hHeight = (float) bounds.getHeight() / 2f;
-            Vec2 world = converter.scaleVecToWorld(hWidth, hHeight);
-            polygonShape.setAsBox(world.x, world.y);
-            shape = polygonShape;
-        }
-        else if (node instanceof PhysicsCircle) {
-
+            shape = mapRectangle((PhysicsRectangle) node, bounds);
+        } else if (node instanceof PhysicsCircle) {
             CircleShape circleShape = new CircleShape();
             double world = Math.abs(converter.fxScaleToWorld(bounds.getWidth()));
             circleShape.setRadius((float) world / 2f);
+            //circleShape.m_p.set(converter.scaleVecToWorld())
             shape = circleShape;
         } else if (node instanceof PhysicsPolygon) {
             shape = mapPolygon((PhysicsPolygon) node);
+        } else if (node instanceof PhysicsPolyline){
+            shape = mapPolyLine((PhysicsPolyline)node);
         }
+
         return shape;
 
+    }
+
+    private PolygonShape mapRectangle(PhysicsRectangle node, Bounds bounds) {
+        double w = bounds.getWidth();
+        double h = bounds.getHeight();
+        List<Double> corners = Arrays.asList(0d, h, w, h, w, 0d, 0d, 0d);
+        Vec2[] vertices = getVertrices(node, corners);
+
+        PolygonShape polygonShape = new PolygonShape();
+        polygonShape.set(vertices, vertices.length);
+        return polygonShape;
+    }
+
+    private Shape mapPolyLine(PhysicsPolyline node) {
+        Vec2[] vertices = getVertrices(node, node.getPoints());
+        ChainShape chainShape = new ChainShape();
+        if (vertices[0].equals(vertices[vertices.length - 1])) {
+            chainShape.createLoop(vertices, vertices.length);
+        } else {
+            chainShape.createChain(vertices, vertices.length);
+        }
+        return chainShape;
     }
 
     private Vec2[] toVec2(double...points) {
@@ -63,6 +78,14 @@ public class ShapeResolver {
 
     private Shape mapPolygon(PhysicsPolygon node) {
 
+        Vec2[] vertices = getVertrices(node, node.getPoints());
+
+        PolygonShape polygon = new PolygonShape();
+        polygon.set(vertices, vertices.length);
+        return polygon;
+    }
+
+    private <T extends Node & PhysicsShape> Vec2[] getVertrices(T node, List<Double> nodePoints) {
         Vec2[] vertices;
         if (node.getParent() instanceof ShapeComposition){
             ShapeComposition parent = (ShapeComposition) node.getParent();
@@ -71,7 +94,7 @@ public class ShapeResolver {
             double hWidth = bounds.getWidth() /2;
             double hHeight = bounds.getHeight() /2;
 
-            double[] points = getTranslatedPoints(node.getPoints(), node.getLayoutX(), node.getLayoutY(), hWidth, hHeight);
+            double[] points = getTranslatedPoints(nodePoints, node.getLayoutX(), node.getLayoutY(), hWidth, hHeight);
             vertices = toVec2(points);
 
             setLocalCenterOffsetForChild(node, vertices);
@@ -81,16 +104,13 @@ public class ShapeResolver {
             double hWidth = bounds.getWidth() /2;
             double hHeight = bounds.getHeight() /2;
 
-            double[] points = getTranslatedPoints(node.getPoints(), 0, 0, hWidth, hHeight);
+            double[] points = getTranslatedPoints(nodePoints, 0, 0, hWidth, hHeight);
             vertices = toVec2(points);
         }
-
-        PolygonShape polygon = new PolygonShape();
-        polygon.set(vertices, vertices.length);
-        return polygon;
+        return vertices;
     }
 
-    private void setLocalCenterOffsetForChild(PhysicsPolygon node, Vec2[] vertices) {
+    private void setLocalCenterOffsetForChild(PhysicsShape node, Vec2[] vertices) {
         float minX = Float.MAX_VALUE;
         float maxX = -Float.MAX_VALUE;
         float minY = Float.MAX_VALUE;
@@ -123,7 +143,7 @@ public class ShapeResolver {
 
     private void translate(double[] points, double dx, double dy, double cX, double cY) {
         double offsetX = dx - cX;
-        double offsetY = cY - dy/2 - cY;
+        double offsetY = cY - dy;
 
         double maxY = -Double.MAX_VALUE;
         double minY = Double.MAX_VALUE;
@@ -134,7 +154,7 @@ public class ShapeResolver {
 
         for (int i = 0; i < points.length; i += 2) {
             points[i] += offsetX;
-            points[i + 1] = (offsetY + ((maxY - minY) - points[i + 1]));
+            points[i + 1] = offsetY - points[i + 1] + minY;
         }
     }
 

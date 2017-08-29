@@ -1,6 +1,7 @@
 package bodies;
 
 import framework.SimulationType;
+import javafx.beans.value.ObservableValue;
 import javafx.css.Styleable;
 import javafx.css.StyleableProperty;
 import javafx.css.StyleablePropertyFactory;
@@ -25,7 +26,7 @@ public class BodyDefBean<S extends Styleable> extends Box2dBean<S> {
 	public BodyDefBean(S owner, StyleablePropertyFactory<S> spf) {
 		super(owner, spf);
 		this.bodyType = createStyleableEnumProperty("bodyType", s -> bodyTypeProperty(), SimulationType.class, SimulationType.Full);
-		this.linearDamping = createStyleableNumberProperty("linearDamping", s -> linearDampingProperty(), 0.0);
+		this.linearDamping = createStyleableNumberProperty("linearDamping", s -> ((BodyDefBean)s).linearDamping, 0.0);
 		this.linearVelocityX = createStyleableNumberProperty("linearVelocityX", s -> linearVelocityXProperty(), 0.0);
 		this.linearVelocityY = createStyleableNumberProperty("linearVelocityY", s -> linearVelocityYProperty(), 0.0);
 		this.angularDamping = createStyleableNumberProperty("angularDamping", s -> angularDampingProperty(), 0.0);
@@ -60,14 +61,14 @@ public class BodyDefBean<S extends Styleable> extends Box2dBean<S> {
 		bodyTypeProperty().setValue(bodyType);
 	}
 	
-	public StyleableProperty<Number> linearDampingProperty() {
-		return linearDamping;
+	public ObservableValue<Float> linearDampingProperty() {
+		return (ObservableValue<Float>) linearDamping;
 	}
 	public final Float getLinearDamping() {
-		return linearDampingProperty().getValue().floatValue();
+		return linearDamping.getValue().floatValue();
 	}
 	public final void setLinearDamping(Float linearDamping) {
-		linearDampingProperty().setValue(linearDamping);
+        this.linearDamping.setValue(linearDamping);
 	}
 
 	public StyleableProperty<Number> linearVelocityXProperty() {

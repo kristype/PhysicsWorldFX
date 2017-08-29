@@ -1,6 +1,7 @@
 package bodies;
 
 import framework.SimulationType;
+import javafx.beans.value.ObservableValue;
 import javafx.css.CssMetaData;
 import javafx.css.Styleable;
 import javafx.css.StyleableProperty;
@@ -68,7 +69,7 @@ public class ShapeComposition extends Pane implements BodyDefBeanOwner {
         bodyDefBean.setBodyType(bodyType);
     }
 
-    public StyleableProperty<Number> linearDampingProperty() {
+    public ObservableValue<Float> linearDampingProperty() {
         return bodyDefBean.linearDampingProperty();
     }
     public final Float getLinearDamping() {

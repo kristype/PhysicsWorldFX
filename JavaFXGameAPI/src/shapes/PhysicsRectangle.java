@@ -68,6 +68,11 @@ public class PhysicsRectangle extends Rectangle implements BodyDefBeanOwner, Fix
 	public void addLayoutChangedEventListener(ChangedEventListener listener)  {
 		layoutChangedListeners.add(listener);
 	}
+
+	public void setLocalCenterOffset(Vec2 vec) {
+		this.localCenterOffset = vec;
+	}
+
 	public void removeLayoutChangedListener(ChangedEventListener listener)   {
 		layoutChangedListeners.remove(listener);
 	}
@@ -127,7 +132,7 @@ public class PhysicsRectangle extends Rectangle implements BodyDefBeanOwner, Fix
 		bodyDefBean.setBodyType(bodyType);
 	}
 	
-	public StyleableProperty<Number> linearDampingProperty() {
+	public ObservableValue<Float> linearDampingProperty() {
 		return bodyDefBean.linearDampingProperty();
 	}
 	public final Float getLinearDamping() {

@@ -8,15 +8,19 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Region;
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
+import org.jbox2d.callbacks.DebugDraw;
 import org.jbox2d.collision.Manifold;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 import org.jbox2d.dynamics.contacts.Contact;
 import shapes.PhysicsShape;
 import utilites.*;
+import utilites.debug.DebugDrawJavaFX;
 
 import java.util.*;
 
@@ -48,10 +52,27 @@ public class PhysicsGame {
     private boolean isUpdating;
     private Action onLevelEndListener;
 
+    private DebugDrawJavaFX debugDraw;
+    private Canvas overlay;
+    private boolean drawDebug;
+
     public PhysicsGame(){
 	    animationTimerFactory = new AnimationTimerFactory();
         typeConverter = new SimulationTypeToBodyTypeConverter();
 	}
+
+	public void enableDebug(){
+        overlay = new Canvas();
+        overlay.setWidth(gameWorld.getPrefWidth());
+        overlay.setHeight(gameWorld.getPrefHeight());
+
+        debugDraw = new DebugDrawJavaFX(overlay, coordinateConverter.getViewportTransform());
+        debugDraw.setFlags(DebugDraw.e_shapeBit);
+
+        gameWorld.getChildren().add(overlay);
+        world.setDebugDraw(debugDraw);
+        drawDebug = true;
+    }
 
 	public void load(Region gameContainer){
 
@@ -69,6 +90,10 @@ public class PhysicsGame {
                     onLevelEndListener.action();
                 }
             });
+
+            coordinateConverter = new CoordinateConverter(this.gameWorld, this.gameContainer);
+            physicsShapeHelper = new PhysicsShapeHelper(coordinateConverter);
+            shapeResolver = new ShapeResolver(coordinateConverter);
 
 			world.setContactListener(new ContactListener() {
                 @Override
@@ -102,13 +127,8 @@ public class PhysicsGame {
 
                 }
             });
-
-            coordinateConverter = new CoordinateConverter(this.gameWorld, this.gameContainer);
-            physicsShapeHelper = new PhysicsShapeHelper(coordinateConverter);
-			shapeResolver = new ShapeResolver(coordinateConverter);
 			
             add(gameWorld);
-			
 			worldTimer = animationTimerFactory.CreateTimer(timeStep,t -> {
 
 				//Update physics
@@ -127,12 +147,21 @@ public class PhysicsGame {
                 if (handler != null){
                     handler.handle(new PhysicsEvent(PhysicsEvent.PHYSICS_STEP));
                 }
+                if (drawDebug)
+                    updateCanvas();
 			});
 
 			//instantiate the static class
 			PhysicsWorldHelper.setup(world, nodeBodyMap, nodeFixtureMap);
 		}
 	}
+
+    private void updateCanvas() {
+        GraphicsContext gc = overlay.getGraphicsContext2D();
+        Bounds bounds = overlay.getBoundsInLocal();
+        gc.clearRect(bounds.getMinX(), bounds.getMinX(), bounds.getWidth(), bounds.getHeight());
+        world.drawDebugData();
+    }
 
     private void handleQueuedPositionUpdates() {
         if (!layoutChangeQueue.isEmpty()) {
