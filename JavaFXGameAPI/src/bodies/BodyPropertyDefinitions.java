@@ -1,16 +1,14 @@
 package bodies;
 
 import framework.SimulationType;
-import javafx.beans.value.ObservableValue;
 import javafx.css.Styleable;
 import javafx.css.StyleableProperty;
 import javafx.css.StyleablePropertyFactory;
-import javafx.geometry.Point2D;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyDef;
 import utilites.SimulationTypeToBodyTypeConverter;
 
-public class BodyDefBean<S extends Styleable> extends Box2dBean<S> {
+public class BodyPropertyDefinitions<S extends Styleable> extends StyleFactory<S> {
 
 	private final StyleableProperty<SimulationType> bodyType;
 	private final StyleableProperty<Number> linearDamping;
@@ -23,10 +21,10 @@ public class BodyDefBean<S extends Styleable> extends Box2dBean<S> {
 	private final StyleableProperty<Boolean> fixedRotation;
 	private final StyleableProperty<Boolean> active;
 
-	public BodyDefBean(S owner, StyleablePropertyFactory<S> spf) {
+	public BodyPropertyDefinitions(S owner, StyleablePropertyFactory<S> spf) {
 		super(owner, spf);
 		this.bodyType = createStyleableEnumProperty("bodyType", s -> bodyTypeProperty(), SimulationType.class, SimulationType.Full);
-		this.linearDamping = createStyleableNumberProperty("linearDamping", s -> ((BodyDefBean)s).linearDamping, 0.0);
+		this.linearDamping = createStyleableNumberProperty("linearDamping", s -> linearDampingProperty(), 0.0);
 		this.linearVelocityX = createStyleableNumberProperty("linearVelocityX", s -> linearVelocityXProperty(), 0.0);
 		this.linearVelocityY = createStyleableNumberProperty("linearVelocityY", s -> linearVelocityYProperty(), 0.0);
 		this.angularDamping = createStyleableNumberProperty("angularDamping", s -> angularDampingProperty(), 0.0);
@@ -40,10 +38,9 @@ public class BodyDefBean<S extends Styleable> extends Box2dBean<S> {
 	public BodyDef createBodyDef(SimulationTypeToBodyTypeConverter converter) {
 		BodyDef bodyDef = new BodyDef();
 		bodyDef.type = converter.Convert(this.getBodyType());
-		bodyDef.linearDamping= this.getLinearDamping();
-		bodyDef.linearVelocity= new Vec2(getLinearVelocityX(), getLinearVelocityY());
-		bodyDef.angularDamping = this.getAngularDamping();
-		bodyDef.gravityScale= this.getGravityScale();
+		bodyDef.linearDamping= (float)this.getLinearDamping();
+		bodyDef.angularDamping = (float)this.getAngularDamping();
+		bodyDef.gravityScale= (float)this.getGravityScale();
 		bodyDef.allowSleep = this.isAllowSleep();
 		bodyDef.awake = this.isAwake();
 		bodyDef.fixedRotation = this.isFixedRotation();
@@ -61,56 +58,56 @@ public class BodyDefBean<S extends Styleable> extends Box2dBean<S> {
 		bodyTypeProperty().setValue(bodyType);
 	}
 	
-	public ObservableValue<Float> linearDampingProperty() {
-		return (ObservableValue<Float>) linearDamping;
+	public StyleableProperty<Number> linearDampingProperty() {
+	    return linearDamping;
 	}
-	public final Float getLinearDamping() {
-		return linearDamping.getValue().floatValue();
+	public final double getLinearDamping() {
+		return linearDamping.getValue().doubleValue();
 	}
-	public final void setLinearDamping(Float linearDamping) {
+	public final void setLinearDamping(double linearDamping) {
         this.linearDamping.setValue(linearDamping);
 	}
 
 	public StyleableProperty<Number> linearVelocityXProperty() {
 		return linearVelocityX;
 	}
-	public final Float getLinearVelocityX() {
-		return linearVelocityXProperty().getValue().floatValue();
+	public final double getLinearVelocityX() {
+		return linearVelocityXProperty().getValue().doubleValue();
 	}
-	public final void setLinearVelocityX(Float linearVelocityX) {
+	public final void setLinearVelocityX(double linearVelocityX) {
 		linearVelocityXProperty().setValue(linearVelocityX);
 	}
 
 	public StyleableProperty<Number> linearVelocityYProperty() {
 		return linearVelocityY;
 	}
-	public final Float getLinearVelocityY() {
-		return linearVelocityYProperty().getValue().floatValue();
+	public final double getLinearVelocityY() {
+		return linearVelocityYProperty().getValue().doubleValue();
 	}
-	public final void setLinearVelocityY(Float linearVelocityY) {
+	public final void setLinearVelocityY(double linearVelocityY) {
 		linearVelocityYProperty().setValue(linearVelocityY);
 	}
 
 	public StyleableProperty<Number> angularDampingProperty() {
 		return angularDamping;
 	}
-	public final Float getAngularDamping() {
-		return angularDampingProperty().getValue().floatValue();
+	public final double getAngularDamping() {
+		return angularDampingProperty().getValue().doubleValue();
 	}
-	public final void setAngularDamping(Float angularDamping) {
+	public final void setAngularDamping(double angularDamping) {
 		angularDampingProperty().setValue(angularDamping);
 	}
 	
 	public StyleableProperty<Number> gravityScaleProperty() {
 		return gravityScale;
 	}
-	public final Float getGravityScale() {
-		return gravityScaleProperty().getValue().floatValue();
+	public final double getGravityScale() {
+		return gravityScaleProperty().getValue().doubleValue();
 	}
-	public final void setGravityScale(Float gravityScale) {
+	public final void setGravityScale(double gravityScale) {
 		gravityScaleProperty().setValue(gravityScale);
 	}
-	
+
 	public StyleableProperty<Boolean> allowSleepProperty() {
 		return allowSleep;
 	}

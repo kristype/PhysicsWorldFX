@@ -1,6 +1,6 @@
 package framework;
 
-import com.sun.javafx.geom.Point2D;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;

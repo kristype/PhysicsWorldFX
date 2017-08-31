@@ -1,8 +1,8 @@
 package utilites;
 
 import bodies.ShapeComposition;
-import javafx.collections.ObservableList;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import org.jbox2d.collision.shapes.ChainShape;
 import org.jbox2d.collision.shapes.CircleShape;
@@ -12,16 +12,18 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Fixture;
 import shapes.*;
 
-import java.lang.reflect.Array;
+import javax.swing.text.Position;
 import java.util.*;
 
 
 public class ShapeResolver {
 
     private final CoordinateConverter converter;
+    private final PositionHelper positionHelper;
 
-    public ShapeResolver(CoordinateConverter converter) {
+    public ShapeResolver(CoordinateConverter converter, PositionHelper positionHelper) {
         this.converter = converter;
+        this.positionHelper = positionHelper;
     }
 
     public Shape ResolveShape(Node node) {
@@ -91,20 +93,18 @@ public class ShapeResolver {
             ShapeComposition parent = (ShapeComposition) node.getParent();
             Bounds bounds = parent.getBoundsInLocal();
 
-            double hWidth = bounds.getWidth() /2;
-            double hHeight = bounds.getHeight() /2;
+            Point2D center = positionHelper.getCenter2(bounds);
 
-            double[] points = getTranslatedPoints(nodePoints, node.getLayoutX(), node.getLayoutY(), hWidth, hHeight);
+            double[] points = getTranslatedPoints(nodePoints, node.getLayoutX(), node.getLayoutY(), center.getX(), center.getY(), node.getScaleX() * parent.getScaleX(), node.getScaleY() * parent.getScaleY(), node.getRotate());
             vertices = toVec2(points);
 
             setLocalCenterOffsetForChild(node, vertices);
 
         } else {
             Bounds bounds = node.getBoundsInLocal();
-            double hWidth = bounds.getWidth() /2;
-            double hHeight = bounds.getHeight() /2;
+            Point2D center = positionHelper.getCenter2(bounds);
 
-            double[] points = getTranslatedPoints(nodePoints, 0, 0, hWidth, hHeight);
+            double[] points = getTranslatedPoints(nodePoints, 0, 0, center.getX(), center.getY(), node.getScaleX(), node.getScaleY(), 0);
             vertices = toVec2(points);
         }
         return vertices;
@@ -124,39 +124,32 @@ public class ShapeResolver {
             maxY = Math.max(maxY, vertex.y);
         }
 
-        node.setLocalCenterOffset(new Vec2(getOffset(minX, maxX), getOffset(minY, maxY)));
+        node.setLocalCenterOffset(new Vec2(positionHelper.getCenter(minX, maxX), positionHelper.getCenter(minY, maxY)));
     }
 
-    private float getOffset(float min, float max) {
-        return min >= 0 ? min + (max - min) /2 : max + (min - max) / 2;
-    }
-
-    private double[] getTranslatedPoints(List<? extends Number> nodePoints, double dx, double dy, double cX, double cY
-    ) {
+    private double[] getTranslatedPoints(List<? extends Number> nodePoints, double dx, double dy, double cX, double cY,
+                                         double scaleX, double scaleY, double rotate) {
         double[] points = new double[nodePoints.size()];
         for (int i = 0; i < points.length; i++) {
             points[i] = nodePoints.get(i).doubleValue();
         }
-        translate(points, dx, dy, cX, cY);
+        translate(points, dx, dy, cX, cY, scaleX, scaleY, rotate);
         return points;
     }
 
-    private void translate(double[] points, double dx, double dy, double cX, double cY) {
-        double offsetX = dx - cX;
-        double offsetY = cY - dy;
-
-        double maxY = -Double.MAX_VALUE;
+    private void translate(double[] points, double dx, double dy, double cX, double cY, double scaleX, double scaleY, double rotate) {
         double minY = Double.MAX_VALUE;
+        double minX = Double.MAX_VALUE;
         for (int i = 0; i < points.length; i += 2) {
             minY = Math.min(minY, points[i + 1]);
-            maxY = Math.max(maxY, points[i + 1]);
+            minX = Math.min(minX, points[i]);
         }
 
-        for (int i = 0; i < points.length; i += 2) {
-            points[i] += offsetX;
-            points[i + 1] = offsetY - points[i + 1] + minY;
-        }
+        positionHelper.scaleAndRotate(points, scaleX, scaleY, rotate);
+        positionHelper.offsetPoints(points, dx, dy, cX, cY, minX, minY);
     }
+
+
 
     public void updateShape(Node node, Fixture fixture) {
 

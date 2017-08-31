@@ -7,27 +7,27 @@ import javafx.css.StyleableProperty;
 import javafx.css.StyleablePropertyFactory;
 import javafx.geometry.Point2D;
 
-public class Box2dBean<S extends Styleable> {
+public class StyleFactory<S extends Styleable> {
 
 	protected final static String CSS_PREFIX = "-bx-";
 	
 	private final S owner;
 	private final StyleablePropertyFactory<S> spf;
 	
-	protected Box2dBean(S owner, StyleablePropertyFactory<S> spf) {
+	public StyleFactory(S owner, StyleablePropertyFactory<S> spf) {
 		this.owner = owner;
 		this.spf = spf;
 	}
 	
-	protected StyleableProperty<Boolean> createStyleableBooleanProperty(String propertyName, Function<S, StyleableProperty<Boolean>> propFun, boolean initial) {
+	public StyleableProperty<Boolean> createStyleableBooleanProperty(String propertyName, Function<S, StyleableProperty<Boolean>> propFun, boolean initial) {
 		return spf.createStyleableBooleanProperty(owner, propertyName, CSS_PREFIX + propertyName, propFun, initial);
 	}
 	
-	protected StyleableProperty<Number> createStyleableNumberProperty(String propertyName, Function<S, StyleableProperty<Number>> propFun, Number initial) {
+	public StyleableProperty<Number> createStyleableNumberProperty(String propertyName, Function<S, StyleableProperty<Number>> propFun, Number initial) {
 		return spf.createStyleableNumberProperty(owner, propertyName, CSS_PREFIX + propertyName, propFun, initial);
 	}
 	
-	protected final <E extends Enum<E>> StyleableProperty<E> createStyleableEnumProperty(String propertyName, Function<S, StyleableProperty<E>> propFun, Class<E> enumClass, E initial) {
+	public final <E extends Enum<E>> StyleableProperty<E> createStyleableEnumProperty(String propertyName, Function<S, StyleableProperty<E>> propFun, Class<E> enumClass, E initial) {
 		return spf.createStyleableEnumProperty(owner, propertyName, CSS_PREFIX + propertyName, propFun, enumClass, initial);
 	}
 }

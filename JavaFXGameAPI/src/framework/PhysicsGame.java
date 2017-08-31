@@ -1,8 +1,10 @@
 package framework;
 
-import bodies.BodyDefBeanOwner;
+import bodies.BodyPropertiesOwner;
+import bodies.BodyPropertyDefinitions;
 import bodies.ShapeComposition;
 import javafx.animation.AnimationTimer;
+import javafx.css.Styleable;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -55,6 +57,7 @@ public class PhysicsGame {
     private DebugDrawJavaFX debugDraw;
     private Canvas overlay;
     private boolean drawDebug;
+    private PositionHelper positionHelper;
 
     public PhysicsGame(){
 	    animationTimerFactory = new AnimationTimerFactory();
@@ -80,7 +83,7 @@ public class PhysicsGame {
 	    this.gameWorld = findWorld(gameContainer);
 
 		if(this.gameWorld != null){
-			world = new World(new Vec2(gameWorld.getGravityX(), gameWorld.getGravityY()));
+			world = new World(new Vec2((float)gameWorld.getGravityX(), (float)gameWorld.getGravityY()));
 
 			gameWorld.addAddEventListener(e -> addQueue.add(e.getNode()));
 			gameWorld.addRemoveEventListener(e -> remove(e.getNode()));
@@ -91,9 +94,10 @@ public class PhysicsGame {
                 }
             });
 
+			positionHelper = new PositionHelper();
             coordinateConverter = new CoordinateConverter(this.gameWorld, this.gameContainer);
             physicsShapeHelper = new PhysicsShapeHelper(coordinateConverter);
-            shapeResolver = new ShapeResolver(coordinateConverter);
+            shapeResolver = new ShapeResolver(coordinateConverter, positionHelper);
 
 			world.setContactListener(new ContactListener() {
                 @Override
@@ -256,7 +260,7 @@ public class PhysicsGame {
 	}
 
     private void addFixtureToBody(PhysicsShape physicsShape, Node node, Body body) {
-        FixtureDef fixtureDef = physicsShape.getFixtureDefBean().createFixtureDef();
+        FixtureDef fixtureDef = physicsShape.getFixturePropertyDefinitions().createFixtureDef();
         fixtureDef.shape = shapeResolver.ResolveShape(node);
         Fixture fixture = body.createFixture(fixtureDef);
 
@@ -273,10 +277,14 @@ public class PhysicsGame {
         nodeFixtureMap.put(node, fixture);
     }
 
-    private Body createBody(BodyDefBeanOwner bodyDefOwner, Node node) {
-        BodyDef bodyDefinition = bodyDefOwner.getBodyDefBean().createBodyDef(typeConverter);
+    private Body createBody(BodyPropertiesOwner bodyDefOwner, Node node) {
+        BodyPropertyDefinitions<? extends Styleable> bodyPropertyDefinitions = bodyDefOwner.getBodyPropertyDefinitions();
+        BodyDef bodyDefinition = bodyPropertyDefinitions.createBodyDef(typeConverter);
         Point2D bodyPosition = getBodyPosition(node);
         bodyDefinition.position.set((float) bodyPosition.getX(), (float) bodyPosition.getY());
+        double rotate = node.getRotate();
+        bodyDefinition.angle = positionHelper.getBodyRadians(rotate);
+        bodyDefinition.linearVelocity = coordinateConverter.scaleVecToWorld(bodyPropertyDefinitions.getLinearVelocityX(), bodyPropertyDefinitions.getLinearVelocityY());
         Body body = world.createBody(bodyDefinition);
         this.nodeBodyMap.put(node, body);
         return body;
@@ -284,8 +292,8 @@ public class PhysicsGame {
 
     private Point2D getBodyPosition(Node node) {
         Bounds bounds = node.getBoundsInLocal();
-        double cx = (bounds.getMinX() + bounds.getMaxX()) / 2, cy = (bounds.getMinY() + bounds.getMaxY()) / 2;
-        double childX = node.getLayoutX() + cx, childY = node.getLayoutY() + cy;
+        Point2D center = positionHelper.getCenter2(bounds);
+        double childX = node.getLayoutX() + center.getX(), childY = node.getLayoutY() + center.getY();
         return coordinateConverter.fxPoint2world(childX, childY, node.getParent());
     }
 
@@ -304,13 +312,17 @@ public class PhysicsGame {
 			Bounds bounds = node.getBoundsInLocal();
 			
 			Point2D nodePosition = coordinateConverter.world2fx(body.getPosition().x, body.getPosition().y, node.getParent());
-			node.relocate(nodePosition.getX() - (bounds.getWidth()/2), nodePosition.getY() - (bounds.getHeight()/2));
+            Point2D center = positionHelper.getCenter2(bounds);
+			double x = nodePosition.getX() - center.getX();
+            double y = nodePosition.getY() - center.getY();
+            node.setLayoutX(x);
+            node.setLayoutY(y);
 			double fxAngle = (- body.getAngle() * 180 / Math.PI) % 360;
 			node.setRotate(fxAngle);
 		}
 	}
 
-    public void setOnLevelEnd(Action onLevelEndListener) {
+    public void setOnFinish(Action onLevelEndListener) {
         this.onLevelEndListener = onLevelEndListener;
     }
 }

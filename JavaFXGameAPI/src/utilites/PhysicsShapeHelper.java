@@ -4,9 +4,6 @@ import javafx.geometry.Point2D;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 
-/**
- * Created by Kristian on 26/08/2017.
- */
 public class PhysicsShapeHelper {
 
     private final CoordinateConverter coordinateConverter;
@@ -46,7 +43,7 @@ public class PhysicsShapeHelper {
     }
 
     private static void applyForce(Vec2 worldForce, Body body, Vec2 centerOffset) {
-        Vec2 worldCenter = body.getWorldCenter();
+        Vec2 worldCenter = body.getPosition();
 
         double radians = body.getAngle() % (2*Math.PI);
         float cos = (float) Math.cos(radians);

@@ -1,7 +1,6 @@
 package lunar;
 
 import framework.PhysicsGame;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -17,7 +16,7 @@ public class MenuController {
 
     @FXML private HBox root;
 
-    private String[] levels = new String[]{"level1.fxml","level2.fxml","level3.fxml"};
+    private String[] levels = {"level1.fxml","level2.fxml","level3.fxml"};
     private int currentLevel = 2;
 
     private Stage stage;
@@ -25,22 +24,21 @@ public class MenuController {
     private Scene menuScene;
 
     @FXML
-    private void startGame(ActionEvent actionEvent) {
+    private void startGame() {
         menuScene = root.getScene();
         stage = getStage(root);
         game = new PhysicsGame();
 
-
-        StartLevel(levels[currentLevel]);
-        game.setOnLevelEnd(() -> {
-           LoadNextLevel();
+        startLevel(levels[currentLevel]);
+        game.setOnFinish(() -> {
+           loadNextLevel();
         });
     }
 
-    private void LoadNextLevel() {
-        currentLevel ++;
+    private void loadNextLevel() {
+        currentLevel++;
         if (currentLevel < levels.length){
-            StartLevel(levels[currentLevel]);
+            startLevel(levels[currentLevel]);
         }else {
             currentLevel = 2;
             stage.setScene(menuScene);
@@ -48,7 +46,7 @@ public class MenuController {
         }
     }
 
-    private void StartLevel(String level) {
+    private void startLevel(String level) {
         try{
             FXMLLoader loader = new FXMLLoader(getClass().getResource(level));
             Region root = loader.load();

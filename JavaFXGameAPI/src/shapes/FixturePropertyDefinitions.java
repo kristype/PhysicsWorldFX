@@ -1,20 +1,20 @@
 package shapes;
 
-import bodies.Box2dBean;
+import bodies.StyleFactory;
 import org.jbox2d.dynamics.FixtureDef;
 
 import javafx.css.Styleable;
 import javafx.css.StyleableProperty;
 import javafx.css.StyleablePropertyFactory;
 
-public class FixtureDefBean<S extends Styleable> extends Box2dBean<S> {
+public class FixturePropertyDefinitions<S extends Styleable> extends StyleFactory<S> {
 
 	private final StyleableProperty<Number> density;
 	private final StyleableProperty<Number> friction;
 	private final StyleableProperty<Number> restitution;
 	private final StyleableProperty<Boolean> sensor;
 
-	public FixtureDefBean(S owner, StyleablePropertyFactory<S> spf) {
+	public FixturePropertyDefinitions(S owner, StyleablePropertyFactory<S> spf) {
 		super(owner, spf);
 		this.density = createStyleableNumberProperty("density", s -> densityProperty(), 0.0);
 		this.friction = createStyleableNumberProperty("friction", s -> frictionProperty(), 0.0);
@@ -24,9 +24,9 @@ public class FixtureDefBean<S extends Styleable> extends Box2dBean<S> {
 
 	public FixtureDef createFixtureDef() {
 		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.density = this.getDensity();
-		fixtureDef.friction = this.getFriction();
-		fixtureDef.restitution = this.getRestitution();
+		fixtureDef.density = (float)this.getDensity();
+		fixtureDef.friction = (float)this.getFriction();
+		fixtureDef.restitution = (float)this.getRestitution();
 		fixtureDef.isSensor = this.isSensor();
 		return fixtureDef;
 	}
@@ -34,30 +34,30 @@ public class FixtureDefBean<S extends Styleable> extends Box2dBean<S> {
 	public StyleableProperty<Number> densityProperty() {
 		return density;
 	}
-	public final Float getDensity() {
+	public final double getDensity() {
 		return densityProperty().getValue().floatValue();
 	}
-	public final void setDensity(Float density) {
+	public final void setDensity(double density) {
 		densityProperty().setValue(density);
 	}
 	
 	public StyleableProperty<Number> frictionProperty() {
 		return friction;
 	}
-	public final Float getFriction() {
+	public final double getFriction() {
 		return frictionProperty().getValue().floatValue();
 	}
-	public final void setFriction(Float friction) {
+	public final void setFriction(double friction) {
 		frictionProperty().setValue(friction);
 	}
 	
 	public StyleableProperty<Number> restitutionProperty() {
 		return restitution;
 	}
-	public final Float getRestitution() {
+	public final double getRestitution() {
 		return restitutionProperty().getValue().floatValue();
 	}
-	public final void setRestitution(Float restitution) {
+	public final void setRestitution(double restitution) {
 		restitutionProperty().setValue(restitution);
 	}
 

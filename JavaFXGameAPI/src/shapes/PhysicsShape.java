@@ -1,14 +1,13 @@
 package shapes;
 
-import bodies.BodyDefBeanOwner;
+import bodies.BodyPropertiesOwner;
 import framework.ChangedEventListener;
 import javafx.geometry.Point2D;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
-import utilites.CoordinateConverter;
 import utilites.PhysicsShapeHelper;
 
-public interface PhysicsShape extends BodyDefBeanOwner, FixtureDefBeanOwner {
+public interface PhysicsShape extends BodyPropertiesOwner, FixturePropertiesOwner {
      void setup(Body body, PhysicsShapeHelper helper);
 
      void applyForce(float vx, float vy);

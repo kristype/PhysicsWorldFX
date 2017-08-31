@@ -8,7 +8,7 @@
 <PhysicsWorld xmlns:fx="http://javafx.com/fxml" fx:controller="lunar.GameController" fx:id="world" prefWidth="640" prefHeight="480"
               gravityX="0" gravityY="-5" physicsScale="15" onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp"
               onPhysicsStep="#handleStep" >
-    <ShapeComposition bodyType="Full" fx:id="lander" layoutX="0" layoutY="0" linearVelocityX="10" >
+    <ShapeComposition bodyType="Full" fx:id="lander" layoutX="0" layoutY="0" linearVelocityX="150" >
         <PhysicsPolygon fx:id="leftThruster" layoutX="0" layoutY="18" restitution="0" density="0.2" friction="1" >
             <points>
                 <Double fx:value="0.0" />

@@ -24,7 +24,7 @@ public class CoordinateConverter {
 
 	public CoordinateConverter(PhysicsWorld world, Region root) {
 		this.root = root;
-		physicsScale = world.getPhysicsScale();
+		physicsScale = (float)world.getPhysicsScale();
 		OBBViewportTransform obb = new OBBViewportTransform();
 		obb.setTransform(new Mat22((float) physicsScale, 0.0f, 0.0f, (float) physicsScale));
 		obb.setCenter((float) (root.getWidth() / 2), (float) (root.getHeight() / 2));
