@@ -9,6 +9,7 @@ import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.World;
+import utilites.PositionHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,6 +21,8 @@ public class PhysicsWorldHelper {
 
     private static Collection<KeyCode> keysPressed;
     private static Collision collision;
+
+    private static PositionHelper positionHelper = new PositionHelper();
 
     static void setup(World world, Map<Node, Body> nodeBodyMap, Map<Node, Fixture> nodeFixtureMap){
         PhysicsWorldHelper.nodeBodyMap = nodeBodyMap;
@@ -35,6 +38,33 @@ public class PhysicsWorldHelper {
     public static Point2D getVectorForDegrees(double degrees, double force){
         double radian = Math.toRadians(degrees);
         return new Point2D((float)(Math.sin(radian) * force), (float)(Math.cos(radian) * force));
+    }
+
+    public static Point2D getRotatedLayoutPosition(Node node, double offsetX, int offsetY) {
+
+        double x = node.getLayoutX() + offsetX;
+        double y = node.getLayoutY() + offsetY;
+        double radian = Math.toRadians(node.getRotate());
+        Point2D center = positionHelper.getCenter2(node.getBoundsInLocal());
+        double cX = center.getX() + node.getLayoutX();
+        double cY = center.getY() + node.getLayoutY();
+
+        x -= cX;
+        y -= cY;
+
+        double cos = Math.cos(radian);
+        double sin = Math.sin(radian);
+
+        double rotatedX  = cos * x - sin * y;
+        double rotatedY = (sin * x) + cos * y;
+
+        x = rotatedX;
+        y = rotatedY;
+
+        x += cX;
+        y += cY;
+
+        return new Point2D(x, y);
     }
 
     public static boolean physicsNodesTouching(Node node1, Node node2){

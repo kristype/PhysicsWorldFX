@@ -20,19 +20,23 @@ public class BodyPropertyDefinitions<S extends Styleable> extends StyleFactory<S
 	private final StyleableProperty<Boolean> awake;
 	private final StyleableProperty<Boolean> fixedRotation;
 	private final StyleableProperty<Boolean> active;
+    private final StyleableProperty<Number> angularVelocity;
+    private final StyleableProperty<Boolean> bullet;
 
-	public BodyPropertyDefinitions(S owner, StyleablePropertyFactory<S> spf) {
+    public BodyPropertyDefinitions(S owner, StyleablePropertyFactory<S> spf) {
 		super(owner, spf);
 		this.bodyType = createStyleableEnumProperty("bodyType", s -> bodyTypeProperty(), SimulationType.class, SimulationType.Full);
 		this.linearDamping = createStyleableNumberProperty("linearDamping", s -> linearDampingProperty(), 0.0);
 		this.linearVelocityX = createStyleableNumberProperty("linearVelocityX", s -> linearVelocityXProperty(), 0.0);
 		this.linearVelocityY = createStyleableNumberProperty("linearVelocityY", s -> linearVelocityYProperty(), 0.0);
 		this.angularDamping = createStyleableNumberProperty("angularDamping", s -> angularDampingProperty(), 0.0);
+		this.angularVelocity = createStyleableNumberProperty("angularVelocity", s -> angularVelocityProperty(), 0.0);
 		this.gravityScale = createStyleableNumberProperty("gravityScale", s -> gravityScaleProperty(), 1.0);
 		this.allowSleep = createStyleableBooleanProperty("allowSleep", s -> allowSleepProperty(), true);
 		this.awake = createStyleableBooleanProperty("awake", s -> awakeProperty(), true);
 		this.fixedRotation = createStyleableBooleanProperty("fixedRotation", s -> fixedRotationProperty(), false);
 		this.active = createStyleableBooleanProperty("active", s -> activeProperty(), true);
+		this.bullet = createStyleableBooleanProperty("bullet", s -> bulletProperty(), false);
 	}
 
 	public BodyDef createBodyDef(SimulationTypeToBodyTypeConverter converter) {
@@ -45,7 +49,8 @@ public class BodyPropertyDefinitions<S extends Styleable> extends StyleFactory<S
 		bodyDef.awake = this.isAwake();
 		bodyDef.fixedRotation = this.isFixedRotation();
 		bodyDef.active = this.isActive();
-		return bodyDef;
+		bodyDef.bullet = this.isBullet();
+        return bodyDef;
 	}
 
 	public StyleableProperty<SimulationType> bodyTypeProperty() {
@@ -87,6 +92,16 @@ public class BodyPropertyDefinitions<S extends Styleable> extends StyleFactory<S
 	public final void setLinearVelocityY(double linearVelocityY) {
 		linearVelocityYProperty().setValue(linearVelocityY);
 	}
+
+    public StyleableProperty<Number> angularVelocityProperty() {
+        return angularVelocity;
+    }
+    public final double getAngularVelocity() {
+        return angularVelocityProperty().getValue().doubleValue();
+    }
+    public final void setAngularVelocity(double angularVelocity) {
+	    angularVelocityProperty().setValue(angularVelocity);
+    }
 
 	public StyleableProperty<Number> angularDampingProperty() {
 		return angularDamping;
@@ -147,4 +162,14 @@ public class BodyPropertyDefinitions<S extends Styleable> extends StyleFactory<S
 	public final void setActive(boolean active) {
 		activeProperty().setValue(active);
 	}
+
+    public StyleableProperty<Boolean> bulletProperty() {
+        return bullet;
+    }
+    public final boolean isBullet() {
+        return bulletProperty().getValue();
+    }
+    public final void setBullet(boolean bullet) {
+        bulletProperty().setValue(bullet);
+    }
 }

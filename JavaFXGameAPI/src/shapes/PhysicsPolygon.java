@@ -5,11 +5,9 @@ import bodies.BodyPropertiesOwner;
 import framework.ChangedEvent;
 import framework.ChangedEventListener;
 import framework.SimulationType;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
-import javafx.css.CssMetaData;
-import javafx.css.Styleable;
-import javafx.css.StyleableProperty;
-import javafx.css.StyleablePropertyFactory;
+import javafx.css.*;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Polygon;
 import org.jbox2d.common.Vec2;
@@ -26,6 +24,8 @@ public class PhysicsPolygon extends Polygon implements BodyPropertiesOwner, Fixt
 
     private List<ChangedEventListener> sizeChangedListeners;
     private List<ChangedEventListener> layoutChangedListeners;
+    private List<ChangedEventListener> velocityChangedListeners;
+
     private PhysicsShapeHelper helper;
 
     public void setup(Body body, PhysicsShapeHelper helper){
@@ -93,10 +93,14 @@ public class PhysicsPolygon extends Polygon implements BodyPropertiesOwner, Fixt
 
         sizeChangedListeners = new ArrayList<>();
         layoutChangedListeners = new ArrayList<>();
+        velocityChangedListeners = new ArrayList<>();
         layoutXProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
         layoutYProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
         rotateProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
         getPoints().addListener((ListChangeListener<? super Double>) e -> raiseEvent(sizeChangedListeners));
+        ((SimpleStyleableObjectProperty<Number>) angularVelocityProperty()).addListener((observable, oldValue, newValue) -> raiseEvent(velocityChangedListeners));
+        ((SimpleStyleableObjectProperty<Number>) linearVelocityXProperty()).addListener((observable, oldValue, newValue) -> raiseEvent(velocityChangedListeners));
+        ((SimpleStyleableObjectProperty<Number>) linearVelocityYProperty()).addListener((observable, oldValue, newValue) -> raiseEvent(velocityChangedListeners));
     }
 
     public FixturePropertyDefinitions<? extends Styleable> getFixturePropertyDefinitions() {
@@ -212,6 +216,10 @@ public class PhysicsPolygon extends Polygon implements BodyPropertiesOwner, Fixt
         bodyPropertyDefinitions.setActive(active);
     }
 
+    public void addVelocityChangedEventListener(ChangedEventListener eventListener) {
+        velocityChangedListeners.add(eventListener);
+    }
+
     public StyleableProperty<Number> densityProperty() {
         return this.fixturePropertyDefinitions.densityProperty();
     }
@@ -240,6 +248,26 @@ public class PhysicsPolygon extends Polygon implements BodyPropertiesOwner, Fixt
     }
     public final void setRestitution(double restitution) {
         this.fixturePropertyDefinitions.setRestitution(restitution);
+    }
+
+    public StyleableProperty<Number> angularVelocityProperty() {
+        return bodyPropertyDefinitions.angularVelocityProperty();
+    }
+    public double getAngularVelocity() {
+        return bodyPropertyDefinitions.getAngularVelocity();
+    }
+    public void setAngularVelocity(double angularVelocity) {
+        bodyPropertyDefinitions.setAngularVelocity(angularVelocity);
+    }
+
+    public StyleableProperty<Boolean> bulletProperty() {
+        return bodyPropertyDefinitions.bulletProperty();
+    }
+    public boolean isBullet() {
+        return bodyPropertyDefinitions.isBullet();
+    }
+    public void setBullet(boolean bullet) {
+        bodyPropertyDefinitions.setBullet(bullet);
     }
 
     public StyleableProperty<Boolean> sensorProperty() {

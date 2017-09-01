@@ -35,7 +35,7 @@ public class PositionHelper {
         double centerX = getCenter(minX, maxX);
         double centerY = getCenter(minY, maxY);
 
-        double radians = rotate > 180 ? Math.toRadians(rotate) : Math.toRadians(-rotate);
+        double radians = getBodyRadians(rotate);
         double cos = Math.cos(radians);
         double sin = Math.sin(radians);
 
@@ -59,7 +59,7 @@ public class PositionHelper {
         }
     }
 
-    public void offsetPoints(double[] points, double dx, double dy, double cX, double cY, double minX, double minY) {
+    public void offsetPoints(double[] points, double dx, double dy, double cX, double cY) {
         double offsetX = dx - cX;
         double offsetY = cY - dy;
 
@@ -71,5 +71,21 @@ public class PositionHelper {
 
     public float getBodyRadians(double rotate) {
         return rotate > 180 ? (float)Math.toRadians(rotate) : (float)Math.toRadians(-rotate);
+    }
+
+    public void scaleWithParent(double[] points, double parentScaleX, double parentScaleY, double cX, double cY) {
+        for (int i = 0; i < points.length; i += 2) {
+            //Subtract center
+            points[i]  -= cX;
+            points[i+1] -= cY;
+
+            //scale normalised coordinates
+            points[i] *= parentScaleX;
+            points[i+1] *= parentScaleY;
+
+            //Add center
+            points[i]  += cX;
+            points[i+1] += cY;
+        }
     }
 }

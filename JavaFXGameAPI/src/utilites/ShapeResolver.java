@@ -12,7 +12,6 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Fixture;
 import shapes.*;
 
-import javax.swing.text.Position;
 import java.util.*;
 
 
@@ -94,17 +93,28 @@ public class ShapeResolver {
             Bounds bounds = parent.getBoundsInLocal();
 
             Point2D center = positionHelper.getCenter2(bounds);
+            double cX = center.getX();
+            double cY = center.getY();
 
-            double[] points = getTranslatedPoints(nodePoints, node.getLayoutX(), node.getLayoutY(), center.getX(), center.getY(), node.getScaleX() * parent.getScaleX(), node.getScaleY() * parent.getScaleY(), node.getRotate());
+            double scaleX = node.getScaleX();
+            double scaleY = node.getScaleY();
+            double layoutX = node.getLayoutX() * parent.getScaleX();
+            double layoutY = node.getLayoutY() * parent.getScaleY();
+            double[] points = getTranslatedPoints(nodePoints, layoutX, layoutY, cX, cY, scaleX, scaleY,
+                                                  node.getRotate(), parent.getScaleX(), parent.getScaleY());
             vertices = toVec2(points);
 
             setLocalCenterOffsetForChild(node, vertices);
 
         } else {
             Bounds bounds = node.getBoundsInLocal();
-            Point2D center = positionHelper.getCenter2(bounds);
 
-            double[] points = getTranslatedPoints(nodePoints, 0, 0, center.getX(), center.getY(), node.getScaleX(), node.getScaleY(), 0);
+            Point2D center = positionHelper.getCenter2(bounds);
+            double cX = center.getX();
+            double cY = center.getY();
+
+            double[] points = getTranslatedPoints(nodePoints, 0, 0, cX, cY, node.getScaleX(), node.getScaleY(),
+                                                  0, 1, 1);
             vertices = toVec2(points);
         }
         return vertices;
@@ -128,27 +138,19 @@ public class ShapeResolver {
     }
 
     private double[] getTranslatedPoints(List<? extends Number> nodePoints, double dx, double dy, double cX, double cY,
-                                         double scaleX, double scaleY, double rotate) {
+                                         double scaleX, double scaleY, double rotate, double parentScaleX, double parentScaleY) {
         double[] points = new double[nodePoints.size()];
         for (int i = 0; i < points.length; i++) {
             points[i] = nodePoints.get(i).doubleValue();
         }
-        translate(points, dx, dy, cX, cY, scaleX, scaleY, rotate);
-        return points;
-    }
 
-    private void translate(double[] points, double dx, double dy, double cX, double cY, double scaleX, double scaleY, double rotate) {
-        double minY = Double.MAX_VALUE;
-        double minX = Double.MAX_VALUE;
-        for (int i = 0; i < points.length; i += 2) {
-            minY = Math.min(minY, points[i + 1]);
-            minX = Math.min(minX, points[i]);
-        }
+        positionHelper.scaleWithParent(points, parentScaleX, parentScaleY, cX, cY);
 
         positionHelper.scaleAndRotate(points, scaleX, scaleY, rotate);
-        positionHelper.offsetPoints(points, dx, dy, cX, cY, minX, minY);
-    }
+        positionHelper.offsetPoints(points, dx, dy, cX, cY);
 
+        return points;
+    }
 
 
     public void updateShape(Node node, Fixture fixture) {

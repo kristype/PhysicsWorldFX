@@ -39,7 +39,9 @@ public class PhysicsGame {
 
     private PhysicsWorld gameWorld;
 
-	private float timeStep = 1000f / 60f;
+    private final float fps = 60f;
+    private int currentStep = 0;
+    private float timeStep = 1000f / fps;
     private Map<Node, Body> nodeBodyMap = new HashMap<>();
 
     private Map<Node, Fixture> nodeFixtureMap = new HashMap<>();
@@ -65,16 +67,24 @@ public class PhysicsGame {
 	}
 
 	public void enableDebug(){
-        overlay = new Canvas();
-        overlay.setWidth(gameWorld.getPrefWidth());
-        overlay.setHeight(gameWorld.getPrefHeight());
+        if (overlay == null){
+            overlay = new Canvas();
+            overlay.setWidth(gameWorld.getPrefWidth());
+            overlay.setHeight(gameWorld.getPrefHeight());
 
-        debugDraw = new DebugDrawJavaFX(overlay, coordinateConverter.getViewportTransform());
-        debugDraw.setFlags(DebugDraw.e_shapeBit);
+            debugDraw = new DebugDrawJavaFX(overlay, coordinateConverter.getViewportTransform());
+            debugDraw.setFlags(DebugDraw.e_shapeBit);
 
-        gameWorld.getChildren().add(overlay);
-        world.setDebugDraw(debugDraw);
+            gameWorld.getChildren().add(overlay);
+            world.setDebugDraw(debugDraw);
+        }
+        overlay.setVisible(true);
         drawDebug = true;
+    }
+
+    public void disableDebug(){
+        overlay.setVisible(false);
+        drawDebug = false;
     }
 
 	public void load(Region gameContainer){
@@ -133,6 +143,7 @@ public class PhysicsGame {
             });
 			
             add(gameWorld);
+            currentStep = 0;
 			worldTimer = animationTimerFactory.CreateTimer(timeStep,t -> {
 
 				//Update physics
@@ -149,7 +160,8 @@ public class PhysicsGame {
 
                 EventHandler<? super PhysicsEvent> handler = gameWorld.getOnPhysicsStep();
                 if (handler != null){
-                    handler.handle(new PhysicsEvent(PhysicsEvent.PHYSICS_STEP));
+                    currentStep = currentStep == fps ? 1 : ++currentStep;
+                    handler.handle(new PhysicsEvent(PhysicsEvent.PHYSICS_STEP, currentStep, fps));
                 }
                 if (drawDebug)
                     updateCanvas();
@@ -285,20 +297,34 @@ public class PhysicsGame {
         double rotate = node.getRotate();
         bodyDefinition.angle = positionHelper.getBodyRadians(rotate);
         bodyDefinition.linearVelocity = coordinateConverter.scaleVecToWorld(bodyPropertyDefinitions.getLinearVelocityX(), bodyPropertyDefinitions.getLinearVelocityY());
+        bodyDefinition.angularVelocity = coordinateConverter.scaleVecToWorld(bodyPropertyDefinitions.getAngularVelocity());
+        bodyDefOwner.addVelocityChangedEventListener(onVelocityChanged());
         Body body = world.createBody(bodyDefinition);
         this.nodeBodyMap.put(node, body);
         return body;
     }
 
+    private ChangedEventListener onVelocityChanged() {
+        return e ->{
+            if (!isUpdating){
+                BodyPropertiesOwner eNode = (BodyPropertiesOwner)e.getNode();
+                Body body = nodeBodyMap.get(e.getNode());
+                //body.setLinearVelocity(coordinateConverter.scaleVecToWorld(eNode.getLinearVelocityX(), eNode.getLinearVelocityY()));
+                body.setAngularVelocity(coordinateConverter.scaleVecToWorld(eNode.getAngularVelocity()));
+            }
+        };
+    }
+
     private Point2D getBodyPosition(Node node) {
         Bounds bounds = node.getBoundsInLocal();
         Point2D center = positionHelper.getCenter2(bounds);
-        double childX = node.getLayoutX() + center.getX(), childY = node.getLayoutY() + center.getY();
+        double childX = center.getX() + node.getLayoutX();
+        double childY = center.getY() + node.getLayoutY();
         return coordinateConverter.fxPoint2world(childX, childY, node.getParent());
     }
 
     public void startGame(){
-        worldTimer.start();
+	    worldTimer.start();
     }
 
     public void stopGame(){
@@ -313,8 +339,8 @@ public class PhysicsGame {
 			
 			Point2D nodePosition = coordinateConverter.world2fx(body.getPosition().x, body.getPosition().y, node.getParent());
             Point2D center = positionHelper.getCenter2(bounds);
-			double x = nodePosition.getX() - center.getX();
-            double y = nodePosition.getY() - center.getY();
+			double x = nodePosition.getX() - (center.getX());
+            double y = nodePosition.getY() - (center.getY());
             node.setLayoutX(x);
             node.setLayoutY(y);
 			double fxAngle = (- body.getAngle() * 180 / Math.PI) % 360;

@@ -1,16 +1,18 @@
 package bodies;
 
+import framework.ChangedEvent;
+import framework.ChangedEventListener;
 import framework.SimulationType;
-import javafx.css.CssMetaData;
-import javafx.css.Styleable;
-import javafx.css.StyleableProperty;
-import javafx.css.StyleablePropertyFactory;
+import javafx.beans.value.ObservableValue;
+import javafx.css.*;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import utilites.PhysicsShapeHelper;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ShapeComposition extends Pane implements BodyPropertiesOwner {
@@ -18,10 +20,15 @@ public class ShapeComposition extends Pane implements BodyPropertiesOwner {
     private final BodyPropertyDefinitions bodyPropertyDefinitions;
     private Body body;
     private PhysicsShapeHelper helper;
+    private List<ChangedEventListener> velocityChangedListeners;
 
     public ShapeComposition() {
         getStyleClass().add("shapeComposition");
         this.bodyPropertyDefinitions = new BodyPropertyDefinitions<>(this, SPF);
+        velocityChangedListeners = new ArrayList<>();
+        ((SimpleStyleableObjectProperty<Number>) angularVelocityProperty()).addListener((observable, oldValue, newValue) -> raiseEvent(velocityChangedListeners));
+        ((SimpleStyleableObjectProperty<Number>) linearVelocityXProperty()).addListener((observable, oldValue, newValue) -> raiseEvent(velocityChangedListeners));
+        ((SimpleStyleableObjectProperty<Number>) linearVelocityYProperty()).addListener((observable, oldValue, newValue) -> raiseEvent(velocityChangedListeners));
     }
 
     public void setup(Body body, PhysicsShapeHelper helper){
@@ -33,12 +40,24 @@ public class ShapeComposition extends Pane implements BodyPropertiesOwner {
         return helper.getSpeed(body);
     }
 
+    private void raiseEvent(List<ChangedEventListener> eventListeners){
+        ChangedEvent event = new ChangedEvent(this);
+        Iterator i = eventListeners.iterator();
+        while(i.hasNext())  {
+            ((ChangedEventListener) i.next()).handleChangedEvent(event);
+        }
+    }
+
     public void setSpeed(float vx, float vy) {
         helper.setSpeed(body, vx, vy);
     }
 
     public void applyForce(float vx, float vy) {
         helper.applyForce(body, new Vec2(), vx, vy);
+    }
+
+    public void applyForceUp(float vx, float vy) {
+        helper.applyForceUp(body, new Vec2(), vx, vy);
     }
 
     public BodyPropertyDefinitions<? extends Styleable> getBodyPropertyDefinitions() {
@@ -154,5 +173,30 @@ public class ShapeComposition extends Pane implements BodyPropertiesOwner {
     }
     public final void setActive(boolean active) {
         bodyPropertyDefinitions.setActive(active);
+    }
+
+    public StyleableProperty<Number> angularVelocityProperty() {
+        return bodyPropertyDefinitions.angularVelocityProperty();
+    }
+
+    public double getAngularVelocity() {
+        return bodyPropertyDefinitions.getAngularVelocity();
+    }
+    public void setAngularVelocity(double angularVelocity) {
+        bodyPropertyDefinitions.setAngularVelocity(angularVelocity);
+    }
+
+    public void addVelocityChangedEventListener(ChangedEventListener eventListener) {
+        velocityChangedListeners.add(eventListener);
+    }
+
+    public StyleableProperty<Boolean> bulletProperty() {
+        return bodyPropertyDefinitions.bulletProperty();
+    }
+    public boolean isBullet() {
+        return bodyPropertyDefinitions.isBullet();
+    }
+    public void setBullet(boolean bullet) {
+        bodyPropertyDefinitions.setBullet(bullet);
     }
 }

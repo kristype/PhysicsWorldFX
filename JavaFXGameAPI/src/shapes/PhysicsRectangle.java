@@ -9,14 +9,12 @@ import bodies.BodyPropertiesOwner;
 import framework.ChangedEvent;
 import framework.ChangedEventListener;
 import framework.SimulationType;
+import javafx.beans.value.ObservableValue;
+import javafx.css.*;
 import javafx.geometry.Point2D;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 
-import javafx.css.CssMetaData;
-import javafx.css.Styleable;
-import javafx.css.StyleableProperty;
-import javafx.css.StyleablePropertyFactory;
 import javafx.scene.shape.Rectangle;
 import utilites.PhysicsShapeHelper;
 
@@ -26,6 +24,7 @@ public class PhysicsRectangle extends Rectangle implements BodyPropertiesOwner, 
 
 	private List<ChangedEventListener> sizeChangedListeners;
 	private List<ChangedEventListener> layoutChangedListeners;
+	private List<ChangedEventListener> velocityChangedListeners;
 	private PhysicsShapeHelper helper;
 	private Vec2 localCenterOffset = new Vec2();
 
@@ -97,11 +96,15 @@ public class PhysicsRectangle extends Rectangle implements BodyPropertiesOwner, 
 
 		sizeChangedListeners = new ArrayList<>();
 		layoutChangedListeners = new ArrayList<>();
+		velocityChangedListeners = new ArrayList<>();
 		layoutXProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
 		layoutYProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
 		rotateProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
 		widthProperty().addListener((observable, oldValue, newValue) -> raiseEvent(sizeChangedListeners));
 		heightProperty().addListener((observable, oldValue, newValue) -> raiseEvent(sizeChangedListeners));
+        ((SimpleStyleableObjectProperty<Number>) angularVelocityProperty()).addListener((observable, oldValue, newValue) -> raiseEvent(velocityChangedListeners));
+        ((SimpleStyleableObjectProperty<Number>) linearVelocityXProperty()).addListener((observable, oldValue, newValue) -> raiseEvent(velocityChangedListeners));
+        ((SimpleStyleableObjectProperty<Number>) linearVelocityYProperty()).addListener((observable, oldValue, newValue) -> raiseEvent(velocityChangedListeners));
 	}
 	
 	public FixturePropertyDefinitions<? extends Styleable> getFixturePropertyDefinitions() {
@@ -217,6 +220,20 @@ public class PhysicsRectangle extends Rectangle implements BodyPropertiesOwner, 
 		bodyPropertyDefinitions.setActive(active);
 	}
 
+    public void addVelocityChangedEventListener(ChangedEventListener eventListener) {
+        velocityChangedListeners.add(eventListener);
+    }
+
+    public StyleableProperty<Number> angularVelocityProperty() {
+		return bodyPropertyDefinitions.angularVelocityProperty();
+	}
+	public double getAngularVelocity() {
+		return bodyPropertyDefinitions.getAngularVelocity();
+	}
+	public void setAngularVelocity(double angularVelocity) {
+		bodyPropertyDefinitions.setAngularVelocity(angularVelocity);
+	}
+
 	public StyleableProperty<Number> densityProperty() {
 		return this.fixturePropertyDefinitions.densityProperty();
 	}
@@ -256,4 +273,14 @@ public class PhysicsRectangle extends Rectangle implements BodyPropertiesOwner, 
 	public final void setSensor(boolean sensor) {
 		this.fixturePropertyDefinitions.setSensor(sensor);
 	}
+
+    public StyleableProperty<Boolean> bulletProperty() {
+        return bodyPropertyDefinitions.bulletProperty();
+    }
+    public boolean isBullet() {
+        return bodyPropertyDefinitions.isBullet();
+    }
+    public void setBullet(boolean bullet) {
+        bodyPropertyDefinitions.setBullet(bullet);
+    }
 }

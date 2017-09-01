@@ -90,6 +90,10 @@ public class CoordinateConverter {
 		return new Vec2((float)x / physicsScale,(float) y /physicsScale);
 	}
 
+	public float scaleVecToWorld(double x){
+		return (float)x / physicsScale;
+	}
+
 	public Vec2 convertToPhysicsCoordinates(double x, double y){
 		Vec2 argWorld = new Vec2();
 		viewportTransform.getWorldToScreen(new Vec2((float)x, (float)y), argWorld);

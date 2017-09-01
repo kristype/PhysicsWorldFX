@@ -5,10 +5,8 @@ import bodies.BodyPropertiesOwner;
 import framework.ChangedEvent;
 import framework.ChangedEventListener;
 import framework.SimulationType;
-import javafx.css.CssMetaData;
-import javafx.css.Styleable;
-import javafx.css.StyleableProperty;
-import javafx.css.StyleablePropertyFactory;
+import javafx.beans.value.ObservableValue;
+import javafx.css.*;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Circle;
 import org.jbox2d.common.Vec2;
@@ -24,6 +22,7 @@ public class PhysicsCircle extends Circle implements BodyPropertiesOwner, Fixtur
     private Body body;
     private List<ChangedEventListener> sizeChangedListeners;
     private List<ChangedEventListener> layoutChangedListeners;
+    private List<ChangedEventListener> velocityChangedListeners;
     private PhysicsShapeHelper helper;
     private Vec2 localCenterOffset = new Vec2();
 
@@ -74,6 +73,12 @@ public class PhysicsCircle extends Circle implements BodyPropertiesOwner, Fixtur
         sizeChangedListeners.remove(listener);
     }
 
+
+    @Override
+    public void addVelocityChangedEventListener(ChangedEventListener eventListener) {
+        velocityChangedListeners.add(eventListener);
+    }
+
     private static final StyleablePropertyFactory<PhysicsCircle> SPF = new StyleablePropertyFactory<>(Circle.getClassCssMetaData());
 
     public static  List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
@@ -89,10 +94,14 @@ public class PhysicsCircle extends Circle implements BodyPropertiesOwner, Fixtur
         this.bodyPropertyDefinitions = new BodyPropertyDefinitions<PhysicsCircle>(this, SPF);
         sizeChangedListeners = new ArrayList<>();
         layoutChangedListeners = new ArrayList<>();
+        velocityChangedListeners = new ArrayList<>();
         layoutXProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
         layoutYProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
         rotateProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
         radiusProperty().addListener((observable, oldValue, newValue) -> raiseEvent(sizeChangedListeners));
+        ((SimpleStyleableObjectProperty<Number>) angularVelocityProperty()).addListener((observable, oldValue, newValue) -> raiseEvent(velocityChangedListeners));
+        ((SimpleStyleableObjectProperty<Number>) linearVelocityXProperty()).addListener((observable, oldValue, newValue) -> raiseEvent(velocityChangedListeners));
+        ((SimpleStyleableObjectProperty<Number>) linearVelocityYProperty()).addListener((observable, oldValue, newValue) -> raiseEvent(velocityChangedListeners));
     }
 
     public FixturePropertyDefinitions<? extends Styleable> getFixturePropertyDefinitions() {
@@ -208,6 +217,16 @@ public class PhysicsCircle extends Circle implements BodyPropertiesOwner, Fixtur
         bodyPropertyDefinitions.setActive(active);
     }
 
+    public StyleableProperty<Boolean> bulletProperty() {
+        return bodyPropertyDefinitions.bulletProperty();
+    }
+    public boolean isBullet() {
+        return bodyPropertyDefinitions.isBullet();
+    }
+    public void setBullet(boolean bullet) {
+        bodyPropertyDefinitions.setBullet(bullet);
+    }
+
     public StyleableProperty<Number> densityProperty() {
         return this.fixturePropertyDefinitions.densityProperty();
     }
@@ -246,6 +265,16 @@ public class PhysicsCircle extends Circle implements BodyPropertiesOwner, Fixtur
     }
     public final void setSensor(boolean sensor) {
         this.fixturePropertyDefinitions.setSensor(sensor);
+    }
+
+    public StyleableProperty<Number> angularVelocityProperty() {
+        return bodyPropertyDefinitions.angularVelocityProperty();
+    }
+    public double getAngularVelocity() {
+        return bodyPropertyDefinitions.getAngularVelocity();
+    }
+    public void setAngularVelocity(double angularVelocity) {
+        bodyPropertyDefinitions.setAngularVelocity(angularVelocity);
     }
 
     public void setLocalCenterOffset(Vec2 vec) {

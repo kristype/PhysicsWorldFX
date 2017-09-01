@@ -25,7 +25,7 @@ public class AsteroidsGame extends Application {
 
         PhysicsGame game = new PhysicsGame();
         game.load(root);
-        game.enableDebug();
+        //game.enableDebug();
         game.startGame();
     }
 
