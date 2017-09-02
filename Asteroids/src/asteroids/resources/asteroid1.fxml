@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import framework.nodes.PhysicsPolygon?>
+<?import java.lang.Double?>
+<?import java.lang.String?>
+
+<PhysicsPolygon density="1.0" friction="1.0" restitution="0.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+<points>
+    <Double fx:value="10.0" />
+    <Double fx:value="30.0" />
+    <Double fx:value="20.0" />
+    <Double fx:value="40.0" />
+    <Double fx:value="35.0" />
+    <Double fx:value="35.0" />
+    <Double fx:value="35.0" />
+    <Double fx:value="15.0" />
+    <Double fx:value="25.0" />
+    <Double fx:value="0.0" />
+    <Double fx:value="15.0" />
+    <Double fx:value="0.0" />
+    <Double fx:value="5.0" />
+    <Double fx:value="10.0" />
+</points>
+   <styleClass>
+      <String fx:value="asteroid" />
+      <String fx:value="small" />
+   </styleClass>
+</PhysicsPolygon>

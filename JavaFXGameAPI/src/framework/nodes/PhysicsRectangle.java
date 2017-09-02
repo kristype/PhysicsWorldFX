@@ -1,4 +1,4 @@
-package shapes;
+package framework.nodes;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,13 +9,15 @@ import bodies.BodyPropertiesOwner;
 import framework.ChangedEvent;
 import framework.ChangedEventListener;
 import framework.SimulationType;
-import javafx.beans.value.ObservableValue;
 import javafx.css.*;
 import javafx.geometry.Point2D;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 
 import javafx.scene.shape.Rectangle;
+import shapes.FixturePropertiesOwner;
+import shapes.FixturePropertyDefinitions;
+import shapes.PhysicsShape;
 import utilites.PhysicsShapeHelper;
 
 public class PhysicsRectangle extends Rectangle implements BodyPropertiesOwner, FixturePropertiesOwner, PhysicsShape {

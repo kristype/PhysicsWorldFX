@@ -2,8 +2,9 @@ package framework;
 
 import bodies.BodyPropertiesOwner;
 import bodies.BodyPropertyDefinitions;
-import bodies.ShapeComposition;
+import framework.nodes.ShapeComposition;
 import javafx.animation.AnimationTimer;
+import javafx.collections.ListChangeListener;
 import javafx.css.Styleable;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
@@ -21,6 +22,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 import org.jbox2d.dynamics.contacts.Contact;
 import shapes.PhysicsShape;
+import shapes.PhysicsShapeWithLayout;
 import utilites.*;
 import utilites.debug.DebugDrawJavaFX;
 
@@ -46,6 +48,7 @@ public class PhysicsGame {
 
     private Map<Node, Fixture> nodeFixtureMap = new HashMap<>();
     private Collection<Node> addQueue = new ArrayList<>();
+
     private Collection<Node> layoutChangeQueue = new ArrayList<>();
     private Collection<Node> sizeChangeQueue = new ArrayList<>();
 
@@ -91,10 +94,11 @@ public class PhysicsGame {
 
 	    this.gameContainer = gameContainer;
 	    this.gameWorld = findWorld(gameContainer);
+/*	    this.gameWorld.setPrefHeight(gameContainer.getPrefHeight());
+	    this.gameWorld.setPrefWidth(gameContainer.getPrefWidth()); Should be adjusted by the user*/
 
 		if(this.gameWorld != null){
 			world = new World(new Vec2((float)gameWorld.getGravityX(), (float)gameWorld.getGravityY()));
-
 			gameWorld.addAddEventListener(e -> addQueue.add(e.getNode()));
 			gameWorld.addRemoveEventListener(e -> remove(e.getNode()));
 			gameWorld.setOnLevelEnd(() -> {
@@ -105,30 +109,19 @@ public class PhysicsGame {
             });
 
 			positionHelper = new PositionHelper();
-            coordinateConverter = new CoordinateConverter(this.gameWorld, this.gameContainer);
+            coordinateConverter = new CoordinateConverter(this.gameWorld);
             physicsShapeHelper = new PhysicsShapeHelper(coordinateConverter);
             shapeResolver = new ShapeResolver(coordinateConverter, positionHelper);
 
 			world.setContactListener(new ContactListener() {
                 @Override
                 public void beginContact(Contact contact) {
-
-                    Body body1 = contact.getFixtureA().getBody();
-                    Body body2 = contact.getFixtureB().getBody();
-                    Optional<Map.Entry<Node, Body>> node1 = nodeBodyMap.entrySet().stream().filter(e -> e.getValue() == body1).findFirst();
-                    Optional<Map.Entry<Node, Body>> node2 = nodeBodyMap.entrySet().stream().filter(e -> e.getValue() == body2).findFirst();
-
-                    if (node1.isPresent() && node2.isPresent()) {
-                        EventHandler<? super CollisionEvent> handler = gameWorld.getOnCollision();
-                        if (handler != null){
-                            handler.handle(new CollisionEvent(CollisionEvent.COLLISION, node1.get().getKey(), node2.get().getKey()));
-                        }
-                    }
+                    handleContact(contact, PhysicsGame.this.gameWorld.getOnBeginCollision());
                 }
 
                 @Override
                 public void endContact(Contact contact) {
-
+                    handleContact(contact, PhysicsGame.this.gameWorld.getOnEndCollision());
                 }
 
                 @Override
@@ -146,17 +139,17 @@ public class PhysicsGame {
             currentStep = 0;
 			worldTimer = animationTimerFactory.CreateTimer(timeStep,t -> {
 
-				//Update physics
-			    world.step(t / 1000f, 8, 3);
-                //Update render positions
-                isUpdating = true;
-			    updateNodePositions();
-			    isUpdating = false;
-
                 destroyQueuedBodies();
                 addQueuedNodes();
                 handleQueuedPositionUpdates();
                 handleQueuedSizeUpdates();
+
+				//Update physics
+			    world.step(t / 1000f, 8, 3);
+                //Update render positions
+                isUpdating = true;
+			    updateNodeData();
+			    isUpdating = false;
 
                 EventHandler<? super PhysicsEvent> handler = gameWorld.getOnPhysicsStep();
                 if (handler != null){
@@ -168,9 +161,39 @@ public class PhysicsGame {
 			});
 
 			//instantiate the static class
-			PhysicsWorldHelper.setup(world, nodeBodyMap, nodeFixtureMap);
+			PhysicsWorldFunctions.setup(world, nodeBodyMap, nodeFixtureMap);
 		}
 	}
+
+    private final ListChangeListener<Node> listChangeListener = c -> {
+        if (c.getAddedSubList() != null) {
+            for (Node node : c.getAddedSubList()) {
+                if (nodeBodyMap.containsKey(node) || nodeFixtureMap.containsKey(node)) {
+                    addQueue.add(node);
+                }
+            }
+        }
+        if (c.getRemoved() != null) {
+            for (Node node : c.getRemoved()) {
+                if (nodeBodyMap.containsKey(node) || nodeFixtureMap.containsKey(node)) {
+                    remove(node);
+                }
+            }
+        }
+    };
+
+    private void handleContact(Contact contact, EventHandler<? super CollisionEvent> handler) {
+        Body body1 = contact.getFixtureA().getBody();
+        Body body2 = contact.getFixtureB().getBody();
+        Optional<Map.Entry<Node, Body>> node1 = nodeBodyMap.entrySet().stream().filter(e -> e.getValue() == body1).findFirst();
+        Optional<Map.Entry<Node, Body>> node2 = nodeBodyMap.entrySet().stream().filter(e -> e.getValue() == body2).findFirst();
+
+        if (node1.isPresent() && node2.isPresent()) {
+            if (handler != null){
+                handler.handle(new CollisionEvent(CollisionEvent.COLLISION, node1.get().getKey(), node2.get().getKey()));
+            }
+        }
+    }
 
     private void updateCanvas() {
         GraphicsContext gc = overlay.getGraphicsContext2D();
@@ -182,11 +205,12 @@ public class PhysicsGame {
     private void handleQueuedPositionUpdates() {
         if (!layoutChangeQueue.isEmpty()) {
             for (Node node : layoutChangeQueue) {
-                Body body = nodeBodyMap.get(node);
-                Point2D bodyPosition = getBodyPosition(node);
-                float angle = (float)(Math.toRadians(node.getRotate()));
-
-                body.setTransform(new Vec2((float) bodyPosition.getX(), (float) bodyPosition.getY()), angle);
+                if (nodeBodyMap.containsKey(node)){
+                    Body body = nodeBodyMap.get(node);
+                    Vec2 bodyPosition = getBodyPosition(node);
+                    float angle = (float)(Math.toRadians(-node.getRotate()));
+                    body.setTransform(bodyPosition, angle);
+                }
             }
             layoutChangeQueue.clear();
         }
@@ -195,7 +219,9 @@ public class PhysicsGame {
     private void handleQueuedSizeUpdates() {
         if (!sizeChangeQueue.isEmpty()) {
             for (Node node : sizeChangeQueue) {
-                shapeResolver.updateShape(node, nodeFixtureMap.get(node));
+                if (nodeFixtureMap.containsKey(node)){
+                    shapeResolver.updateShape(node, nodeFixtureMap.get(node));
+                }
             }
             sizeChangeQueue.clear();
         }
@@ -214,6 +240,10 @@ public class PhysicsGame {
         if (!destroyQueue.isEmpty()) {
             for (Body body : destroyQueue) {
                 world.destroyBody(body);
+                Optional<Map.Entry<Node, Body>> node = nodeBodyMap.entrySet().stream().filter(e -> e.getValue() == body).findFirst();
+                if (node.isPresent()){
+                    nodeBodyMap.remove(node.get().getKey());
+                }
             }
             destroyQueue.clear();
         }
@@ -223,7 +253,6 @@ public class PhysicsGame {
 	    if (nodeBodyMap.containsKey(node)){
             Body body = nodeBodyMap.get(node);
             destroyQueue.add(body);
-            nodeBodyMap.remove(node);
         }
     }
 
@@ -238,7 +267,6 @@ public class PhysicsGame {
                     add(childNode);
                 }
             }
-
         }
     }
 
@@ -282,25 +310,32 @@ public class PhysicsGame {
             if (!isUpdating)
                 sizeChangeQueue.add(e.getNode());
         });
-        physicsShape.addLayoutChangedEventListener(e -> {
+/*        physicsShape.addLayoutChangedEventListener(e -> { Shapes with bodies only for now!
             if(!isUpdating)
                 layoutChangeQueue.add(e.getNode());
-        });
+        });*/
         nodeFixtureMap.put(node, fixture);
     }
 
-    private Body createBody(BodyPropertiesOwner bodyDefOwner, Node node) {
-        BodyPropertyDefinitions<? extends Styleable> bodyPropertyDefinitions = bodyDefOwner.getBodyPropertyDefinitions();
+    private <T extends BodyPropertiesOwner & PhysicsShapeWithLayout> Body createBody(T bodyOwner, Node node) {
+        BodyPropertyDefinitions<? extends Styleable> bodyPropertyDefinitions = bodyOwner.getBodyPropertyDefinitions();
         BodyDef bodyDefinition = bodyPropertyDefinitions.createBodyDef(typeConverter);
-        Point2D bodyPosition = getBodyPosition(node);
-        bodyDefinition.position.set((float) bodyPosition.getX(), (float) bodyPosition.getY());
+        Vec2 bodyPosition = getBodyPosition(node);
+        bodyDefinition.position.set(bodyPosition);
+
         double rotate = node.getRotate();
         bodyDefinition.angle = positionHelper.getBodyRadians(rotate);
-        bodyDefinition.linearVelocity = coordinateConverter.scaleVecToWorld(bodyPropertyDefinitions.getLinearVelocityX(), bodyPropertyDefinitions.getLinearVelocityY());
-        bodyDefinition.angularVelocity = coordinateConverter.scaleVecToWorld(bodyPropertyDefinitions.getAngularVelocity());
-        bodyDefOwner.addVelocityChangedEventListener(onVelocityChanged());
+        bodyDefinition.linearVelocity = coordinateConverter.convertVectorToWorld(bodyPropertyDefinitions.getLinearVelocityX(), bodyPropertyDefinitions.getLinearVelocityY());
+        bodyDefinition.angularVelocity = coordinateConverter.scaleVectorToWorld(bodyPropertyDefinitions.getAngularVelocity());
+        bodyOwner.addVelocityChangedEventListener(onVelocityChanged());
+        bodyOwner.addLayoutChangedEventListener(e -> {
+            if(!isUpdating)
+                layoutChangeQueue.add(e.getNode());
+        });
+
         Body body = world.createBody(bodyDefinition);
         this.nodeBodyMap.put(node, body);
+
         return body;
     }
 
@@ -309,18 +344,18 @@ public class PhysicsGame {
             if (!isUpdating){
                 BodyPropertiesOwner eNode = (BodyPropertiesOwner)e.getNode();
                 Body body = nodeBodyMap.get(e.getNode());
-                //body.setLinearVelocity(coordinateConverter.scaleVecToWorld(eNode.getLinearVelocityX(), eNode.getLinearVelocityY()));
-                body.setAngularVelocity(coordinateConverter.scaleVecToWorld(eNode.getAngularVelocity()));
+                body.setLinearVelocity(coordinateConverter.convertVectorToWorld(eNode.getLinearVelocityX(), eNode.getLinearVelocityY()));
+                body.setAngularVelocity(coordinateConverter.scaleVectorToWorld(eNode.getAngularVelocity()));
             }
         };
     }
 
-    private Point2D getBodyPosition(Node node) {
+    private Vec2 getBodyPosition(Node node) {
         Bounds bounds = node.getBoundsInLocal();
         Point2D center = positionHelper.getCenter2(bounds);
         double childX = center.getX() + node.getLayoutX();
         double childY = center.getY() + node.getLayoutY();
-        return coordinateConverter.fxPoint2world(childX, childY, node.getParent());
+        return coordinateConverter.convertNodePointToWorld(childX, childY, node.getParent());
     }
 
     public void startGame(){
@@ -332,19 +367,29 @@ public class PhysicsGame {
         worldTimer = null;
     }
 	
-	private void updateNodePositions(){
+	private void updateNodeData(){
 		for (Node node : nodeBodyMap.keySet()){
 			Body body = nodeBodyMap.get(node);
 			Bounds bounds = node.getBoundsInLocal();
-			
-			Point2D nodePosition = coordinateConverter.world2fx(body.getPosition().x, body.getPosition().y, node.getParent());
+
+			Point2D nodePosition = coordinateConverter.convertWorldPointToScreen(body.getPosition().x, body.getPosition().y, node.getParent());
             Point2D center = positionHelper.getCenter2(bounds);
 			double x = nodePosition.getX() - (center.getX());
             double y = nodePosition.getY() - (center.getY());
             node.setLayoutX(x);
             node.setLayoutY(y);
-			double fxAngle = (- body.getAngle() * 180 / Math.PI) % 360;
+			double fxAngle = positionHelper.getAngle(body.getAngle());
 			node.setRotate(fxAngle);
+
+            Vec2 linearVelocity = body.getLinearVelocity();
+            Point2D convertedVelocity = coordinateConverter.convertVectorToScreen(linearVelocity);
+
+            double scaledAngularVelocity = coordinateConverter.scaleVectorToScreen(body.getAngularVelocity());
+
+            BodyPropertiesOwner bodyPropertiesOwner = (BodyPropertiesOwner) node;
+            bodyPropertiesOwner.setLinearVelocityX(convertedVelocity.getX());
+            bodyPropertiesOwner.setLinearVelocityY(convertedVelocity.getY());
+            bodyPropertiesOwner.setAngularVelocity(scaledAngularVelocity);
 		}
 	}
 

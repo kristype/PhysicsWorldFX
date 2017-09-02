@@ -1,8 +1,0 @@
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<HBox xmlns:fx="http://javafx.com/fxml" fx:controller="lunar.MenuController" fx:id="root" prefWidth="640" prefHeight="480">
-    <Label text="Lunar lander" />
-    <Button text="Start game" onAction="#startGame"/>
-</HBox>

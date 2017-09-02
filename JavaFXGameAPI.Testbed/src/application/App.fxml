@@ -2,7 +2,7 @@
 
 <?import javafx.scene.layout.AnchorPane?>
 <?import framework.PhysicsWorld?>
-<?import shapes.PhysicsRectangle?>
+<?import framework.nodes.PhysicsRectangle?>
 
 <?import application.AppController?>
 

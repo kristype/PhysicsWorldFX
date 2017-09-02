@@ -1,6 +1,6 @@
 package utilites;
 
-import bodies.ShapeComposition;
+import framework.nodes.*;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
@@ -33,9 +33,8 @@ public class ShapeResolver {
             shape = mapRectangle((PhysicsRectangle) node, bounds);
         } else if (node instanceof PhysicsCircle) {
             CircleShape circleShape = new CircleShape();
-            double world = Math.abs(converter.fxScaleToWorld(bounds.getWidth()));
+            double world = Math.abs(converter.scaleVectorToWorld(bounds.getWidth()));
             circleShape.setRadius((float) world / 2f);
-            //circleShape.m_p.set(converter.scaleVecToWorld())
             shape = circleShape;
         } else if (node instanceof PhysicsPolygon) {
             shape = mapPolygon((PhysicsPolygon) node);
@@ -72,7 +71,7 @@ public class ShapeResolver {
     private Vec2[] toVec2(double...points) {
         Vec2[] vertices = new Vec2[points.length / 2];
         for (int i = 0; i < points.length; i += 2) {
-            vertices[i / 2] = converter.scaleVecToWorld(points[i], points[i + 1]);
+            vertices[i / 2] = converter.scaleVectorToWorld(points[i], points[i + 1]);
         }
         return vertices;
     }
@@ -161,13 +160,13 @@ public class ShapeResolver {
             PolygonShape shape = (PolygonShape) fixture.getShape();
             float hWidth = (float) bounds.getWidth() / 2f;
             float hHeight = (float) bounds.getHeight() / 2f;
-            Vec2 world = converter.scaleVecToWorld(hWidth, hHeight);
+            Vec2 world = converter.scaleVectorToWorld(hWidth, hHeight);
             shape.setAsBox(world.x, world.y);
         }
         else if (node instanceof PhysicsCircle) {
 
             CircleShape shape = (CircleShape) fixture.getShape();
-            double world = Math.abs(converter.fxScaleToWorld(bounds.getWidth()));
+            double world = Math.abs(converter.scaleVectorToWorld(bounds.getWidth()));
             shape.setRadius((float) world / 2f);
         }
     }

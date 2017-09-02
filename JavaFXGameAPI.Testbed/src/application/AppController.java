@@ -2,7 +2,7 @@ package application;
 
 import framework.PhysicsWorld;
 import javafx.fxml.FXML;
-import shapes.PhysicsRectangle;
+import framework.nodes.PhysicsRectangle;
 
 public class AppController {
 	

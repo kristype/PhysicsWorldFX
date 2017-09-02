@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import bodies.ShapeComposition?>
 <?import framework.PhysicsWorld?>
+<?import framework.nodes.PhysicsPolygon?>
+<?import framework.nodes.ShapeComposition?>
 <?import java.lang.Double?>
+<?import java.lang.String?>
 <?import javafx.scene.shape.Polygon?>
-<?import shapes.PhysicsPolygon?>
 
-<PhysicsWorld fx:id="physicsWorld" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onCollision="#handleCollision" onKeyPressed="#handleKeyPressed" onKeyReleased="#handleKeyUp" onPhysicsStep="#handlePhysicsStep" physicsScale="15.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@asteroids.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="asteroids.Controller">
+<PhysicsWorld fx:id="physicsWorld" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onBeginCollision="#handleCollision" onEndCollision="#handleCollisionEnded" onKeyPressed="#handleKeyPressed" onKeyReleased="#handleKeyUp" onPhysicsStep="#handlePhysicsStep" physicsScale="15.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@asteroids.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="asteroids.Controller">
    <children>
       <ShapeComposition fx:id="playerShip" layoutX="400.0" layoutY="300.0">
          <children>
@@ -63,7 +64,7 @@
             </PhysicsPolygon>
          </children>
       </ShapeComposition>
-      <PhysicsPolygon density="1.0" friction="1.0" layoutX="10.0" layoutY="410.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="50.0" styleClass="asteroid">
+      <PhysicsPolygon density="1.0" friction="1.0" layoutX="10.0" layoutY="410.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="50.0">
          <points>
             <Double fx:value="10.0" />
             <Double fx:value="30.0" />
@@ -80,8 +81,12 @@
             <Double fx:value="5.0" />
             <Double fx:value="10.0" />
          </points>
+         <styleClass>
+            <String fx:value="asteroid" />
+            <String fx:value="medium" />
+         </styleClass>
       </PhysicsPolygon>
-      <PhysicsPolygon density="1.0" friction="1.0" layoutX="350.0" layoutY="340.0" restitution="0.0" rotate="50.0" scaleX="0.7" scaleY="0.7" styleClass="asteroid">
+      <PhysicsPolygon density="1.0" friction="1.0" layoutX="350.0" layoutY="340.0" restitution="0.0" rotate="50.0" scaleX="0.7" scaleY="0.7">
          <points>
             <Double fx:value="10.0" />
             <Double fx:value="30.0" />
@@ -98,8 +103,12 @@
             <Double fx:value="5.0" />
             <Double fx:value="10.0" />
          </points>
+         <styleClass>
+            <String fx:value="asteroid" />
+            <String fx:value="small" />
+         </styleClass>
       </PhysicsPolygon>
-      <PhysicsPolygon density="1.0" friction="1.0" layoutX="200.0" layoutY="300.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="40.0" scaleX="0.5" scaleY="0.5" styleClass="asteroid">
+      <PhysicsPolygon density="1.0" friction="1.0" layoutX="200.0" layoutY="300.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="40.0" scaleX="0.5" scaleY="0.5">
          <points>
             <Double fx:value="10.0" />
             <Double fx:value="30.0" />
@@ -116,8 +125,12 @@
             <Double fx:value="5.0" />
             <Double fx:value="10.0" />
          </points>
+         <styleClass>
+            <String fx:value="asteroid" />
+            <String fx:value="small" />
+         </styleClass>
       </PhysicsPolygon>
-      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="300.0" layoutY="150.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" styleClass="asteroid">
+      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="300.0" layoutY="150.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0">
          <points>
             <Double fx:value="10.0" />
             <Double fx:value="30.0" />
@@ -134,8 +147,12 @@
             <Double fx:value="5.0" />
             <Double fx:value="10.0" />
          </points>
+         <styleClass>
+            <String fx:value="asteroid" />
+            <String fx:value="medium" />
+         </styleClass>
       </PhysicsPolygon>
-      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="20.0" layoutY="150.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="190.0" styleClass="asteroid">
+      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="20.0" layoutY="150.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="190.0">
          <points>
             <Double fx:value="10.0" />
             <Double fx:value="30.0" />
@@ -152,8 +169,12 @@
             <Double fx:value="5.0" />
             <Double fx:value="10.0" />
          </points>
+         <styleClass>
+            <String fx:value="asteroid" />
+            <String fx:value="medium" />
+         </styleClass>
       </PhysicsPolygon>
-      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="60.0" layoutY="150.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="270.0" scaleX="0.7" scaleY="0.7" styleClass="asteroid">
+      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="60.0" layoutY="150.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="270.0" scaleX="0.7" scaleY="0.7">
          <points>
             <Double fx:value="10.0" />
             <Double fx:value="30.0" />
@@ -170,8 +191,12 @@
             <Double fx:value="5.0" />
             <Double fx:value="10.0" />
          </points>
+         <styleClass>
+            <String fx:value="asteroid" />
+            <String fx:value="small" />
+         </styleClass>
       </PhysicsPolygon>
-      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="120.0" layoutY="150.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="-50.0" styleClass="asteroid">
+      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="120.0" layoutY="150.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="-50.0">
          <points>
             <Double fx:value="10.0" />
             <Double fx:value="30.0" />
@@ -188,8 +213,12 @@
             <Double fx:value="5.0" />
             <Double fx:value="10.0" />
          </points>
+         <styleClass>
+            <String fx:value="asteroid" />
+            <String fx:value="medium" />
+         </styleClass>
       </PhysicsPolygon>
-      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="90.0" layoutY="100.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" styleClass="asteroid">
+      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="90.0" layoutY="100.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0">
          <points>
             <Double fx:value="10.0" />
             <Double fx:value="30.0" />
@@ -206,8 +235,12 @@
             <Double fx:value="5.0" />
             <Double fx:value="10.0" />
          </points>
+         <styleClass>
+            <String fx:value="asteroid" />
+            <String fx:value="medium" />
+         </styleClass>
       </PhysicsPolygon>
-      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="500.0" layoutY="150.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="80.0" styleClass="asteroid">
+      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="500.0" layoutY="150.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="80.0">
          <points>
             <Double fx:value="10.0" />
             <Double fx:value="30.0" />
@@ -224,8 +257,12 @@
             <Double fx:value="5.0" />
             <Double fx:value="10.0" />
          </points>
+         <styleClass>
+            <String fx:value="asteroid" />
+            <String fx:value="medium" />
+         </styleClass>
       </PhysicsPolygon>
-      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="500.0" layoutY="200.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" scaleX="0.7" scaleY="0.7" styleClass="asteroid">
+      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="500.0" layoutY="200.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" scaleX="0.7" scaleY="0.7">
          <points>
             <Double fx:value="10.0" />
             <Double fx:value="30.0" />
@@ -242,8 +279,12 @@
             <Double fx:value="5.0" />
             <Double fx:value="10.0" />
          </points>
+         <styleClass>
+            <String fx:value="asteroid" />
+            <String fx:value="medium" />
+         </styleClass>
       </PhysicsPolygon>
-      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="500.0" layoutY="400.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="80.0" styleClass="asteroid">
+      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="500.0" layoutY="400.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="80.0">
          <points>
             <Double fx:value="10.0" />
             <Double fx:value="30.0" />
@@ -260,8 +301,12 @@
             <Double fx:value="5.0" />
             <Double fx:value="10.0" />
          </points>
+         <styleClass>
+            <String fx:value="asteroid" />
+            <String fx:value="medium" />
+         </styleClass>
       </PhysicsPolygon>
-      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="550.0" layoutY="500.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="45.0" styleClass="asteroid">
+      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="550.0" layoutY="500.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="45.0">
          <points>
             <Double fx:value="10.0" />
             <Double fx:value="30.0" />
@@ -278,8 +323,12 @@
             <Double fx:value="5.0" />
             <Double fx:value="10.0" />
          </points>
+         <styleClass>
+            <String fx:value="asteroid" />
+            <String fx:value="medium" />
+         </styleClass>
       </PhysicsPolygon>
-      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="600.0" layoutY="30.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" styleClass="asteroid">
+      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="600.0" layoutY="30.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0">
          <points>
             <Double fx:value="10.0" />
             <Double fx:value="30.0" />
@@ -296,8 +345,12 @@
             <Double fx:value="5.0" />
             <Double fx:value="10.0" />
          </points>
+         <styleClass>
+            <String fx:value="asteroid" />
+            <String fx:value="medium" />
+         </styleClass>
       </PhysicsPolygon>
-      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="570.0" layoutY="100.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" scaleX="0.7" scaleY="0.7" styleClass="asteroid">
+      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="570.0" layoutY="100.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" scaleX="0.7" scaleY="0.7">
          <points>
             <Double fx:value="10.0" />
             <Double fx:value="30.0" />
@@ -314,8 +367,12 @@
             <Double fx:value="5.0" />
             <Double fx:value="10.0" />
          </points>
+         <styleClass>
+            <String fx:value="asteroid" />
+            <String fx:value="small" />
+         </styleClass>
       </PhysicsPolygon>
-      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="600.0" layoutY="160.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="80.0" styleClass="asteroid">
+      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="600.0" layoutY="160.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="80.0">
          <points>
             <Double fx:value="10.0" />
             <Double fx:value="30.0" />
@@ -332,8 +389,12 @@
             <Double fx:value="5.0" />
             <Double fx:value="10.0" />
          </points>
+         <styleClass>
+            <String fx:value="asteroid" />
+            <String fx:value="medium" />
+         </styleClass>
       </PhysicsPolygon>
-      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="580.0" layoutY="230.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" styleClass="asteroid">
+      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="580.0" layoutY="230.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0">
          <points>
             <Double fx:value="10.0" />
             <Double fx:value="30.0" />
@@ -350,8 +411,12 @@
             <Double fx:value="5.0" />
             <Double fx:value="10.0" />
          </points>
+         <styleClass>
+            <String fx:value="asteroid" />
+            <String fx:value="medium" />
+         </styleClass>
       </PhysicsPolygon>
-      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="550.0" layoutY="360.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="80.0" scaleX="0.7" scaleY="0.7" styleClass="asteroid">
+      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="550.0" layoutY="360.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="80.0" scaleX="0.7" scaleY="0.7">
          <points>
             <Double fx:value="10.0" />
             <Double fx:value="30.0" />
@@ -368,8 +433,12 @@
             <Double fx:value="5.0" />
             <Double fx:value="10.0" />
          </points>
+         <styleClass>
+            <String fx:value="asteroid" />
+            <String fx:value="medium" />
+         </styleClass>
       </PhysicsPolygon>
-      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="600.0" layoutY="500.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="45.0" styleClass="asteroid">
+      <PhysicsPolygon angularVelocity="20.0" density="1.0" friction="1.0" layoutX="600.0" layoutY="500.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" rotate="45.0">
          <points>
             <Double fx:value="10.0" />
             <Double fx:value="30.0" />
@@ -386,8 +455,12 @@
             <Double fx:value="5.0" />
             <Double fx:value="10.0" />
          </points>
+         <styleClass>
+            <String fx:value="asteroid" />
+            <String fx:value="medium" />
+         </styleClass>
       </PhysicsPolygon>
-      <PhysicsPolygon density="1.0" friction="1.0" layoutX="100.0" layoutY="400.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0" styleClass="asteroid">
+      <PhysicsPolygon density="1.0" friction="1.0" layoutX="100.0" layoutY="400.0" linearVelocityX="5.0" linearVelocityY="5.0" restitution="0.0">
           <points>
               <Double fx:value="10.0" />
               <Double fx:value="30.0" />
@@ -410,6 +483,10 @@
               <Double fx:value="5.0" />
               <Double fx:value="10.0" />
           </points>
+         <styleClass>
+            <String fx:value="asteroid" />
+            <String fx:value="medium" />
+         </styleClass>
       </PhysicsPolygon>
    </children>
 </PhysicsWorld>

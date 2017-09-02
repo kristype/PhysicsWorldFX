@@ -22,7 +22,8 @@ public class PhysicsWorld extends Pane {
     private StyleableProperty<Number> gravityY;
 
     private SimpleObjectProperty<EventHandler<? super PhysicsEvent>> physicsStepProperty = new SimpleObjectProperty<>(null);
-    private SimpleObjectProperty<EventHandler<? super CollisionEvent>> collisionProperty = new SimpleObjectProperty<>(null);
+    private SimpleObjectProperty<EventHandler<? super CollisionEvent>> beginCollisionProperty = new SimpleObjectProperty<>(null);
+    private SimpleObjectProperty<EventHandler<? super CollisionEvent>> endCollisionProperty = new SimpleObjectProperty<>(null);
     private Action onLevelEnd;
 
     public PhysicsWorld(){
@@ -126,16 +127,28 @@ public class PhysicsWorld extends Pane {
         return physicsStepProperty;
     }
 
-    public final void setOnCollision(EventHandler<? super CollisionEvent> value) {
-        onCollisionProperty().set(value);
+    public final void setOnBeginCollision(EventHandler<? super CollisionEvent> value) {
+        onBeginCollisionProperty().set(value);
     }
 
-    public final EventHandler<? super CollisionEvent> getOnCollision() {
-        return onCollisionProperty().get();
+    public final EventHandler<? super CollisionEvent> getOnBeginCollision() {
+        return onBeginCollisionProperty().get();
     }
 
-    public final ObjectProperty<EventHandler<? super CollisionEvent>> onCollisionProperty() {
-        return collisionProperty;
+    public final ObjectProperty<EventHandler<? super CollisionEvent>> onBeginCollisionProperty() {
+        return beginCollisionProperty;
+    }
+
+    public final void setOnEndCollision(EventHandler<? super CollisionEvent> value) {
+        onEndCollisionProperty().set(value);
+    }
+
+    public final EventHandler<? super CollisionEvent> getOnEndCollision() {
+        return onEndCollisionProperty().get();
+    }
+
+    public final ObjectProperty<EventHandler<? super CollisionEvent>> onEndCollisionProperty() {
+        return endCollisionProperty;
     }
 
     public void endLevel(){

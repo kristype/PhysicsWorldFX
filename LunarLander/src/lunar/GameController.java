@@ -1,20 +1,18 @@
 package lunar;
 
-import bodies.ShapeComposition;
-import framework.PhysicsEvent;
 import framework.PhysicsWorld;
+import framework.nodes.PhysicsPolygon;
+import framework.nodes.PhysicsRectangle;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.shape.Polygon;
-import shapes.PhysicsPolygon;
-import shapes.PhysicsRectangle;
 
-import static framework.PhysicsWorldHelper.*;
+import static framework.PhysicsWorldFunctions.*;
 
 public class GameController {
 
-    public static final int singleThrustForce = 50;
+    public static final int singleThrustForce = 80;
     public static final int fullThrustForce = 200;
     @FXML private PhysicsRectangle landingPad;
 
@@ -22,15 +20,8 @@ public class GameController {
     @FXML private Polygon leftFlame;
 
     @FXML private PhysicsWorld world;
-    @FXML private ShapeComposition lander;
     @FXML private PhysicsPolygon leftThruster;
     @FXML private PhysicsPolygon rightThruster;
-    @FXML private PhysicsPolygon landerBody;
-
-    @FXML
-    private void initialize() {
-
-    }
 
     @FXML
     private void handleKeyUp(KeyEvent keyEvent) {
@@ -43,7 +34,7 @@ public class GameController {
     }
 
     @FXML
-    private void handleStep(PhysicsEvent physicsEvent) {
+    private void handleStep() {
         if (keyIsPressed(KeyCode.RIGHT)){
             leftThruster.applyForceUp(0, singleThrustForce);
             leftFlame.setVisible(true);

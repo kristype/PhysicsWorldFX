@@ -16,28 +16,28 @@ public class PhysicsShapeHelper {
     public Point2D getSpeed(Body body) {
         if (body != null){
             Vec2 velocity = body.getLinearVelocity();
-            return coordinateConverter.fxVec2world(velocity.x, velocity.y);
+            return coordinateConverter.convertVectorToScreen(velocity);
         }
         return null;
     }
 
     public void setSpeed(Body body, float vx, float vy) {
         if (body != null){
-            Vec2 scaled = coordinateConverter.scaleVecToWorld(vx, vy);
+            Vec2 scaled = coordinateConverter.scaleVectorToWorld(vx, vy);
             body.setLinearVelocity(scaled);
         }
     }
 
     public void applyForceUp(Body body,Vec2 centerOffset, float vx, float vy){
         if (body != null) {
-            Vec2 worldForce = coordinateConverter.scaleVecToWorld(vx, vy);
+            Vec2 worldForce = coordinateConverter.scaleVectorToWorld(vx, vy);
             applyForce(body.getWorldVector(worldForce), body, centerOffset);
         }
     }
 
     public void applyForce(Body body,Vec2 centerOffset,float vx, float vy) {
         if (body != null){
-            Vec2 worldForce = coordinateConverter.scaleVecToWorld(vx, vy);
+            Vec2 worldForce = coordinateConverter.scaleVectorToWorld(vx, vy);
             applyForce(worldForce, body, centerOffset);
         }
     }

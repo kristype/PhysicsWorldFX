@@ -1,15 +1,15 @@
-<?import bodies.ShapeComposition?>
+<?xml version="1.0" encoding="UTF-8"?>
+
 <?import framework.PhysicsWorld?>
-<?import shapes.PhysicsPolygon?>
-<?import java.lang.*?>
-
-<?import shapes.PhysicsRectangle?>
+<?import framework.nodes.PhysicsPolygon?>
+<?import framework.nodes.PhysicsRectangle?>
+<?import framework.nodes.ShapeComposition?>
+<?import java.lang.Double?>
 <?import javafx.scene.shape.Polygon?>
-<PhysicsWorld xmlns:fx="http://javafx.com/fxml" fx:controller="lunar.GameController" fx:id="world" prefWidth="640" prefHeight="480"
-              gravityX="0" gravityY="-5" physicsScale="15" onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp"
-              onPhysicsStep="#handleStep" >
-    <ShapeComposition bodyType="Full" fx:id="lander" layoutX="0" layoutY="0" linearVelocityX="150" >
-        <PhysicsPolygon fx:id="leftThruster" layoutX="0" layoutY="18" restitution="0" density="0.2" friction="1" >
+
+<PhysicsWorld fx:id="world" gravityX="0" gravityY="-5" onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp" onPhysicsStep="#handleStep" physicsScale="15" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lunar.GameController">
+    <ShapeComposition fx:id="lander" bodyType="Full" layoutX="0" layoutY="0" linearVelocityX="150">
+        <PhysicsPolygon fx:id="leftThruster" density="0.2" friction="1" layoutX="0" layoutY="18" restitution="0">
             <points>
                 <Double fx:value="0.0" />
                 <Double fx:value="15.0" />
@@ -21,7 +21,7 @@
                 <Double fx:value="0.0" />
             </points>
         </PhysicsPolygon>
-        <PhysicsPolygon fx:id="rightThruster" layoutX="39" layoutY="18" restitution="0"  density="0.2" friction="1" >
+        <PhysicsPolygon fx:id="rightThruster" density="0.2" friction="1" layoutX="39" layoutY="18" restitution="0">
             <points>
                 <Double fx:value="0.0" />
                 <Double fx:value="15.0" />
@@ -33,7 +33,7 @@
                 <Double fx:value="0.0" />
             </points>
         </PhysicsPolygon>
-        <PhysicsPolygon fx:id="landerBody" fill="deeppink" layoutX="12" layoutY="0" restitution="0"  density="1" friction="1" >
+        <PhysicsPolygon fx:id="landerBody" density="1" fill="deeppink" friction="1" layoutX="12" layoutY="0" restitution="0">
             <points>
                 <Double fx:value="0.0" />
                 <Double fx:value="30.0" />
@@ -48,7 +48,7 @@
                 <Double fx:value="0.0" />
             </points>
         </PhysicsPolygon>
-        <Polygon fx:id="rightFlame" fill="red" layoutX="39" layoutY="33" visible="false" >
+        <Polygon fx:id="rightFlame" fill="red" layoutX="39" layoutY="33">
             <points>
                 <Double fx:value="15.0" />
                 <Double fx:value="0.0" />
@@ -60,7 +60,7 @@
                 <Double fx:value="15.0" />
             </points>
         </Polygon>
-        <Polygon fx:id="leftFlame" fill="red" layoutX="0" layoutY="33" visible="false" >
+        <Polygon fx:id="leftFlame" fill="red" layoutX="0" layoutY="33">
             <points>
                 <Double fx:value="15.0" />
                 <Double fx:value="0.0" />
@@ -74,8 +74,7 @@
         </Polygon>
 
     </ShapeComposition>
-    <PhysicsRectangle bodyType="NonMovable" layoutX="0" layoutY="400" width="300" height="10" fill="black" friction="1" restitution="0" />
-    <PhysicsRectangle bodyType="NonMovable" layoutX="300" layoutY="400" width="70" height="10" fill="darkblue" friction="1" restitution="0" fx:id="landingPad" />
-    <PhysicsRectangle bodyType="NonMovable" layoutX="370" layoutY="400" width="270" height="10" fill="black" friction="1" restitution="0" />
+    <PhysicsRectangle bodyType="NonMovable" fill="black" friction="1" height="10" layoutX="0" layoutY="590.0" restitution="0" width="600.0" />
+    <PhysicsRectangle fx:id="landingPad" bodyType="NonMovable" fill="#006f8a" friction="1" height="10" layoutX="600.0" layoutY="590.0" restitution="0" width="70" />
+    <PhysicsRectangle bodyType="NonMovable" fill="black" friction="1" height="10" layoutX="670.0" layoutY="590.0" restitution="0" width="130.0" />
 </PhysicsWorld>
-

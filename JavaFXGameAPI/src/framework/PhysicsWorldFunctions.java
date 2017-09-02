@@ -15,20 +15,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
-public class PhysicsWorldHelper {
+public class PhysicsWorldFunctions {
     private static Map<Node, Body> nodeBodyMap;
     private static Map<Node, Fixture> nodeFixtureMap;
 
-    private static Collection<KeyCode> keysPressed;
+    private static Collection<KeyCode> keysPressed = new ArrayList<>();
     private static Collision collision;
 
     private static PositionHelper positionHelper = new PositionHelper();
 
     static void setup(World world, Map<Node, Body> nodeBodyMap, Map<Node, Fixture> nodeFixtureMap){
-        PhysicsWorldHelper.nodeBodyMap = nodeBodyMap;
-        PhysicsWorldHelper.nodeFixtureMap = nodeFixtureMap;
-        PhysicsWorldHelper.keysPressed = new ArrayList<>();
-        PhysicsWorldHelper.collision = new Collision(world.getPool());
+        PhysicsWorldFunctions.nodeBodyMap = nodeBodyMap;
+        PhysicsWorldFunctions.nodeFixtureMap = nodeFixtureMap;
+        PhysicsWorldFunctions.keysPressed = new ArrayList<>(); //reset keys pressed
+        PhysicsWorldFunctions.collision = new Collision(world.getPool());
     }
 
     public static Stage getStage(Node node){
@@ -37,14 +37,19 @@ public class PhysicsWorldHelper {
 
     public static Point2D getVectorForDegrees(double degrees, double force){
         double radian = Math.toRadians(degrees);
-        return new Point2D((float)(Math.sin(radian) * force), (float)(Math.cos(radian) * force));
+        return new Point2D((float)(Math.sin(radian) * force), (float)-(Math.cos(radian) * force));
     }
 
     public static Point2D getRotatedLayoutPosition(Node node, double offsetX, int offsetY) {
 
+        return getRotatedLayoutPosition(node, offsetX, offsetY, node.getRotate());
+    }
+
+    public static Point2D getRotatedLayoutPosition(Node node, double offsetX, int offsetY, double rotate) {
+
         double x = node.getLayoutX() + offsetX;
         double y = node.getLayoutY() + offsetY;
-        double radian = Math.toRadians(node.getRotate());
+        double radian = Math.toRadians(rotate);
         Point2D center = positionHelper.getCenter2(node.getBoundsInLocal());
         double cX = center.getX() + node.getLayoutX();
         double cY = center.getY() + node.getLayoutY();
@@ -56,7 +61,7 @@ public class PhysicsWorldHelper {
         double sin = Math.sin(radian);
 
         double rotatedX  = cos * x - sin * y;
-        double rotatedY = (sin * x) + cos * y;
+        double rotatedY = sin * x + cos * y;
 
         x = rotatedX;
         y = rotatedY;

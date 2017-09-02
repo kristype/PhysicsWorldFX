@@ -1,13 +1,12 @@
+<?import framework.nodes.*?>
 <?import framework.PhysicsWorld?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.VBox?>
-<?import shapes.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.geometry.Insets?>
+
 <StackPane alignment="TOP_LEFT" xmlns:fx="http://javafx.com/fxml" fx:controller="pong.Controller" >
-    <PhysicsWorld fx:id="world"   prefWidth="640" prefHeight="480"
-                  gravityX="0" gravityY="0" physicsScale="15" onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp" onPhysicsStep="#handlePhysicsStep" onCollision="#handleCollision" >
+    <PhysicsWorld fx:id="world" prefWidth="640" prefHeight="480"
+                  gravityX="0" gravityY="0" physicsScale="15" onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp" onPhysicsStep="#handlePhysicsStep" onBeginCollision="#handleCollision" >
 
         <PhysicsRectangle fx:id="paddle1" fill="black" bodyType="Movable" width="20" height="60" />
         <PhysicsRectangle fx:id="paddle2" fill="black" bodyType="Movable" width="20" height="60" />
@@ -20,7 +19,7 @@
         <PhysicsCircle fx:id="ball" bodyType="Full" fill="black" layoutX="315" layoutY="235" radius="15" restitution="1" density="1" />
 
     </PhysicsWorld>
-    <Label  fx:id="score" >
+    <Label fx:id="score" >
         <Insets top="15" right="15" bottom="15" left="15"/>
     </Label>
 </StackPane>

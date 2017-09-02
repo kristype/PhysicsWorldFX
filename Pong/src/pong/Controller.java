@@ -7,10 +7,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import shapes.PhysicsCircle;
-import shapes.PhysicsRectangle;
+import framework.nodes.PhysicsCircle;
+import framework.nodes.PhysicsRectangle;
 
-import static framework.PhysicsWorldHelper.*;
+import static framework.PhysicsWorldFunctions.*;
 
 public class Controller {
 
@@ -45,11 +45,11 @@ public class Controller {
 
     private void setPaddleSpeed(PhysicsRectangle paddle, boolean movePaddleUp, boolean movePaddleDown) {
         if (movePaddleUp && paddle.getLayoutY() > wallLeft.getWidth()){
-            paddle.setSpeed(0f, 50f);
+            paddle.setLinearVelocityY(50);
         }else if (movePaddleDown && (paddle.getLayoutY() + paddle.getHeight()) < wallLeft.getHeight()-wallLeft.getWidth()){
-            paddle.setSpeed(0f, -50f);
+            paddle.setLinearVelocityY(-50);
         }else{
-            paddle.setSpeed(0f, 0f);
+            paddle.setLinearVelocityY(0);
         }
     }
 

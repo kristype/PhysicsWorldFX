@@ -1,56 +1,55 @@
-package shapes;
+package framework.nodes;
 
-import bodies.BodyPropertyDefinitions;
 import bodies.BodyPropertiesOwner;
+import bodies.BodyPropertyDefinitions;
 import framework.ChangedEvent;
 import framework.ChangedEventListener;
 import framework.SimulationType;
+import javafx.beans.DefaultProperty;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.css.*;
 import javafx.geometry.Point2D;
-import javafx.scene.shape.Polygon;
+import javafx.scene.Node;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
+import shapes.PhysicsShapeWithLayout;
 import utilites.PhysicsShapeHelper;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class PhysicsPolygon extends Polygon implements BodyPropertiesOwner, FixturePropertiesOwner, PhysicsShape {
+public class ShapeComposition extends Pane implements BodyPropertiesOwner, PhysicsShapeWithLayout {
 
+    private final BodyPropertyDefinitions bodyPropertyDefinitions;
     private Body body;
-
-    private List<ChangedEventListener> sizeChangedListeners;
-    private List<ChangedEventListener> layoutChangedListeners;
-    private List<ChangedEventListener> velocityChangedListeners;
-
     private PhysicsShapeHelper helper;
+    private List<ChangedEventListener> velocityChangedListeners;
+    private List<ChangedEventListener> layoutChangedListeners;
+
+    public ShapeComposition() {
+        super();
+        getStyleClass().add("shapeComposition");
+        this.bodyPropertyDefinitions = new BodyPropertyDefinitions<>(this, SPF);
+        velocityChangedListeners = new ArrayList<>();
+        layoutChangedListeners = new ArrayList<>();
+        layoutXProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
+        layoutYProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
+        ((SimpleStyleableObjectProperty<Number>) angularVelocityProperty()).addListener((observable, oldValue, newValue) -> raiseEvent(velocityChangedListeners));
+        ((SimpleStyleableObjectProperty<Number>) linearVelocityXProperty()).addListener((observable, oldValue, newValue) -> raiseEvent(velocityChangedListeners));
+        ((SimpleStyleableObjectProperty<Number>) linearVelocityYProperty()).addListener((observable, oldValue, newValue) -> raiseEvent(velocityChangedListeners));
+    }
 
     public void setup(Body body, PhysicsShapeHelper helper){
         this.body = body;
         this.helper = helper;
     }
 
-    @Override
-    public void applyForce(float vx, float vy) {
-        helper.applyForce(body, localCenterOffset, vx, vy);
-    }
-
-    @Override
-    public void applyForceUp(float vx, float vy) {
-        helper.applyForceUp(body, localCenterOffset, vx, vy);
-    }
-
-    @Override
     public Point2D getSpeed() {
         return helper.getSpeed(body);
-    }
-
-    @Override
-    public void setSpeed(float x, float y) {
-        helper.setSpeed(body, x, y);
     }
 
     private void raiseEvent(List<ChangedEventListener> eventListeners){
@@ -61,54 +60,26 @@ public class PhysicsPolygon extends Polygon implements BodyPropertiesOwner, Fixt
         }
     }
 
-    public void addLayoutChangedEventListener(ChangedEventListener listener)  {
-        layoutChangedListeners.add(listener);
-    }
-    public void removeLayoutChangedListener(ChangedEventListener listener)   {
-        layoutChangedListeners.remove(listener);
+    public void setSpeed(float vx, float vy) {
+        helper.setSpeed(body, vx, vy);
     }
 
-    public void addSizeChangedEventListener(ChangedEventListener listener)  {
-        sizeChangedListeners.add(listener);
-    }
-    public void removeSizeChangedEventListener(ChangedEventListener listener)   {
-        sizeChangedListeners.remove(listener);
+    public void applyForce(float vx, float vy) {
+        helper.applyForce(body, new Vec2(), vx, vy);
     }
 
-    private Vec2 localCenterOffset = new Vec2(0, 0);
-
-    private static final StyleablePropertyFactory<PhysicsPolygon> SPF = new StyleablePropertyFactory<>(Polygon.getClassCssMetaData());
-
-    public static  List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
-        return SPF.getCssMetaData();
-    }
-
-    private FixturePropertyDefinitions<PhysicsPolygon> fixturePropertyDefinitions;
-    private BodyPropertyDefinitions<PhysicsPolygon> bodyPropertyDefinitions;
-
-    public PhysicsPolygon() {
-        getStyleClass().add("physicsPolygon");
-        this.fixturePropertyDefinitions = new FixturePropertyDefinitions<>(this, SPF);
-        this.bodyPropertyDefinitions = new BodyPropertyDefinitions<>(this, SPF);
-
-        sizeChangedListeners = new ArrayList<>();
-        layoutChangedListeners = new ArrayList<>();
-        velocityChangedListeners = new ArrayList<>();
-        layoutXProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
-        layoutYProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
-        rotateProperty().addListener((observable, oldValue, newValue) -> raiseEvent(layoutChangedListeners));
-        getPoints().addListener((ListChangeListener<? super Double>) e -> raiseEvent(sizeChangedListeners));
-        ((SimpleStyleableObjectProperty<Number>) angularVelocityProperty()).addListener((observable, oldValue, newValue) -> raiseEvent(velocityChangedListeners));
-        ((SimpleStyleableObjectProperty<Number>) linearVelocityXProperty()).addListener((observable, oldValue, newValue) -> raiseEvent(velocityChangedListeners));
-        ((SimpleStyleableObjectProperty<Number>) linearVelocityYProperty()).addListener((observable, oldValue, newValue) -> raiseEvent(velocityChangedListeners));
-    }
-
-    public FixturePropertyDefinitions<? extends Styleable> getFixturePropertyDefinitions() {
-        return fixturePropertyDefinitions;
+    public void applyForceUp(float vx, float vy) {
+        helper.applyForceUp(body, new Vec2(), vx, vy);
     }
 
     public BodyPropertyDefinitions<? extends Styleable> getBodyPropertyDefinitions() {
         return bodyPropertyDefinitions;
+    }
+
+    private static final StyleablePropertyFactory<ShapeComposition> SPF = new StyleablePropertyFactory<>(Pane.getClassCssMetaData());
+
+    public static List<CssMetaData<? extends Styleable, ?>> getClassCssMetaData() {
+        return SPF.getCssMetaData();
     }
 
     @Override
@@ -216,48 +187,19 @@ public class PhysicsPolygon extends Polygon implements BodyPropertiesOwner, Fixt
         bodyPropertyDefinitions.setActive(active);
     }
 
-    public void addVelocityChangedEventListener(ChangedEventListener eventListener) {
-        velocityChangedListeners.add(eventListener);
-    }
-
-    public StyleableProperty<Number> densityProperty() {
-        return this.fixturePropertyDefinitions.densityProperty();
-    }
-    public final double getDensity() {
-        return this.fixturePropertyDefinitions.getDensity();
-    }
-    public final void setDensity(double density) {
-        this.fixturePropertyDefinitions.setDensity(density);
-    }
-
-    public StyleableProperty<Number> frictionProperty() {
-        return this.fixturePropertyDefinitions.frictionProperty();
-    }
-    public final double getFriction() {
-        return this.fixturePropertyDefinitions.getFriction();
-    }
-    public final void setFriction(double friction) {
-        this.fixturePropertyDefinitions.setFriction(friction);
-    }
-
-    public StyleableProperty<Number> restitutionProperty() {
-        return this.fixturePropertyDefinitions.restitutionProperty();
-    }
-    public final double getRestitution() {
-        return this.fixturePropertyDefinitions.getRestitution();
-    }
-    public final void setRestitution(double restitution) {
-        this.fixturePropertyDefinitions.setRestitution(restitution);
-    }
-
     public StyleableProperty<Number> angularVelocityProperty() {
         return bodyPropertyDefinitions.angularVelocityProperty();
     }
+
     public double getAngularVelocity() {
         return bodyPropertyDefinitions.getAngularVelocity();
     }
     public void setAngularVelocity(double angularVelocity) {
         bodyPropertyDefinitions.setAngularVelocity(angularVelocity);
+    }
+
+    public void addVelocityChangedEventListener(ChangedEventListener eventListener) {
+        velocityChangedListeners.add(eventListener);
     }
 
     public StyleableProperty<Boolean> bulletProperty() {
@@ -270,17 +212,8 @@ public class PhysicsPolygon extends Polygon implements BodyPropertiesOwner, Fixt
         bodyPropertyDefinitions.setBullet(bullet);
     }
 
-    public StyleableProperty<Boolean> sensorProperty() {
-        return this.fixturePropertyDefinitions.sensorProperty();
-    }
-    public final boolean isSensor() {
-        return this.fixturePropertyDefinitions.isSensor();
-    }
-    public final void setSensor(boolean sensor) {
-        this.fixturePropertyDefinitions.setSensor(sensor);
-    }
-
-    public void setLocalCenterOffset(Vec2 vec) {
-        this.localCenterOffset = vec;
+    @Override
+    public void addLayoutChangedEventListener(ChangedEventListener eventListener) {
+        layoutChangedListeners.add(eventListener);
     }
 }

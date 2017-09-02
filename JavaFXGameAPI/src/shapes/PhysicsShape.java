@@ -7,7 +7,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import utilites.PhysicsShapeHelper;
 
-public interface PhysicsShape extends BodyPropertiesOwner, FixturePropertiesOwner {
+public interface PhysicsShape extends BodyPropertiesOwner, FixturePropertiesOwner, PhysicsShapeWithLayout {
      void setup(Body body, PhysicsShapeHelper helper);
 
      void applyForce(float vx, float vy);
@@ -16,7 +16,7 @@ public interface PhysicsShape extends BodyPropertiesOwner, FixturePropertiesOwne
      void setSpeed(float x, float y);
 
      void addSizeChangedEventListener(ChangedEventListener eventListener);
-     void addLayoutChangedEventListener(ChangedEventListener eventListener);
 
-    void setLocalCenterOffset(Vec2 vec2);
+     void setLocalCenterOffset(Vec2 vec2);
 }
+

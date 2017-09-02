@@ -10,10 +10,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import shapes.PhysicsCircle;
-import shapes.PhysicsRectangle;
+import framework.nodes.PhysicsCircle;
+import framework.nodes.PhysicsRectangle;
 
-import static framework.PhysicsWorldHelper.*;
+import static framework.PhysicsWorldFunctions.*;
 
 public class Controller {
 
@@ -66,11 +66,11 @@ public class Controller {
 
     private void setPaddleSpeed(PhysicsRectangle paddle) {
         if (keyIsPressed(KeyCode.LEFT) && !physicsNodesTouching(wallLeft, paddle)){
-            paddle.setSpeed(-800f, 0f);
+            paddle.setLinearVelocityX(-800);
         }else if (keyIsPressed(KeyCode.RIGHT) && !physicsNodesTouching(wallRight, paddle)){
-            paddle.setSpeed(800f, 0f);
+            paddle.setLinearVelocityX(800);
         }else{
-            paddle.setSpeed(0f, 0f);
+            paddle.setLinearVelocityX(0);
         }
     }
 

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import framework.nodes.PhysicsCircle?>
+
+
+<PhysicsCircle bullet="true" fill="black" radius="2.0" styleClass="bullet" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" />

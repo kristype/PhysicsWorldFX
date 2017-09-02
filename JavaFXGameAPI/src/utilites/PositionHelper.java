@@ -50,8 +50,10 @@ public class PositionHelper {
 
             double x = points[i];
             double y = points[i + 1];
-            points[i] = cos * x + sin * y;
-            points[i+1] = -(sin * x) + cos * y;
+/*            points[i] = cos * x + sin * y;
+            points[i+1] = -(sin * x) + cos * y;*/
+            points[i] = cos * x - sin * y;
+            points[i+1] = sin * x + cos * y;
 
             //Add center
             points[i]  += centerX;
@@ -69,8 +71,12 @@ public class PositionHelper {
         }
     }
 
-    public float getBodyRadians(double rotate) {
+    public float getBodyRadians2(double rotate) {
         return rotate > 180 ? (float)Math.toRadians(rotate) : (float)Math.toRadians(-rotate);
+    }
+
+    public float getBodyRadians(double rotate) {
+        return (float)Math.toRadians(rotate);
     }
 
     public void scaleWithParent(double[] points, double parentScaleX, double parentScaleY, double cX, double cY) {
@@ -87,5 +93,9 @@ public class PositionHelper {
             points[i]  += cX;
             points[i+1] += cY;
         }
+    }
+
+    public double getAngle(double angle) {
+        return (-angle * 180 / Math.PI) % 360;
     }
 }
