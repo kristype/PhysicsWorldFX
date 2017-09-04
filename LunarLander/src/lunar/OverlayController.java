@@ -40,7 +40,6 @@ public class OverlayController {
         scoreValue = 0;
         updateScore();
 
-
         startLevel(levels[currentLevel]);
         game.setOnFinish(() -> {
            loadNextLevel();

@@ -47,10 +47,9 @@ public class CoordinateConverter {
 		return result;
 	}
 
-	public Point2D convertWorldPointToScreen(double x, double y, Node context) {
+	public Point2D convertWorldPointToScreen(Vec2 point, Node context) {
 		Vec2 result = world2fxTemp1;
-		world2fxTemp2.set((float) x, (float) y);
-		viewportTransform.getWorldToScreen(new Vec2((float) x, (float) y), result);
+		viewportTransform.getWorldToScreen(point, result);
 
 		float xResult = result.x;
 		float yResult = result.y;

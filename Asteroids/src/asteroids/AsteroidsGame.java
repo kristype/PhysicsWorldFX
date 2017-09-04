@@ -12,7 +12,7 @@ public class AsteroidsGame extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("asteroids.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("startScreen.fxml"));
         Region root = loader.load();
 
         primaryStage.setTitle("Asteroids");
@@ -22,11 +22,6 @@ public class AsteroidsGame extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        PhysicsGame game = new PhysicsGame();
-        game.load(root);
-        //game.enableDebug();
-        game.startGame();
     }
 
     public static void main(String[] args) {

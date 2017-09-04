@@ -1,5 +1,8 @@
 package framework;
 
+import bodies.BodyPropertiesOwner;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
@@ -9,8 +12,10 @@ import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.World;
+import utilites.CoordinateConverter;
 import utilites.PositionHelper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -18,15 +23,17 @@ import java.util.Map;
 public class PhysicsWorldFunctions {
     private static Map<Node, Body> nodeBodyMap;
     private static Map<Node, Fixture> nodeFixtureMap;
+    private static CoordinateConverter coordinateConverter;
 
     private static Collection<KeyCode> keysPressed = new ArrayList<>();
     private static Collision collision;
 
     private static PositionHelper positionHelper = new PositionHelper();
 
-    static void setup(World world, Map<Node, Body> nodeBodyMap, Map<Node, Fixture> nodeFixtureMap){
+    static void setup(World world, Map<Node, Body> nodeBodyMap, Map<Node, Fixture> nodeFixtureMap, CoordinateConverter coordinateConverter){
         PhysicsWorldFunctions.nodeBodyMap = nodeBodyMap;
         PhysicsWorldFunctions.nodeFixtureMap = nodeFixtureMap;
+        PhysicsWorldFunctions.coordinateConverter = coordinateConverter;
         PhysicsWorldFunctions.keysPressed = new ArrayList<>(); //reset keys pressed
         PhysicsWorldFunctions.collision = new Collision(world.getPool());
     }
@@ -47,12 +54,13 @@ public class PhysicsWorldFunctions {
 
     public static Point2D getRotatedLayoutPosition(Node node, double offsetX, int offsetY, double rotate) {
 
-        double x = node.getLayoutX() + offsetX;
-        double y = node.getLayoutY() + offsetY;
+        Bounds bounds = node.getBoundsInParent();
+        double x = bounds.getMinX() + offsetX;
+        double y = bounds.getMinY() + offsetY;
         double radian = Math.toRadians(rotate);
-        Point2D center = positionHelper.getCenter2(node.getBoundsInLocal());
-        double cX = center.getX() + node.getLayoutX();
-        double cY = center.getY() + node.getLayoutY();
+        Point2D center = positionHelper.getCenter2(bounds);
+        double cX = center.getX();
+        double cY = center.getY();
 
         x -= cX;
         y -= cY;
@@ -101,4 +109,38 @@ public class PhysicsWorldFunctions {
         return keysPressed.contains(keyCode);
     }
 
+    public Point2D getCenterOfMass(Node node) throws Exception {
+        if (!nodeBodyMap.containsKey(node))
+            throw new Exception("Node must be the outermost physical node", new Throwable());
+
+        Body body = nodeBodyMap.get(node);
+        return coordinateConverter.convertWorldPointToScreen(body.getWorldCenter(), node.getParent());
+    }
+
+    public static <T extends Node & BodyPropertiesOwner> double getCurrentSpeed(T node){
+        return Math.abs(node.getLinearVelocityX())  + Math.abs(node.getLinearVelocityY());
+    }
+
+    public static <T extends Node & BodyPropertiesOwner> void setSpeedToCurrentTravelVector(T node, double speed){
+        double currentSpeed = getCurrentSpeed(node);
+        double directionX =  node.getLinearVelocityX() / currentSpeed;
+        double directionY =  node.getLinearVelocityY() / currentSpeed;
+        node.setLinearVelocityX(directionX * speed);
+        node.setLinearVelocityY(directionY * speed);
+    }
+
+    public static <T extends Node & BodyPropertiesOwner> Point2D getOffsetTravelVector(T node, double angleOffset) {
+        double currentSpeed = getCurrentSpeed(node);
+        double directionX =  node.getLinearVelocityX() / currentSpeed;
+        double directionY =  node.getLinearVelocityY() / currentSpeed;
+
+        //Invert directionY because javaFX direction is reversed from normal math direction
+        double degrees = Math.toDegrees(Math.atan2(directionX, -directionY)) + angleOffset;
+        return getVectorForDegrees(degrees, currentSpeed);
+    }
+
+    public static <T> T loadResource(Class<?> relativeClass, String resource) throws IOException {
+        FXMLLoader loader = new FXMLLoader(relativeClass.getResource(resource));
+        return loader.load();
+    }
 }

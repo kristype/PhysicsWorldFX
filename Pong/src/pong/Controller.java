@@ -9,6 +9,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import framework.nodes.PhysicsCircle;
 import framework.nodes.PhysicsRectangle;
+import javafx.scene.shape.Rectangle;
+
 
 import static framework.PhysicsWorldFunctions.*;
 
@@ -16,12 +18,12 @@ public class Controller {
 
     @FXML private PhysicsRectangle paddle1;
     @FXML private PhysicsRectangle paddle2;
-    @FXML private PhysicsRectangle wallLeft;
-    @FXML private PhysicsRectangle wallRight;
+    @FXML private Rectangle wallLeft;
+    @FXML private Rectangle wallRight;
     @FXML private PhysicsCircle ball;
     @FXML private PhysicsWorld world;
-    @FXML private PhysicsRectangle roof;
-    @FXML private PhysicsRectangle floor;
+    @FXML private Rectangle roof;
+    @FXML private Rectangle floor;
     @FXML private Label score;
 
     private int leftScore = 0;

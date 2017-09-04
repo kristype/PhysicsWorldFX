@@ -30,14 +30,14 @@ public class PhysicsShapeHelper {
 
     public void applyForceUp(Body body,Vec2 centerOffset, float vx, float vy){
         if (body != null) {
-            Vec2 worldForce = coordinateConverter.scaleVectorToWorld(vx, vy);
+            Vec2 worldForce = coordinateConverter.convertVectorToWorld(vx, vy);
             applyForce(body.getWorldVector(worldForce), body, centerOffset);
         }
     }
 
     public void applyForce(Body body,Vec2 centerOffset,float vx, float vy) {
         if (body != null){
-            Vec2 worldForce = coordinateConverter.scaleVectorToWorld(vx, vy);
+            Vec2 worldForce = coordinateConverter.convertVectorToWorld(vx, vy);
             applyForce(worldForce, body, centerOffset);
         }
     }

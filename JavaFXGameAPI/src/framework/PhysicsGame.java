@@ -13,6 +13,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
@@ -94,16 +95,16 @@ public class PhysicsGame {
 
 	    this.gameContainer = gameContainer;
 	    this.gameWorld = findWorld(gameContainer);
-/*	    this.gameWorld.setPrefHeight(gameContainer.getPrefHeight());
-	    this.gameWorld.setPrefWidth(gameContainer.getPrefWidth()); Should be adjusted by the user*/
 
 		if(this.gameWorld != null){
+		    //Calculate the layout so non visible and scaled nodes get the correct center
+		    gameWorld.layout();
+
 			world = new World(new Vec2((float)gameWorld.getGravityX(), (float)gameWorld.getGravityY()));
 			gameWorld.addAddEventListener(e -> addQueue.add(e.getNode()));
 			gameWorld.addRemoveEventListener(e -> remove(e.getNode()));
 			gameWorld.setOnLevelEnd(() -> {
                 if (onLevelEndListener != null){
-                    stopGame();
                     onLevelEndListener.action();
                 }
             });
@@ -161,22 +162,24 @@ public class PhysicsGame {
 			});
 
 			//instantiate the static class
-			PhysicsWorldFunctions.setup(world, nodeBodyMap, nodeFixtureMap);
+			PhysicsWorldFunctions.setup(world, nodeBodyMap, nodeFixtureMap, coordinateConverter);
 		}
 	}
 
     private final ListChangeListener<Node> listChangeListener = c -> {
-        if (c.getAddedSubList() != null) {
-            for (Node node : c.getAddedSubList()) {
-                if (nodeBodyMap.containsKey(node) || nodeFixtureMap.containsKey(node)) {
+        while (c.next()) {
+            List<? extends Node> addedSubList = c.getAddedSubList();
+            if (addedSubList != null) {
+                for (Node node : addedSubList) {
                     addQueue.add(node);
                 }
             }
-        }
-        if (c.getRemoved() != null) {
-            for (Node node : c.getRemoved()) {
-                if (nodeBodyMap.containsKey(node) || nodeFixtureMap.containsKey(node)) {
-                    remove(node);
+            List<? extends Node> removed = c.getRemoved();
+            if (removed != null) {
+                for (Node node : removed) {
+                    if (nodeBodyMap.containsKey(node) || nodeFixtureMap.containsKey(node)) {
+                        remove(node);
+                    }
                 }
             }
         }
@@ -229,23 +232,34 @@ public class PhysicsGame {
 
     private void addQueuedNodes() {
         if (!addQueue.isEmpty()){
-            for (Node node : addQueue) {
+            ArrayList<Node> addList = new ArrayList<>(addQueue);
+            for (Node node : addList) {
                 add(node);
             }
-            addQueue.clear();
+            addQueue.removeAll(addList);
         }
     }
 
     private void destroyQueuedBodies() {
         if (!destroyQueue.isEmpty()) {
-            for (Body body : destroyQueue) {
+            ArrayList<Body> removeList = new ArrayList<>(destroyQueue);
+            for (Body body : removeList) {
                 world.destroyBody(body);
                 Optional<Map.Entry<Node, Body>> node = nodeBodyMap.entrySet().stream().filter(e -> e.getValue() == body).findFirst();
                 if (node.isPresent()){
-                    nodeBodyMap.remove(node.get().getKey());
+                    cleanUp(node.get().getKey(), body);
                 }
+
             }
-            destroyQueue.clear();
+            destroyQueue.removeAll(removeList);
+        }
+    }
+
+    private void cleanUp(Node node, Body body) {
+        nodeBodyMap.remove(node);
+        if (node instanceof Pane){
+            Pane pane = (Pane) node;
+            pane.getChildren().removeListener(listChangeListener);
         }
     }
 
@@ -260,6 +274,11 @@ public class PhysicsGame {
         if(node instanceof PhysicsShape){
             addBody((PhysicsShape) node, node);
         }else if (node instanceof Parent){
+            if (node instanceof Pane){
+                Pane pane = (Pane) node;
+                pane.getChildren().addListener(listChangeListener);
+            }
+
             if (node instanceof ShapeComposition){
                 addShapeContainer((ShapeComposition) node);
             }else{
@@ -372,7 +391,7 @@ public class PhysicsGame {
 			Body body = nodeBodyMap.get(node);
 			Bounds bounds = node.getBoundsInLocal();
 
-			Point2D nodePosition = coordinateConverter.convertWorldPointToScreen(body.getPosition().x, body.getPosition().y, node.getParent());
+			Point2D nodePosition = coordinateConverter.convertWorldPointToScreen(body.getPosition(), node.getParent());
             Point2D center = positionHelper.getCenter2(bounds);
 			double x = nodePosition.getX() - (center.getX());
             double y = nodePosition.getY() - (center.getY());
