@@ -16,7 +16,7 @@
         <PhysicsRectangle fx:id="roof" bodyType="NonMovable" fill="black" layoutX="10" layoutY="0" width="620" height="10" />
         <PhysicsRectangle fx:id="floor" bodyType="NonMovable" fill="black" layoutX="10" layoutY="470" width="620" height="10" />
 
-        <PhysicsCircle fx:id="ball" bodyType="Full" fill="black" layoutX="315" layoutY="235" radius="15" restitution="1" density="1" />
+        <PhysicsCircle fx:id="ball" bodyType="Full" linearVelocityX="800" linearVelocityY="50" fill="black" layoutX="315" layoutY="235" radius="15" restitution="1" density="1" />
 
     </PhysicsWorld>
     <Label fx:id="score" >

@@ -1,6 +1,7 @@
 package framework;
 
 import bodies.BodyPropertiesOwner;
+import bodies.Physical;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -58,7 +59,7 @@ public class PhysicsWorldFunctions {
         double x = bounds.getMinX() + offsetX;
         double y = bounds.getMinY() + offsetY;
         double radian = Math.toRadians(rotate);
-        Point2D center = positionHelper.getCenter2(bounds);
+        Point2D center = positionHelper.getCenter(bounds);
         double cX = center.getX();
         double cY = center.getY();
 
@@ -117,11 +118,11 @@ public class PhysicsWorldFunctions {
         return coordinateConverter.convertWorldPointToScreen(body.getWorldCenter(), node.getParent());
     }
 
-    public static <T extends Node & BodyPropertiesOwner> double getCurrentSpeed(T node){
+    public static <T extends Node & Physical> double getCurrentSpeed(T node){
         return Math.abs(node.getLinearVelocityX())  + Math.abs(node.getLinearVelocityY());
     }
 
-    public static <T extends Node & BodyPropertiesOwner> void setSpeedToCurrentTravelVector(T node, double speed){
+    public static <T extends Node & Physical> void setSpeedToCurrentTravelVector(T node, double speed){
         double currentSpeed = getCurrentSpeed(node);
         double directionX =  node.getLinearVelocityX() / currentSpeed;
         double directionY =  node.getLinearVelocityY() / currentSpeed;
@@ -129,7 +130,7 @@ public class PhysicsWorldFunctions {
         node.setLinearVelocityY(directionY * speed);
     }
 
-    public static <T extends Node & BodyPropertiesOwner> Point2D getOffsetTravelVector(T node, double angleOffset) {
+    public static <T extends Node & Physical> Point2D getOffsetTravelVector(T node, double angleOffset) {
         double currentSpeed = getCurrentSpeed(node);
         double directionX =  node.getLinearVelocityX() / currentSpeed;
         double directionY =  node.getLinearVelocityY() / currentSpeed;

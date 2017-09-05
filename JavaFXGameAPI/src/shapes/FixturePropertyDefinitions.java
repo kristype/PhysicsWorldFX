@@ -1,6 +1,8 @@
 package shapes;
 
 import bodies.StyleFactory;
+import com.sun.org.apache.xpath.internal.operations.Bool;
+import javafx.beans.value.ObservableValue;
 import org.jbox2d.dynamics.FixtureDef;
 
 import javafx.css.Styleable;
@@ -13,61 +15,100 @@ public class FixturePropertyDefinitions<S extends Styleable> extends StyleFactor
 	private final StyleableProperty<Number> friction;
 	private final StyleableProperty<Number> restitution;
 	private final StyleableProperty<Boolean> sensor;
+    private final StyleableProperty<Number> filterMask;
+    private final StyleableProperty<Number> filterCategory;
+    private final StyleableProperty<Number> filterGroup;
 
-	public FixturePropertyDefinitions(S owner, StyleablePropertyFactory<S> spf) {
+    public FixturePropertyDefinitions(S owner, StyleablePropertyFactory<S> spf) {
 		super(owner, spf);
-		this.density = createStyleableNumberProperty("density", s -> densityProperty(), 0.0);
-		this.friction = createStyleableNumberProperty("friction", s -> frictionProperty(), 0.0);
-		this.restitution = createStyleableNumberProperty("restitution", s -> restitutionProperty(), 1.0);
-		this.sensor = createStyleableBooleanProperty("sensor", s -> sensorProperty(), false);
+		this.filterMask = createStyleableNumberProperty("filterMask", s -> ((FixturePropertiesOwner)s).getFixturePropertyDefinitions().filterMask, 0xFFFF);
+		this.filterCategory = createStyleableNumberProperty("filterCategory", s -> ((FixturePropertiesOwner)s).getFixturePropertyDefinitions().filterCategory, 0x0001);
+		this.filterGroup = createStyleableNumberProperty("filterGroup", s -> ((FixturePropertiesOwner)s).getFixturePropertyDefinitions().filterGroup, 0);
+		this.density = createStyleableNumberProperty("density", s -> ((FixturePropertiesOwner)s).getFixturePropertyDefinitions().density, 0.0);
+		this.friction = createStyleableNumberProperty("friction", s -> ((FixturePropertiesOwner)s).getFixturePropertyDefinitions().friction, 0.2);
+		this.restitution = createStyleableNumberProperty("restitution", s -> ((FixturePropertiesOwner)s).getFixturePropertyDefinitions().restitution, 0.0);
+		this.sensor = createStyleableBooleanProperty("sensor", s -> ((FixturePropertiesOwner)s).getFixturePropertyDefinitions().sensor, false);
 	}
 
 	public FixtureDef createFixtureDef() {
 		FixtureDef fixtureDef = new FixtureDef();
-		fixtureDef.density = (float)this.getDensity();
-		fixtureDef.friction = (float)this.getFriction();
-		fixtureDef.restitution = (float)this.getRestitution();
+		fixtureDef.density = (float)getDensity();
+		fixtureDef.friction = (float)getFriction();
+		fixtureDef.restitution = (float)getRestitution();
 		fixtureDef.isSensor = this.isSensor();
-		return fixtureDef;
+		fixtureDef.filter.maskBits = getFilterMask();
+		fixtureDef.filter.categoryBits = getFilterCategory();
+        fixtureDef.filter.groupIndex = getFilterGroup();
+        return fixtureDef;
 	}
 
-	public StyleableProperty<Number> densityProperty() {
-		return density;
+	public ObservableValue<Double> densityProperty() {
+		return (ObservableValue<Double>)density;
 	}
 	public final double getDensity() {
-		return densityProperty().getValue().floatValue();
+		return density.getValue().doubleValue();
 	}
 	public final void setDensity(double density) {
-		densityProperty().setValue(density);
+		this.density.setValue(density);
 	}
 	
-	public StyleableProperty<Number> frictionProperty() {
-		return friction;
+	public ObservableValue<Double> frictionProperty() {
+		return (ObservableValue<Double>)friction;
 	}
 	public final double getFriction() {
-		return frictionProperty().getValue().floatValue();
+		return friction.getValue().doubleValue();
 	}
 	public final void setFriction(double friction) {
-		frictionProperty().setValue(friction);
+		this.friction.setValue(friction);
 	}
 	
-	public StyleableProperty<Number> restitutionProperty() {
-		return restitution;
+	public ObservableValue<Double> restitutionProperty() {
+		return (ObservableValue<Double>)restitution;
 	}
 	public final double getRestitution() {
-		return restitutionProperty().getValue().floatValue();
+		return restitution.getValue().floatValue();
 	}
 	public final void setRestitution(double restitution) {
-		restitutionProperty().setValue(restitution);
+		this.restitution.setValue(restitution);
 	}
 
-	public StyleableProperty<Boolean> sensorProperty() {
-		return sensor;
+	public ObservableValue<Boolean> sensorProperty() {
+		return (ObservableValue<Boolean>)sensor;
 	}
 	public final boolean isSensor() {
-		return sensorProperty().getValue();
+		return sensor.getValue();
 	}
 	public final void setSensor(boolean sensor) {
-		sensorProperty().setValue(sensor);
+		this.sensor.setValue(sensor);
 	}
+
+    public ObservableValue<Integer> filterMaskProperty() {
+        return (ObservableValue<Integer>)filterMask;
+    }
+    public final int getFilterMask() {
+        return filterMask.getValue().intValue();
+    }
+    public final void setFilterMask(int filterMask) {
+        this.filterMask.setValue(filterMask);
+    }
+
+    public ObservableValue<Integer> filterCategoryProperty() {
+        return (ObservableValue<Integer>)filterCategory;
+    }
+    public final int getFilterCategory() {
+        return filterCategory.getValue().intValue();
+    }
+    public final void setFilterCategory(double filterCategory) {
+        this.filterCategory.setValue(filterCategory);
+    }
+
+    public ObservableValue<Integer> filterGroupProperty() {
+        return (ObservableValue<Integer>)filterGroup;
+    }
+    public final int getFilterGroup() {
+        return filterGroup.getValue().intValue();
+    }
+    public final void setFilterGroup(int filterGroup) {
+        this.filterGroup.setValue(filterGroup);
+    }
 }

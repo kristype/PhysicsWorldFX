@@ -42,6 +42,7 @@ public class OverlayController {
 
         startLevel(levels[currentLevel]);
         game.setOnFinish(() -> {
+            game.stopGame();
            loadNextLevel();
         });
     }

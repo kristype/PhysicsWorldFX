@@ -13,10 +13,10 @@ public class PositionHelper {
         return min <= 0 && max <= 0 ?  max + (min - max) / 2 : min + (max - min) /2;
     }
 
-    public Point2D getCenter2(Bounds bounds){
+    public Point2D getCenter(Bounds bounds){
         double centerX = getCenter(bounds.getMinX(), bounds.getMaxX());
         double centerY = getCenter(bounds.getMinY(), bounds.getMaxY());
-        return new Point2D(centerX, centerY) ;
+        return new Point2D(centerX, centerY);
     }
 
     public void scaleAndRotate(double[] points, double scaleX, double scaleY, double rotate) {

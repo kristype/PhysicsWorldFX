@@ -12,8 +12,8 @@ import static framework.PhysicsWorldFunctions.*;
 
 public class GameController {
 
-    public static final int singleThrustForce = 80;
-    public static final int fullThrustForce = 200;
+    public static final int singleThrustForce = -80;
+    public static final int fullThrustForce = -200;
     @FXML private PhysicsRectangle landingPad;
 
     @FXML private Polygon rightFlame;

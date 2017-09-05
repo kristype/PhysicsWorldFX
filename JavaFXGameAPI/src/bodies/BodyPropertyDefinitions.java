@@ -1,6 +1,7 @@
 package bodies;
 
 import framework.SimulationType;
+import javafx.beans.value.ObservableValue;
 import javafx.css.Styleable;
 import javafx.css.StyleableProperty;
 import javafx.css.StyleablePropertyFactory;
@@ -25,18 +26,18 @@ public class BodyPropertyDefinitions<S extends Styleable> extends StyleFactory<S
 
     public BodyPropertyDefinitions(S owner, StyleablePropertyFactory<S> spf) {
 		super(owner, spf);
-		this.bodyType = createStyleableEnumProperty("bodyType", s -> bodyTypeProperty(), SimulationType.class, SimulationType.Full);
-		this.linearDamping = createStyleableNumberProperty("linearDamping", s -> linearDampingProperty(), 0.0);
-		this.linearVelocityX = createStyleableNumberProperty("linearVelocityX", s -> linearVelocityXProperty(), 0.0);
-		this.linearVelocityY = createStyleableNumberProperty("linearVelocityY", s -> linearVelocityYProperty(), 0.0);
-		this.angularDamping = createStyleableNumberProperty("angularDamping", s -> angularDampingProperty(), 0.0);
-		this.angularVelocity = createStyleableNumberProperty("angularVelocity", s -> angularVelocityProperty(), 0.0);
-		this.gravityScale = createStyleableNumberProperty("gravityScale", s -> gravityScaleProperty(), 1.0);
-		this.allowSleep = createStyleableBooleanProperty("allowSleep", s -> allowSleepProperty(), true);
-		this.awake = createStyleableBooleanProperty("awake", s -> awakeProperty(), true);
-		this.fixedRotation = createStyleableBooleanProperty("fixedRotation", s -> fixedRotationProperty(), false);
-		this.active = createStyleableBooleanProperty("active", s -> activeProperty(), true);
-		this.bullet = createStyleableBooleanProperty("bullet", s -> bulletProperty(), false);
+		this.bodyType = createStyleableEnumProperty("bodyType", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().bodyType, SimulationType.class, SimulationType.Full);
+		this.linearDamping = createStyleableNumberProperty("linearDamping", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().linearDamping, 0.0);
+		this.linearVelocityX = createStyleableNumberProperty("linearVelocityX", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().linearVelocityX, 0.0);
+		this.linearVelocityY = createStyleableNumberProperty("linearVelocityY", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().linearVelocityY, 0.0);
+		this.angularDamping = createStyleableNumberProperty("angularDamping", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().angularDamping, 0.0);
+		this.angularVelocity = createStyleableNumberProperty("angularVelocity", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().angularVelocity, 0.0);
+		this.gravityScale = createStyleableNumberProperty("gravityScale", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().gravityScale, 1.0);
+		this.allowSleep = createStyleableBooleanProperty("allowSleep", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().allowSleep, true);
+		this.awake = createStyleableBooleanProperty("awake", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().awake, true);
+		this.fixedRotation = createStyleableBooleanProperty("fixedRotation", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().fixedRotation, false);
+		this.active = createStyleableBooleanProperty("active", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().active, true);
+		this.bullet = createStyleableBooleanProperty("bullet", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().bullet, false);
 	}
 
 	public BodyDef createBodyDef(SimulationTypeToBodyTypeConverter converter) {
@@ -53,18 +54,18 @@ public class BodyPropertyDefinitions<S extends Styleable> extends StyleFactory<S
         return bodyDef;
 	}
 
-	public StyleableProperty<SimulationType> bodyTypeProperty() {
-		return bodyType;
+	public ObservableValue<SimulationType> bodyTypeProperty() {
+		return (ObservableValue<SimulationType>) bodyType;
 	}
 	public final SimulationType getBodyType() {
-		return bodyTypeProperty().getValue();
+		return bodyType.getValue();
 	}
 	public final void setBodyType(SimulationType bodyType) {
-		bodyTypeProperty().setValue(bodyType);
+		this.bodyType.setValue(bodyType);
 	}
 	
-	public StyleableProperty<Number> linearDampingProperty() {
-	    return linearDamping;
+	public ObservableValue<Double> linearDampingProperty() {
+	    return (ObservableValue<Double>)linearDamping;
 	}
 	public final double getLinearDamping() {
 		return linearDamping.getValue().doubleValue();
@@ -73,103 +74,103 @@ public class BodyPropertyDefinitions<S extends Styleable> extends StyleFactory<S
         this.linearDamping.setValue(linearDamping);
 	}
 
-	public StyleableProperty<Number> linearVelocityXProperty() {
-		return linearVelocityX;
+	public ObservableValue<Double> linearVelocityXProperty() {
+		return (ObservableValue<Double>)linearVelocityX;
 	}
 	public final double getLinearVelocityX() {
-		return linearVelocityXProperty().getValue().doubleValue();
+		return linearVelocityX.getValue().doubleValue();
 	}
 	public final void setLinearVelocityX(double linearVelocityX) {
-		linearVelocityXProperty().setValue(linearVelocityX);
+		this.linearVelocityX.setValue(linearVelocityX);
 	}
 
-	public StyleableProperty<Number> linearVelocityYProperty() {
-		return linearVelocityY;
+	public ObservableValue<Double> linearVelocityYProperty() {
+		return (ObservableValue<Double>)linearVelocityY;
 	}
 	public final double getLinearVelocityY() {
-		return linearVelocityYProperty().getValue().doubleValue();
+		return linearVelocityY.getValue().doubleValue();
 	}
 	public final void setLinearVelocityY(double linearVelocityY) {
-		linearVelocityYProperty().setValue(linearVelocityY);
+		this.linearVelocityY.setValue(linearVelocityY);
 	}
 
-    public StyleableProperty<Number> angularVelocityProperty() {
-        return angularVelocity;
+    public ObservableValue<Double> angularVelocityProperty() {
+        return (ObservableValue<Double>)angularVelocity;
     }
     public final double getAngularVelocity() {
-        return angularVelocityProperty().getValue().doubleValue();
+        return angularVelocity.getValue().doubleValue();
     }
     public final void setAngularVelocity(double angularVelocity) {
-	    angularVelocityProperty().setValue(angularVelocity);
+	    this.angularVelocity.setValue(angularVelocity);
     }
 
-	public StyleableProperty<Number> angularDampingProperty() {
-		return angularDamping;
+	public ObservableValue<Double> angularDampingProperty() {
+		return (ObservableValue<Double>)angularDamping;
 	}
 	public final double getAngularDamping() {
-		return angularDampingProperty().getValue().doubleValue();
+		return angularDamping.getValue().doubleValue();
 	}
 	public final void setAngularDamping(double angularDamping) {
-		angularDampingProperty().setValue(angularDamping);
+		this.angularDamping.setValue(angularDamping);
 	}
 	
-	public StyleableProperty<Number> gravityScaleProperty() {
-		return gravityScale;
+	public ObservableValue<Double> gravityScaleProperty() {
+		return (ObservableValue<Double>)gravityScale;
 	}
 	public final double getGravityScale() {
-		return gravityScaleProperty().getValue().doubleValue();
+		return gravityScale.getValue().doubleValue();
 	}
 	public final void setGravityScale(double gravityScale) {
-		gravityScaleProperty().setValue(gravityScale);
+		this.gravityScale.setValue(gravityScale);
 	}
 
-	public StyleableProperty<Boolean> allowSleepProperty() {
-		return allowSleep;
+	public ObservableValue<Boolean> allowSleepProperty() {
+		return (ObservableValue<Boolean>) allowSleep;
 	}
 	public final boolean isAllowSleep() {
-		return allowSleepProperty().getValue();
+		return allowSleep.getValue();
 	}
 	public final void setAllowSleep(boolean allowSleep) {
-		allowSleepProperty().setValue(allowSleep);
+		this.allowSleep.setValue(allowSleep);
 	}
 	
-	public StyleableProperty<Boolean> awakeProperty() {
-		return awake;
+	public ObservableValue<Boolean> awakeProperty() {
+		return (ObservableValue<Boolean>)  awake;
 	}
 	public final boolean isAwake() {
-		return awakeProperty().getValue();
+		return awake.getValue();
 	}
 	public final void setAwake(boolean awake) {
-		awakeProperty().setValue(awake);
+		this.awake.setValue(awake);
 	}
 	
-	public StyleableProperty<Boolean> fixedRotationProperty() {
-		return fixedRotation;
+	public ObservableValue<Boolean> fixedRotationProperty() {
+		return (ObservableValue<Boolean>)  fixedRotation;
 	}
 	public final boolean isFixedRotation() {
-		return fixedRotationProperty().getValue();
+		return fixedRotation.getValue();
 	}
 	public final void setFixedRotation(boolean fixedRotation) {
-		fixedRotationProperty().setValue(fixedRotation);
+		this.fixedRotation.setValue(fixedRotation);
 	}
 	
-	public StyleableProperty<Boolean> activeProperty() {
-		return active;
+	public ObservableValue<Boolean> activeProperty() {
+		return (ObservableValue<Boolean>)  active;
 	}
 	public final boolean isActive() {
-		return activeProperty().getValue();
+		return active.getValue();
 	}
 	public final void setActive(boolean active) {
-		activeProperty().setValue(active);
+		this.active.setValue(active);
 	}
 
-    public StyleableProperty<Boolean> bulletProperty() {
-        return bullet;
+    public ObservableValue<Boolean> bulletProperty() {
+        return (ObservableValue<Boolean>)  bullet;
     }
     public final boolean isBullet() {
-        return bulletProperty().getValue();
+        return bullet.getValue();
     }
     public final void setBullet(boolean bullet) {
-        bulletProperty().setValue(bullet);
+        this.bullet.setValue(bullet);
     }
 }

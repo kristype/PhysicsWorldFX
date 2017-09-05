@@ -1,4 +1,10 @@
 .asteroid {
     -bx-density: 1;
+    -bx-restitution: 0;
     -fx-fill: black;
+}
+
+.bullet {
+    -bx-density: 1;
+    -bx-restitution: 1;
 }

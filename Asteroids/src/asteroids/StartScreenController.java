@@ -35,7 +35,7 @@ public class StartScreenController {
             gameContainer.getChildren().add(asteroids);
 
             game.load(gameContainer);
-            //game.enableDebug();
+            game.enableDebug();
             game.startGame();
         }catch (IOException e){
             System.out.println(e.getMessage());
@@ -56,6 +56,11 @@ public class StartScreenController {
         registerKeyPressed(event.getCode());
         if (keyIsPressed(KeyCode.SPACE) && titleContainer.isVisible()){
             startGame();
+        }
+        if (keyIsPressed(KeyCode.TAB) ) {
+            if (game.isDebugEnabled()) {
+                game.disableDebug();
+            }
         }
     }
 

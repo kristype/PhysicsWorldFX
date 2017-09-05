@@ -12,7 +12,7 @@
         <PhysicsRectangle fx:id="roof" bodyType="NonMovable" fill="black" layoutX="10" layoutY="0" width="620" height="10" />
         <PhysicsRectangle fx:id="floor" bodyType="NonMovable" fill="black" layoutX="10" layoutY="470" width="620" height="10" />
 
-        <PhysicsCircle fx:id="ball" bodyType="Full" fill="#7a1fff" layoutX="320.0" layoutY="270.0" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
+        <PhysicsCircle fx:id="ball" bodyType="Full" linearVelocityX="10" linearVelocityY="400" fill="#7a1fff" layoutX="320.0" layoutY="270.0" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
 
         <Pane fx:id="brickContainer" layoutX="20.0" layoutY="20.0" prefHeight="200.0" prefWidth="600.0">
             <padding>
