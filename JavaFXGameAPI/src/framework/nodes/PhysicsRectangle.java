@@ -5,14 +5,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import bodies.BodyPropertyDefinitions;
-import bodies.BodyPropertiesOwner;
-import bodies.Physical;
-import framework.ChangedEvent;
-import framework.ChangedEventListener;
+import framework.events.ChangedEvent;
+import framework.events.ChangedEventListener;
 import framework.SimulationType;
 import javafx.beans.value.ObservableValue;
 import javafx.css.*;
-import javafx.geometry.Point2D;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 
@@ -66,12 +63,22 @@ public class PhysicsRectangle extends Rectangle implements SingleShape {
     }
 
     @Override
-    public void applyForce(float vx, float vy) {
+    public void applyForce(double vx, double vy) {
         helper.applyForce(body, localCenterOffset, vx, vy);
     }
 
     @Override
-    public void applyForceUp(float vx, float vy) {
+    public void applyForceToPoint(double px, double py, double vx, double vy) {
+        helper.applyForceToPoint(this, body, px, py, vx, vy);
+    }
+
+    @Override
+    public void applyForceUpToPoint(double px, double py, double vx, double vy) {
+        helper.applyForceUpToPoint(this, body, px, py, vx, vy);
+    }
+
+    @Override
+    public void applyForceUp(double vx, double vy) {
         helper.applyForceUp(body, localCenterOffset, vx, vy);
     }
 
@@ -351,7 +358,7 @@ public class PhysicsRectangle extends Rectangle implements SingleShape {
     }
 
     @Override
-    public void setFilterCategory(double filterCategory) {
+    public void setFilterCategory(int filterCategory) {
         fixturePropertyDefinitions.setFilterCategory(filterCategory);
     }
 

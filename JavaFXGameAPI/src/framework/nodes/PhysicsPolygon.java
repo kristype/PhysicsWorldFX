@@ -1,10 +1,8 @@
 package framework.nodes;
 
-import bodies.BodyPropertiesOwner;
 import bodies.BodyPropertyDefinitions;
-import bodies.Physical;
-import framework.ChangedEvent;
-import framework.ChangedEventListener;
+import framework.events.ChangedEvent;
+import framework.events.ChangedEventListener;
 import framework.SimulationType;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -65,12 +63,22 @@ public class PhysicsPolygon extends Polygon implements SingleShape {
     }
 
     @Override
-    public void applyForce(float vx, float vy) {
+    public void applyForce(double vx, double vy) {
         helper.applyForce(body, localCenterOffset, vx, vy);
     }
 
     @Override
-    public void applyForceUp(float vx, float vy) {
+    public void applyForceToPoint(double px, double py, double vx, double vy) {
+        helper.applyForceToPoint(this, body, px, py, vx, vy);
+    }
+
+    @Override
+    public void applyForceUpToPoint(double px, double py, double vx, double vy) {
+        helper.applyForceUpToPoint(this, body, px, py, vx, vy);
+    }
+
+    @Override
+    public void applyForceUp(double vx, double vy) {
         helper.applyForceUp(body, localCenterOffset, vx, vy);
     }
 
@@ -350,7 +358,7 @@ public class PhysicsPolygon extends Polygon implements SingleShape {
     }
 
     @Override
-    public void setFilterCategory(double filterCategory) {
+    public void setFilterCategory(int filterCategory) {
         fixturePropertyDefinitions.setFilterCategory(filterCategory);
     }
 

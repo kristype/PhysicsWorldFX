@@ -1,11 +1,11 @@
 package shapes;
 
-import framework.ChangedEventListener;
+import framework.events.ChangedEventListener;
 import javafx.beans.value.ObservableValue;
 import org.jbox2d.common.Vec2;
 
 
-public interface ShapeProperties {
+public interface Physical {
     ObservableValue<Double> densityProperty();
     double getDensity();
     void setDensity(double density);
@@ -28,7 +28,7 @@ public interface ShapeProperties {
 
     ObservableValue<Integer> filterCategoryProperty();
     int getFilterCategory();
-    void setFilterCategory(double filterCategory);
+    void setFilterCategory(int filterCategory);
 
     ObservableValue<Integer> filterGroupProperty();
     int getFilterGroup();

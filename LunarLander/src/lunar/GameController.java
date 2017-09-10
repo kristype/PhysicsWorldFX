@@ -57,7 +57,7 @@ public class GameController {
         }
 
         if (physicsNodesTouching(leftThruster, landingPad) && physicsNodesTouching(rightThruster, landingPad)){
-            world.endLevel();
+            world.finishLevel(0);
         }
     }
 }

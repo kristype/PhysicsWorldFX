@@ -50,8 +50,7 @@ public class PositionHelper {
 
             double x = points[i];
             double y = points[i + 1];
-/*            points[i] = cos * x + sin * y;
-            points[i+1] = -(sin * x) + cos * y;*/
+
             points[i] = cos * x - sin * y;
             points[i+1] = sin * x + cos * y;
 

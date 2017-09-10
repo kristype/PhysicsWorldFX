@@ -1,4 +1,4 @@
-package framework;
+package framework.events;
 
 import javafx.beans.NamedArg;
 import javafx.event.Event;

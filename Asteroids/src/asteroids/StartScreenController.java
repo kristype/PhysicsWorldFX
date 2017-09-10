@@ -41,9 +41,7 @@ public class StartScreenController {
             System.out.println(e.getMessage());
         }
 
-        game.setOnFinish(() -> {
-           showMenu();
-        });
+        game.setOnLevelFailed(e -> showMenu());
     }
 
     private void showMenu() {
@@ -64,7 +62,8 @@ public class StartScreenController {
         }
     }
 
-    @FXML private void handleKeyReleased(KeyEvent event) {
+    @FXML
+    private void handleKeyReleased(KeyEvent event) {
         registerKeyReleased(event.getCode());
     }
 }

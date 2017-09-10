@@ -1,8 +1,8 @@
 package shapes;
 
 import bodies.BodyPropertiesOwner;
-import bodies.Physical;
+import bodies.Geometric;
 
-public interface SingleShape extends PhysicsShape, Physical, ShapeProperties, FixturePropertiesOwner, BodyPropertiesOwner{
+public interface SingleShape extends PhysicsShape, Geometric, Physical, FixturePropertiesOwner, BodyPropertiesOwner{
 
 }

@@ -4,7 +4,6 @@ import framework.PhysicsWorld;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.layout.Region;
 import org.jbox2d.common.Mat22;
 import org.jbox2d.common.OBBViewportTransform;
@@ -32,23 +31,20 @@ public class CoordinateConverter {
 		return viewportTransform;
 	}
 
-	private Vec2 fx2worldTemp1 = new Vec2(), fx2worldTemp2 = new Vec2();
-	
-	public Vec2 convertNodePointToWorld(double x, double y, Parent context) {
+	public Vec2 convertNodePointToWorld(double x, double y, Node context) {
 		while (context != null && context != root) {
 			Bounds bounds = context.getBoundsInParent();
 			x += bounds.getMinX();
 			y += bounds.getMinY();
 			context = context.getParent();
 		}
-		Vec2 result = fx2worldTemp1;
-		fx2worldTemp2.set((float) x, (float) y);
-		viewportTransform.getScreenToWorld(fx2worldTemp2, result);
+		Vec2 result = new Vec2();
+		viewportTransform.getScreenToWorld(new Vec2((float) x, (float) y), result);
 		return result;
 	}
 
 	public Point2D convertWorldPointToScreen(Vec2 point, Node context) {
-		Vec2 result = world2fxTemp1;
+		Vec2 result = new Vec2();
 		viewportTransform.getWorldToScreen(point, result);
 
 		float xResult = result.x;
@@ -65,20 +61,16 @@ public class CoordinateConverter {
 	}
 
 	public Vec2 convertVectorToWorld(double x, double y) {
-		Vec2 result = fx2worldTemp1;
-		fx2worldTemp2.set((float) x, (float) y);
-		viewportTransform.getScreenVectorToWorld(fx2worldTemp2, result);
+		Vec2 result = new Vec2();
+		viewportTransform.getScreenVectorToWorld(new Vec2((float) x, (float) y), result);
 		return result;
 	}
 
 	public Point2D convertVectorToScreen(Vec2 vector) {
-		Vec2 result = fx2worldTemp1;
-		fx2worldTemp2.set(vector);
-		viewportTransform.getWorldVectorToScreen(fx2worldTemp2, result);
+		Vec2 result = new Vec2();
+		viewportTransform.getWorldVectorToScreen(vector, result);
 		return new Point2D(result.x, result.y);
 	}
-
-	private Vec2 world2fxTemp1 = new Vec2(), world2fxTemp2 = new Vec2();
 
 	public Vec2 scaleVectorToWorld(double x, double y){
 		return new Vec2((float)x / physicsScale,(float) y /physicsScale);

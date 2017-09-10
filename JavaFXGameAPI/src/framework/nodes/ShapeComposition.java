@@ -2,7 +2,7 @@ package framework.nodes;
 
 import bodies.BodyPropertiesOwner;
 import bodies.BodyPropertyDefinitions;
-import bodies.Physical;
+import bodies.Geometric;
 import framework.SimulationType;
 import javafx.beans.value.ObservableValue;
 import javafx.css.CssMetaData;
@@ -16,7 +16,7 @@ import utilites.PhysicsShapeHelper;
 
 import java.util.List;
 
-public class ShapeComposition extends Pane implements BodyPropertiesOwner, Physical, PhysicsShape {
+public class ShapeComposition extends Pane implements BodyPropertiesOwner, Geometric, PhysicsShape {
 
     private final BodyPropertyDefinitions<ShapeComposition> bodyPropertyDefinitions;
 
@@ -54,12 +54,22 @@ public class ShapeComposition extends Pane implements BodyPropertiesOwner, Physi
     }
 
     @Override
-    public void applyForce(float vx, float vy) {
+    public void applyForce(double vx, double vy) {
         helper.applyForce(body, localCenterOffset, vx, vy);
     }
 
     @Override
-    public void applyForceUp(float vx, float vy) {
+    public void applyForceToPoint(double px, double py, double vx, double vy) {
+        helper.applyForceToPoint(this, body, px, py, vx, vy);
+    }
+
+    @Override
+    public void applyForceUpToPoint(double px, double py, double vx, double vy) {
+        helper.applyForceUpToPoint(this, body, px, py, vx, vy);
+    }
+
+    @Override
+    public void applyForceUp(double vx, double vy) {
         helper.applyForceUp(body, localCenterOffset, vx, vy);
     }
 
@@ -241,5 +251,9 @@ public class ShapeComposition extends Pane implements BodyPropertiesOwner, Physi
     @Override
     public void setBullet(boolean bullet) {
         bodyPropertyDefinitions.setBullet(bullet);
+    }
+
+    public void applyForceToCenterOfMass(double vx, double vy) {
+        helper.applyForceToCenterOfMass(body, vx, vy);
     }
 }

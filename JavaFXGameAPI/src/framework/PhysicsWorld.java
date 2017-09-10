@@ -1,18 +1,18 @@
 package framework;
 
 import bodies.StyleFactory;
+import framework.events.*;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.css.CssMetaData;
 import javafx.css.Styleable;
 import javafx.css.StyleableProperty;
 import javafx.css.StyleablePropertyFactory;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
+import javafx.event.EventType;
 import javafx.scene.layout.Pane;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class PhysicsWorld extends Pane {
@@ -24,21 +24,21 @@ public class PhysicsWorld extends Pane {
     private SimpleObjectProperty<EventHandler<? super PhysicsEvent>> physicsStepProperty = new SimpleObjectProperty<>(null);
     private SimpleObjectProperty<EventHandler<? super CollisionEvent>> beginCollisionProperty = new SimpleObjectProperty<>(null);
     private SimpleObjectProperty<EventHandler<? super CollisionEvent>> endCollisionProperty = new SimpleObjectProperty<>(null);
-    private Action onLevelEnd;
+    private LevelFinishEventListener onLevelFinish;
 
     public PhysicsWorld(){
         StyleFactory<PhysicsWorld> styleDefinition = new StyleFactory<>(this, SPF);
         setFocusTraversable(true);
         setFocused(true);
 
-        physicsScale = styleDefinition.createStyleableNumberProperty("physicsScale", s -> physicsScaleProperty(), 30.0);
-        gravityX = styleDefinition.createStyleableNumberProperty("gravityX", s -> gravityXProperty(), 0.0);
-        gravityY = styleDefinition.createStyleableNumberProperty("gravityY", s -> gravityYProperty(), 0.0);
+        physicsScale = styleDefinition.createStyleableNumberProperty("physicsScale", s -> s.physicsScale, 30.0);
+        gravityX = styleDefinition.createStyleableNumberProperty("gravityX", s -> s.gravityX, 0.0);
+        gravityY = styleDefinition.createStyleableNumberProperty("gravityY", s -> s.gravityY, 0.0);
 
     }
 
-    private StyleableProperty<Number> gravityXProperty() {
-        return gravityX;
+    public ObservableValue<Double> gravityXProperty() {
+        return (ObservableValue<Double>) gravityX;
     }
     public double getGravityX() {
         return gravityX.getValue().doubleValue();
@@ -47,8 +47,8 @@ public class PhysicsWorld extends Pane {
         this.gravityX.setValue(gravityX);
     }
 
-    private StyleableProperty<Number> gravityYProperty() {
-        return gravityY;
+    public ObservableValue<Double> gravityYProperty() {
+        return (ObservableValue<Double>) gravityY;
     }
     public double getGravityY() {
         return gravityY.getValue().doubleValue();
@@ -57,14 +57,18 @@ public class PhysicsWorld extends Pane {
         this.gravityY.setValue(gravityY);
     }
 
-    private StyleableProperty<Number> physicsScaleProperty() {
-        return physicsScale;
+
+    /** Can only be set before loading
+     * @return physics scale property
+     */
+    public ObservableValue<Double> physicsScaleProperty() {
+        return (ObservableValue<Double>)physicsScale;
     }
     public double getPhysicsScale() {
         return physicsScaleProperty().getValue().doubleValue();
     }
     public void setPhysicsScale(double value){
-        physicsScaleProperty().setValue(value);
+        physicsScale.setValue(value);
     }
 
     private static final StyleablePropertyFactory<PhysicsWorld> SPF = new StyleablePropertyFactory<>(Pane.getClassCssMetaData());
@@ -76,41 +80,6 @@ public class PhysicsWorld extends Pane {
     @Override
     public List<CssMetaData<? extends Styleable, ?>> getCssMetaData() {
         return getClassCssMetaData();
-    }
-
-    private List<ChangedEventListener> addListeners = new ArrayList<>();
-
-    public void addAddEventListener(ChangedEventListener listener)  {
-        addListeners.add(listener);
-    }
-    public void removeAddEventListener(ChangedEventListener listener)   {
-        addListeners.remove(listener);
-    }
-
-    public void add(Node shape) {
-        ChangedEvent event = new ChangedEvent(this, shape);
-        Iterator i = addListeners.iterator();
-        while(i.hasNext())  {
-            ((ChangedEventListener) i.next()).handleChangedEvent(event);
-        }
-    }
-
-    private List<ChangedEventListener> removeListeners = new ArrayList<>();
-
-    public void addRemoveEventListener(ChangedEventListener listener)  {
-        removeListeners.add(listener);
-    }
-
-    public void removeRemoveEventListener(ChangedEventListener listener)   {
-        removeListeners.remove(listener);
-    }
-
-    public void remove(Node shape) {
-        ChangedEvent event = new ChangedEvent(this, shape);
-        Iterator i = removeListeners.iterator();
-        while(i.hasNext())  {
-            ((ChangedEventListener) i.next()).handleChangedEvent(event);
-        }
     }
 
     public final void setOnPhysicsStep(
@@ -151,14 +120,17 @@ public class PhysicsWorld extends Pane {
         return endCollisionProperty;
     }
 
-    public void endLevel(){
-        if (onLevelEnd != null){
-            onLevelEnd.action();
+    public void finishLevel(boolean completed, int endState){
+        if (onLevelFinish != null){
+            EventType<LevelFinishedEvent> eventType = completed ?
+                    LevelFinishedEvent.LEVEL_COMPLETE
+                    : LevelFinishedEvent.LEVEL_FAILED;
+            onLevelFinish.handleLevelFinishedEvent(new LevelFinishedEvent(eventType, endState));
         }
     }
 
-    void setOnLevelEnd(Action onLevelEnd) {
-        this.onLevelEnd = onLevelEnd;
+    void setOnLevelFinish(LevelFinishEventListener onLevelFinish) {
+        this.onLevelFinish = onLevelFinish;
     }
 }
 

@@ -1,4 +1,4 @@
-package framework;
+package framework.events;
 
 public interface Action {
     void action();

@@ -1,6 +1,6 @@
 package asteroids;
 
-import framework.CollisionEvent;
+import framework.events.CollisionEvent;
 import framework.PhysicsWorld;
 import framework.nodes.PhysicsCircle;
 import framework.nodes.PhysicsPolygon;
@@ -21,9 +21,9 @@ import static framework.PhysicsWorldFunctions.*;
 
 public class Controller {
 
-    private final int minX = -25;
+    private final int minX = -30;
     private final int maxX = 805;
-    private final int minY = -25;
+    private final int minY = -30;
     private final int maxY = 605;
 
     private final Random random = new Random();
@@ -75,7 +75,7 @@ public class Controller {
     private void checkPlayerCollision(Node object1, Node object2) {
         if (object1 == playerShip && (hasStyle(object2, "asteroid"))) {
             if (!gameOver){
-                physicsWorld.endLevel();
+                physicsWorld.finishLevel(false,0);
                 gameOver = true;
                 shipBody.setFill(Color.DARKRED);
                 rightWing.setFill(Color.DARKRED);
@@ -87,13 +87,13 @@ public class Controller {
     private void spawnAsteroid(PhysicsPolygon asteroid, String newTypes, double scale, double velocityAngleOffset, double spanwPointAngleOffset, int spawnOffset, int spawnOffsetY) {
         try {
             int randomNumber = random.nextInt(3) + 1;
-            PhysicsPolygon newAsteroid = loadResource(getClass(), "resources/asteroid"+randomNumber+".fxml");
+            PhysicsPolygon newAsteroid = loadFxmlResource(getClass(), "resources/asteroid"+randomNumber+".fxml");
 
             newAsteroid.getStyleClass().add(newTypes);
             newAsteroid.setScaleX(scale);
             newAsteroid.setScaleY(scale);
 
-            Point2D travelVector = getOffsetTravelVector(asteroid, velocityAngleOffset);
+            Point2D travelVector = getOffsetSpeedVector(asteroid, velocityAngleOffset);
             newAsteroid.setLinearVelocityX(travelVector.getX());
             newAsteroid.setLinearVelocityY(travelVector.getY());
             newAsteroid.setAngularVelocity(asteroid.getAngularVelocity());
@@ -128,7 +128,7 @@ public class Controller {
             //Max speed
             double currentSpeed = getCurrentSpeed(playerShip);
             if (currentSpeed > 400) {
-                setSpeedToCurrentTravelVector(playerShip, 400);
+                setSpeedToCurrentSpeedVector(playerShip, 400);
             }
 
 
@@ -195,12 +195,12 @@ public class Controller {
 
     private void shoot() {
         try {
-            PhysicsCircle bullet = loadResource(getClass(), "resources/bullet.fxml");
+            PhysicsCircle bullet = loadFxmlResource(getClass(), "resources/bullet.fxml");
             Point2D point = getVectorForDegrees(playerShip.getRotate(), 600);
             bullet.setLinearVelocityX(point.getX() + playerShip.getLinearVelocityX());
             bullet.setLinearVelocityY(point.getY() + playerShip.getLinearVelocityY());
 
-            Point2D spawnPoint = getRotatedLayoutPosition(playerShip, 15, -10);
+            Point2D spawnPoint = getRotatedLayoutPosition(playerShip, 16, -5);
             bullet.setLayoutX(spawnPoint.getX());
             bullet.setLayoutY(spawnPoint.getY());
 

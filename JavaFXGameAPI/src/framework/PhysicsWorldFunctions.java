@@ -1,7 +1,6 @@
 package framework;
 
-import bodies.BodyPropertiesOwner;
-import bodies.Physical;
+import bodies.Geometric;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -10,6 +9,7 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import org.jbox2d.collision.Collision;
 import org.jbox2d.collision.shapes.Shape;
+import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 import org.jbox2d.dynamics.Fixture;
 import org.jbox2d.dynamics.World;
@@ -58,8 +58,12 @@ public class PhysicsWorldFunctions {
         Bounds bounds = node.getBoundsInParent();
         double x = bounds.getMinX() + offsetX;
         double y = bounds.getMinY() + offsetY;
-        double radian = Math.toRadians(rotate);
         Point2D center = positionHelper.getCenter(bounds);
+        return getRotated(rotate, x, y, center);
+    }
+
+    private static Point2D getRotated(double rotate, double x, double y, Point2D center) {
+        double radian = Math.toRadians(rotate);
         double cX = center.getX();
         double cY = center.getY();
 
@@ -79,6 +83,10 @@ public class PhysicsWorldFunctions {
         y += cY;
 
         return new Point2D(x, y);
+    }
+
+    public static Point2D getRotatedPoint(Node node, double x, double y){
+        return getRotated(node.getRotate(), x, y, positionHelper.getCenter(node.getLayoutBounds()));
     }
 
     public static boolean physicsNodesTouching(Node node1, Node node2){
@@ -110,7 +118,7 @@ public class PhysicsWorldFunctions {
         return keysPressed.contains(keyCode);
     }
 
-    public Point2D getCenterOfMass(Node node) throws Exception {
+    public static Point2D getWorldCenterOfMass(Node node) throws Exception {
         if (!nodeBodyMap.containsKey(node))
             throw new Exception("Node must be the outermost physical node", new Throwable());
 
@@ -118,11 +126,23 @@ public class PhysicsWorldFunctions {
         return coordinateConverter.convertWorldPointToScreen(body.getWorldCenter(), node.getParent());
     }
 
-    public static <T extends Node & Physical> double getCurrentSpeed(T node){
+    public static Point2D getLocalCenterOfMass(Node node) throws Exception {
+        if (!nodeBodyMap.containsKey(node))
+            throw new Exception("Node must be the outermost physical node", new Throwable());
+
+        Body body = nodeBodyMap.get(node);
+        Vec2 localCenter = body.getLocalCenter();
+        Point2D converted = coordinateConverter.convertVectorToScreen(localCenter);
+        Bounds bounds = node.getLayoutBounds();
+        Point2D center = positionHelper.getCenter(bounds);
+        return new Point2D(converted.getX() + center.getX(), converted.getY() + center.getY());
+    }
+
+    public static <T extends Node & Geometric> double getCurrentSpeed(T node){
         return Math.abs(node.getLinearVelocityX())  + Math.abs(node.getLinearVelocityY());
     }
 
-    public static <T extends Node & Physical> void setSpeedToCurrentTravelVector(T node, double speed){
+    public static <T extends Node & Geometric> void setSpeedToCurrentSpeedVector(T node, double speed){
         double currentSpeed = getCurrentSpeed(node);
         double directionX =  node.getLinearVelocityX() / currentSpeed;
         double directionY =  node.getLinearVelocityY() / currentSpeed;
@@ -130,7 +150,7 @@ public class PhysicsWorldFunctions {
         node.setLinearVelocityY(directionY * speed);
     }
 
-    public static <T extends Node & Physical> Point2D getOffsetTravelVector(T node, double angleOffset) {
+    public static <T extends Node & Geometric> Point2D getOffsetSpeedVector(T node, double angleOffset) {
         double currentSpeed = getCurrentSpeed(node);
         double directionX =  node.getLinearVelocityX() / currentSpeed;
         double directionY =  node.getLinearVelocityY() / currentSpeed;
@@ -140,7 +160,7 @@ public class PhysicsWorldFunctions {
         return getVectorForDegrees(degrees, currentSpeed);
     }
 
-    public static <T> T loadResource(Class<?> relativeClass, String resource) throws IOException {
+    public static <T> T loadFxmlResource(Class<?> relativeClass, String resource) throws IOException {
         FXMLLoader loader = new FXMLLoader(relativeClass.getResource(resource));
         return loader.load();
     }

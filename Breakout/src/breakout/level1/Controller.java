@@ -1,7 +1,7 @@
 package breakout.level1;
 
-import framework.CollisionEvent;
-import framework.PhysicsEvent;
+import framework.events.CollisionEvent;
+import framework.events.PhysicsEvent;
 import framework.PhysicsWorld;
 import framework.SimulationType;
 import javafx.fxml.FXML;

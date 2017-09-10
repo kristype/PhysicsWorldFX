@@ -62,7 +62,7 @@ public class ShapeResolver {
             }
 
             List<Double> doubles = Arrays.stream(points).collect(Collectors.toList());
-            Vec2[] vertices = getVertrices(node, doubles);
+            Vec2[] vertices = getVertices(node, doubles);
             PolygonShape polygonShape = shape instanceof PolygonShape ? (PolygonShape)shape : new PolygonShape();
             polygonShape.set(vertices, vertices.length);
             return polygonShape;
@@ -73,7 +73,7 @@ public class ShapeResolver {
         double w = bounds.getWidth();
         double h = bounds.getHeight();
         List<Double> corners = Arrays.asList(0d, h, w, h, w, 0d, 0d, 0d);
-        Vec2[] vertices = getVertrices(node, corners);
+        Vec2[] vertices = getVertices(node, corners);
 
         PolygonShape polygonShape = shape;
         polygonShape.set(vertices, vertices.length);
@@ -81,10 +81,10 @@ public class ShapeResolver {
     }
 
     private Shape mapPolyLine(PhysicsPolyline node, ChainShape shape) {
-        Vec2[] vertices = getVertrices(node, node.getPoints());
+        Vec2[] vertices = getVertices(node, node.getPoints());
         ChainShape chainShape = shape;
         if (vertices[0].equals(vertices[vertices.length - 1])) {
-            chainShape.createLoop(vertices, vertices.length);
+            chainShape.createLoop(Arrays.stream(vertices).limit(vertices.length-1).toArray(Vec2[]::new), vertices.length -1);
         } else {
             chainShape.createChain(vertices, vertices.length);
         }
@@ -101,18 +101,18 @@ public class ShapeResolver {
 
     private Shape mapPolygon(PhysicsPolygon node, PolygonShape shape) {
 
-        Vec2[] vertices = getVertrices(node, node.getPoints());
+        Vec2[] vertices = getVertices(node, node.getPoints());
 
         PolygonShape polygon = shape;
         polygon.set(vertices, vertices.length);
         return polygon;
     }
 
-    private <T extends Node & ShapeProperties> Vec2[] getVertrices(T node, List<Double> nodePoints) {
+    private <T extends Node & Physical> Vec2[] getVertices(T node, List<Double> nodePoints) {
         Vec2[] vertices;
         if (node.getParent() instanceof ShapeComposition){
             ShapeComposition parent = (ShapeComposition) node.getParent();
-            Bounds bounds = parent.getBoundsInLocal();
+            Bounds bounds = parent.getLayoutBounds();
 
             Point2D center = positionHelper.getCenter(bounds);
             double cX = center.getX();
@@ -142,7 +142,7 @@ public class ShapeResolver {
         return vertices;
     }
 
-    private void setLocalCenterOffsetForChild(ShapeProperties node, Vec2[] vertices) {
+    private void setLocalCenterOffsetForChild(Physical node, Vec2[] vertices) {
         float minX = Float.MAX_VALUE;
         float maxX = -Float.MAX_VALUE;
         float minY = Float.MAX_VALUE;
@@ -167,7 +167,6 @@ public class ShapeResolver {
         }
 
         positionHelper.scaleWithParent(points, parentScaleX, parentScaleY, cX, cY);
-
         positionHelper.scaleAndRotate(points, scaleX, scaleY, rotate);
         positionHelper.offsetPoints(points, dx, dy, cX, cY);
 

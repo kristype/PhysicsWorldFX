@@ -1,7 +1,7 @@
 package pong;
 
-import framework.CollisionEvent;
-import framework.PhysicsEvent;
+import framework.events.CollisionEvent;
+import framework.events.PhysicsEvent;
 import framework.PhysicsWorld;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

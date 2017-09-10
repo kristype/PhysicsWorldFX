@@ -4,10 +4,12 @@ import framework.SimulationType;
 import javafx.beans.value.ObservableValue;
 
 
-public interface Physical {
+public interface Geometric {
 
-    void applyForce(float vx, float vy);
-    void applyForceUp(float vx, float vy);
+    void applyForce(double vx, double vy);
+    void applyForceToPoint(double px, double py, double vx, double vy);
+    void applyForceUpToPoint(double px, double py, double vx, double vy);
+    void applyForceUp(double vx, double vy);
 
     ObservableValue<SimulationType> bodyTypeProperty();
     SimulationType getBodyType();
