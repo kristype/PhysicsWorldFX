@@ -63,7 +63,7 @@ public class PhysicsCircle extends Circle implements BodyPropertiesOwner, Fixtur
     }
 
     @Override
-    public void applyForce(double vx, double vy) {
+    public void applyForceToCenter(double vx, double vy) {
         helper.applyForce(body, localCenterOffset, vx, vy);
     }
 
@@ -78,8 +78,18 @@ public class PhysicsCircle extends Circle implements BodyPropertiesOwner, Fixtur
     }
 
     @Override
-    public void applyForceUp(double vx, double vy) {
+    public void applyForceUpToCenter(double vx, double vy) {
         helper.applyForceUp(body, localCenterOffset, vx, vy);
+    }
+
+    @Override
+    public void applyForceToCenterOfMass(double vx, double vy) {
+        helper.applyForceToCenterOfMass(body, vx, vy);
+    }
+
+    @Override
+    public void applyForceUpToCenterOfMass(double vx, double vy) {
+        helper.applyForceUpToCenterOfMass(body, vx, vy);
     }
 
     @Override

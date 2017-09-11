@@ -138,6 +138,10 @@ public class PhysicsWorldFunctions {
         return new Point2D(converted.getX() + center.getX(), converted.getY() + center.getY());
     }
 
+    public static Point2D getGeometricCenter(Node node){
+        return positionHelper.getGeometricCenter(node);
+    }
+
     public static <T extends Node & Geometric> double getCurrentSpeed(T node){
         return Math.abs(node.getLinearVelocityX())  + Math.abs(node.getLinearVelocityY());
     }

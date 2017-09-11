@@ -119,7 +119,7 @@ public class Controller {
 
             //Accelerate space ship
             if (keyIsPressed(KeyCode.UP)) {
-                shipBody.applyForceUp(0, -1000);
+                shipBody.applyForceUpToCenter(0, -1000);
                 flame.setVisible(true);
             } else {
                 flame.setVisible(false);

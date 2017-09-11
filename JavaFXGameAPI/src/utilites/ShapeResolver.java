@@ -46,7 +46,7 @@ public class ShapeResolver {
 
     private Shape mapCircle(PhysicsCircle node, Bounds bounds, Shape shape) {
 
-        if (node.scaleXProperty() == node.scaleYProperty() && !(node.getParent() instanceof ShapeComposition) ){
+        if (node.getScaleX() == node.getScaleY() && !(node.getParent() instanceof ShapeComposition) ){
             double world = Math.abs(converter.scaleVectorToWorld(bounds.getWidth()));
             float radius = (float) world / 2f;
             radius *= node.getScaleX();
@@ -112,9 +112,8 @@ public class ShapeResolver {
         Vec2[] vertices;
         if (node.getParent() instanceof ShapeComposition){
             ShapeComposition parent = (ShapeComposition) node.getParent();
-            Bounds bounds = parent.getLayoutBounds();
 
-            Point2D center = positionHelper.getCenter(bounds);
+            Point2D center = positionHelper.getGeometricCenter(parent);
             double cX = center.getX();
             double cY = center.getY();
 
@@ -129,9 +128,7 @@ public class ShapeResolver {
             setLocalCenterOffsetForChild(node, vertices);
 
         } else {
-            Bounds bounds = node.getBoundsInLocal();
-
-            Point2D center = positionHelper.getCenter(bounds);
+            Point2D center = positionHelper.getGeometricCenter(node);
             double cX = center.getX();
             double cY = center.getY();
 
@@ -182,9 +179,9 @@ public class ShapeResolver {
         }else if (node instanceof PhysicsCircle) {
             shape = mapCircle((PhysicsCircle) node,bounds, fixture.getShape());
         }else if (node instanceof PhysicsPolygon){
-            shape =  mapPolygon((PhysicsPolygon) node, (PolygonShape) fixture.getShape());
+            shape = mapPolygon((PhysicsPolygon) node, (PolygonShape) fixture.getShape());
         }else if (node instanceof PhysicsPolyline){
-            shape =  mapPolyLine((PhysicsPolyline) node, (ChainShape) fixture.getShape());
+            shape = mapPolyLine((PhysicsPolyline) node, (ChainShape) fixture.getShape());
         }
         return shape;
     }

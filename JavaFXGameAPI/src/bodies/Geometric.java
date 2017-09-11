@@ -6,10 +6,12 @@ import javafx.beans.value.ObservableValue;
 
 public interface Geometric {
 
-    void applyForce(double vx, double vy);
+    void applyForceToCenter(double vx, double vy);
     void applyForceToPoint(double px, double py, double vx, double vy);
     void applyForceUpToPoint(double px, double py, double vx, double vy);
-    void applyForceUp(double vx, double vy);
+    void applyForceUpToCenter(double vx, double vy);
+    void applyForceToCenterOfMass(double vx, double vy);
+    void applyForceUpToCenterOfMass(double vx, double vy);
 
     ObservableValue<SimulationType> bodyTypeProperty();
     SimulationType getBodyType();

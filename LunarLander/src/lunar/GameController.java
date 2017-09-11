@@ -36,18 +36,18 @@ public class GameController {
     @FXML
     private void handleStep() {
         if (keyIsPressed(KeyCode.RIGHT)){
-            leftThruster.applyForceUp(0, singleThrustForce);
+            leftThruster.applyForceUpToCenter(0, singleThrustForce);
             leftFlame.setVisible(true);
             rightFlame.setVisible(false);
         }
         else if (keyIsPressed(KeyCode.LEFT)){
-            rightThruster.applyForceUp(0, singleThrustForce);
+            rightThruster.applyForceUpToCenter(0, singleThrustForce);
             rightFlame.setVisible(true);
             leftFlame.setVisible(false);
         }
         else if (keyIsPressed(KeyCode.UP)){
-            leftThruster.applyForceUp(0, fullThrustForce);
-            rightThruster.applyForceUp(0, fullThrustForce);
+            leftThruster.applyForceUpToCenter(0, fullThrustForce);
+            rightThruster.applyForceUpToCenter(0, fullThrustForce);
             leftFlame.setVisible(true);
             rightFlame.setVisible(true);
         }

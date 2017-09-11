@@ -2,6 +2,7 @@ package utilites;
 
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
+import javafx.scene.Node;
 
 public class PositionHelper {
 
@@ -11,6 +12,11 @@ public class PositionHelper {
 
     public double getCenter(double min, double max) {
         return min <= 0 && max <= 0 ?  max + (min - max) / 2 : min + (max - min) /2;
+    }
+
+    public Point2D getGeometricCenter(Node node){
+        Bounds bounds = node.getLayoutBounds();
+        return getCenter(bounds);
     }
 
     public Point2D getCenter(Bounds bounds){

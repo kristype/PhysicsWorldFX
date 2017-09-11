@@ -271,9 +271,9 @@ public class PhysicsGame {
                 }else if(nodeBodyMap.containsKey(node) && node instanceof ShapeComposition){
 
                     ShapeComposition compositionNode = (ShapeComposition)node;
-                    for (Node child: compositionNode.getChildrenUnmodifiable()) {
-                        if (nodeFixtureMap.containsKey(node)) {
-                            shapeResolver.updateShape(child, nodeFixtureMap.get(node)); //TODO bytt ut shape hvis den er endret. Muligens bytt ut fixture
+                    for (Node child : compositionNode.getChildrenUnmodifiable()) {
+                        if (nodeFixtureMap.containsKey(child)) {
+                            shapeResolver.updateShape(child, nodeFixtureMap.get(child)); //TODO bytt ut shape hvis den er endret. Muligens bytt ut fixture
                         }
                     }
                 }
@@ -427,7 +427,7 @@ public class PhysicsGame {
         Vec2 bodyPosition = getBodyPosition(node);
         bodyDefinition.position.set(bodyPosition);
 
-        double rotate = node.getRotate();
+        double rotate = -node.getRotate(); //TODO confirm that rotation has to be inverted
         bodyDefinition.angle = positionHelper.getBodyRadians(rotate);
         bodyDefinition.linearVelocity = coordinateConverter.convertVectorToWorld(bodyPropertyDefinitions.getLinearVelocityX(), bodyPropertyDefinitions.getLinearVelocityY());
         bodyDefinition.angularVelocity = coordinateConverter.scaleVectorToWorld(bodyPropertyDefinitions.getAngularVelocity());
@@ -530,8 +530,7 @@ public class PhysicsGame {
     }
 
     private Vec2 getBodyPosition(Node node) {
-        Bounds bounds = node.getLayoutBounds();
-        Point2D center = positionHelper.getCenter(bounds);
+        Point2D center = positionHelper.getGeometricCenter(node);
         double cX = center.getX() + node.getLayoutX();
         double cY = center.getY() + node.getLayoutY();
         return coordinateConverter.convertNodePointToWorld(cX, cY, node.getParent());
@@ -549,10 +548,9 @@ public class PhysicsGame {
 	private void updateNodeData(){
 		for (Node node : nodeBodyMap.keySet()){
 			Body body = nodeBodyMap.get(node);
-			Bounds bounds = node.getLayoutBounds();
 
 			Point2D nodePosition = coordinateConverter.convertWorldPointToScreen(body.getPosition(), node.getParent());
-            Point2D center = positionHelper.getCenter(bounds);
+            Point2D center = positionHelper.getGeometricCenter(node);
 			double x = nodePosition.getX() - center.getX();
             double y = nodePosition.getY() - center.getY();
             node.setLayoutX(x);

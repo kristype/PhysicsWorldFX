@@ -11,7 +11,6 @@ public class PhysicsShapeHelper {
     private final PositionHelper positionHelper;
 
     public PhysicsShapeHelper(CoordinateConverter coordinateConverter, PositionHelper positionHelper) {
-
         this.coordinateConverter = coordinateConverter;
         this.positionHelper = positionHelper;
     }
