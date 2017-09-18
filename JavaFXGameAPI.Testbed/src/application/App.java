@@ -28,7 +28,7 @@ public class App extends Application {
 				break;
 			}
 			case BACK_SPACE: {
-				game.debugStep();
+				//game.debugStep();
 				break;
 			}
 			case DIGIT0: {

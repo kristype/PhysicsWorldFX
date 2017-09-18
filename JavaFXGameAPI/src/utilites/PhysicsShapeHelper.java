@@ -29,7 +29,7 @@ public class PhysicsShapeHelper {
         }
     }
 
-    public void applyForceUpToPoint(Node node, Body body, double pointX, double pointY, double forceX, double forceY) {
+    public void applyUpwardForceToPoint(Node node, Body body, double pointX, double pointY, double forceX, double forceY) {
         if (body != null) {
             Vec2 worldForce = coordinateConverter.convertVectorToWorld(forceX, forceY);
             Vec2 worldVector = body.getWorldVector(worldForce);

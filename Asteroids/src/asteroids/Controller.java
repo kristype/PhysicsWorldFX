@@ -28,17 +28,13 @@ public class Controller {
 
     private final Random random = new Random();
 
-    public Polygon flame;
-    @FXML
-    private PhysicsPolygon rightWing;
-    @FXML
-    private PhysicsPolygon leftWing;
-    @FXML
-    private PhysicsPolygon shipBody;
-    @FXML
-    private ShapeComposition playerShip;
-    @FXML
-    private PhysicsWorld physicsWorld;
+    @FXML private Polygon flame;
+    @FXML private PhysicsPolygon rightWing;
+    @FXML private PhysicsPolygon leftWing;
+    @FXML private PhysicsPolygon shipBody;
+    @FXML private ShapeComposition playerShip;
+    @FXML private PhysicsWorld physicsWorld;
+
     private boolean gameOver;
     private int stepsSinceLastBullet;
 
@@ -119,18 +115,17 @@ public class Controller {
 
             //Accelerate space ship
             if (keyIsPressed(KeyCode.UP)) {
-                shipBody.applyForceUpToCenter(0, -1000);
+                shipBody.applyUpwardForceToCenter(0, -1000);
                 flame.setVisible(true);
             } else {
                 flame.setVisible(false);
             }
 
             //Max speed
-            double currentSpeed = getCurrentSpeed(playerShip);
+            double currentSpeed = getHighestSpeedDirection(playerShip);
             if (currentSpeed > 400) {
                 setSpeedToCurrentSpeedVector(playerShip, 400);
             }
-
 
             //Rotate on left/right, stop when no key is down
             if (keyIsPressed(KeyCode.LEFT)) {
@@ -140,7 +135,6 @@ public class Controller {
             } else if (playerShip.getAngularVelocity() != 0) {
                 playerShip.setAngularVelocity(0);
             }
-
 
             //Shoot bullet on space, but don't shoot on every step
             if (keyIsPressed(KeyCode.SPACE) && stepsSinceLastBullet > 5) {
@@ -200,7 +194,7 @@ public class Controller {
             bullet.setLinearVelocityX(point.getX() + playerShip.getLinearVelocityX());
             bullet.setLinearVelocityY(point.getY() + playerShip.getLinearVelocityY());
 
-            Point2D spawnPoint = getRotatedLayoutPosition(playerShip, 16, -5);
+            Point2D spawnPoint = getRotatedLayoutPosition(playerShip, 15, -4);
             bullet.setLayoutX(spawnPoint.getX());
             bullet.setLayoutY(spawnPoint.getY());
 

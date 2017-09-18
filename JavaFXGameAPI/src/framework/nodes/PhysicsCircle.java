@@ -63,33 +63,33 @@ public class PhysicsCircle extends Circle implements BodyPropertiesOwner, Fixtur
     }
 
     @Override
-    public void applyForceToCenter(double vx, double vy) {
-        helper.applyForce(body, localCenterOffset, vx, vy);
+    public void applyForceToCenter(double forceX, double forceY) {
+        helper.applyForce(body, localCenterOffset, forceX, forceY);
     }
 
     @Override
-    public void applyForceToPoint(double px, double py, double vx, double vy) {
-        helper.applyForceToPoint(this, body, px, py, vx, vy);
+    public void applyForceToPoint(double localPointX, double localPointY, double forceX, double forceY) {
+        helper.applyForceToPoint(this, body, localPointX, localPointY, forceX, forceY);
     }
 
     @Override
-    public void applyForceUpToPoint(double px, double py, double vx, double vy) {
-        helper.applyForceUpToPoint(this, body, px, py, vx, vy);
+    public void applyUpwardForceToPoint(double localPointX, double localPointY, double upwardForceX, double upwardForceY) {
+        helper.applyUpwardForceToPoint(this, body, localPointX, localPointY, upwardForceX, upwardForceY);
     }
 
     @Override
-    public void applyForceUpToCenter(double vx, double vy) {
-        helper.applyForceUp(body, localCenterOffset, vx, vy);
+    public void applyUpwardForceToCenter(double upwardForceX, double upwardForceY) {
+        helper.applyForceUp(body, localCenterOffset, upwardForceX, upwardForceY);
     }
 
     @Override
-    public void applyForceToCenterOfMass(double vx, double vy) {
-        helper.applyForceToCenterOfMass(body, vx, vy);
+    public void applyForceToCenterOfMass(double forceX, double forceY) {
+        helper.applyForceToCenterOfMass(body, forceX, forceY);
     }
 
     @Override
-    public void applyForceUpToCenterOfMass(double vx, double vy) {
-        helper.applyForceUpToCenterOfMass(body, vx, vy);
+    public void applyUpwardForceToCenterOfMass(double upwardForceX, double upwardForceY) {
+        helper.applyForceUpToCenterOfMass(body, upwardForceX, upwardForceY);
     }
 
     @Override

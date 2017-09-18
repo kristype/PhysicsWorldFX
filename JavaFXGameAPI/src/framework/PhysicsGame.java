@@ -22,6 +22,7 @@ import org.jbox2d.callbacks.ContactImpulse;
 import org.jbox2d.callbacks.ContactListener;
 import org.jbox2d.callbacks.DebugDraw;
 import org.jbox2d.collision.Manifold;
+import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 import org.jbox2d.dynamics.contacts.Contact;
@@ -35,43 +36,41 @@ import utilites.debug.DebugDrawJavaFX;
 import java.util.*;
 
 public class PhysicsGame {
-	
-	private AnimationTimerFactory animationTimerFactory;
-	private CoordinateConverter coordinateConverter;
+
+    private AnimationTimerFactory animationTimerFactory;
+    private CoordinateConverter coordinateConverter;
+    private PositionHelper positionHelper;
+    private PhysicsToNodeSynchronizer physicsToNodeSynchronizer;
     private PhysicsShapeHelper physicsShapeHelper;
-
 	private SimulationTypeToBodyTypeConverter typeConverter;
+    private ShapeResolver shapeResolver;
 
-	private AnimationTimer worldTimer;
+    private DebugDrawJavaFX debugDraw;
+    private Canvas overlay;
+    private AnimationTimer worldTimer;
     private World world;
-
     private PhysicsWorld gameWorld;
-
     private final float fps = 60f;
-    private int currentStep = 0;
     private float timeStep = 1000f / fps;
+    private int currentStep = 0;
+    private boolean drawDebug;
+    private boolean isUpdating;
+
     private Map<Node, Body> nodeBodyMap = new HashMap<>();
-
     private Map<Node, Fixture> nodeFixtureMap = new HashMap<>();
-    private Collection<Node> addQueue = new ArrayList<>();
 
+    private Map<Node, FixtureListeners> fixtureListenersMap = new HashMap<>();
+    private Collection<Node> addQueue = new ArrayList<>();
     private Collection<Node> layoutChangeQueue = new ArrayList<>();
     private Collection<Node> sizeChangeQueue = new ArrayList<>();
     private Collection<Node> typeChangeQueue = new ArrayList<>();
     private Collection<Node> activeChangeQueue = new ArrayList<>();
-
     private Collection<Body> destroyQueue = new ArrayList<>();
-    private ShapeResolver shapeResolver;
 
-    private Region gameContainer;
-    private boolean isUpdating;
+
     private LevelFinishEventListener onLevelFailedListener;
     private LevelFinishEventListener onLevelCompleteListener;
 
-    private DebugDrawJavaFX debugDraw;
-    private Canvas overlay;
-    private boolean drawDebug;
-    private PositionHelper positionHelper;
 
     public PhysicsGame(){
 	    animationTimerFactory = new AnimationTimerFactory();
@@ -101,8 +100,7 @@ public class PhysicsGame {
 
 	public void load(Region gameContainer){
 
-	    this.gameContainer = gameContainer;
-	    this.gameWorld = findWorld(gameContainer);
+        this.gameWorld = findWorld(gameContainer);
 
 		if(this.gameWorld != null){
 		    //Calculate the layout so non visible and scaled nodes get the correct center
@@ -128,6 +126,7 @@ public class PhysicsGame {
             coordinateConverter = new CoordinateConverter(this.gameWorld);
             physicsShapeHelper = new PhysicsShapeHelper(coordinateConverter, positionHelper);
             shapeResolver = new ShapeResolver(coordinateConverter, positionHelper);
+            physicsToNodeSynchronizer = new PhysicsToNodeSynchronizer(coordinateConverter, positionHelper);
 
 			world.setContactListener(new ContactListener() {
                 @Override
@@ -181,6 +180,7 @@ public class PhysicsGame {
         return new Vec2((float)gameWorld.getGravityX(), (float)gameWorld.getGravityY());
     }
 
+    //changes are queued because some things has to happen after a world step
     private void handleQueuedChanges() {
         addQueuedNodes();
         handleQueuedPositionUpdates();
@@ -237,7 +237,9 @@ public class PhysicsGame {
 
         if (node1.isPresent() && node2.isPresent()) {
             if (handler != null){
-                handler.handle(new CollisionEvent(CollisionEvent.COLLISION, node1.get().getKey(), node2.get().getKey()));
+                Node object1 = node1.get().getKey();
+                Node object2 = node2.get().getKey();
+                handler.handle(new CollisionEvent(CollisionEvent.COLLISION, object1, object2));
             }
         }
     }
@@ -267,19 +269,41 @@ public class PhysicsGame {
         if (!sizeChangeQueue.isEmpty()) {
             for (Node node : sizeChangeQueue) {
                 if (nodeFixtureMap.containsKey(node)){
-                    shapeResolver.updateShape(node, nodeFixtureMap.get(node));
+                    updateShape(node);
                 }else if(nodeBodyMap.containsKey(node) && node instanceof ShapeComposition){
 
                     ShapeComposition compositionNode = (ShapeComposition)node;
                     for (Node child : compositionNode.getChildrenUnmodifiable()) {
                         if (nodeFixtureMap.containsKey(child)) {
-                            shapeResolver.updateShape(child, nodeFixtureMap.get(child)); //TODO bytt ut shape hvis den er endret. Muligens bytt ut fixture
+                            updateShape(child);
                         }
                     }
                 }
             }
             sizeChangeQueue.clear();
         }
+    }
+
+    private void updateShape(Node node) {
+        Fixture currentFixture = nodeFixtureMap.get(node);
+        Shape shape = shapeResolver.updateShape(node, currentFixture);
+        if (currentFixture.getShape() != shape){
+            Body body = currentFixture.getBody();
+            body.destroyFixture(currentFixture);
+            //Clean up listeners with reference to old fixture
+            fixtureListenersMap.get(node).RemoveListeners((Physical)node);
+
+            createFixture(node, body, shape);
+        }
+    }
+
+    private void createFixture(Node node, Body body, Shape shape) {
+        FixturePropertiesOwner physical = (FixturePropertiesOwner)node;
+        FixtureDef fixtureDef = physical.getFixturePropertyDefinitions().createFixtureDef();
+        fixtureDef.shape = shape;
+        Fixture fixture = body.createFixture(fixtureDef);
+        fixtureListenersMap.put(node, new FixtureListeners((Physical) node, fixture));
+        nodeFixtureMap.put(node, fixture);
     }
 
     private void addQueuedNodes() {
@@ -298,17 +322,18 @@ public class PhysicsGame {
             for (Body body : removeList) {
                 world.destroyBody(body);
                 Optional<Map.Entry<Node, Body>> node = nodeBodyMap.entrySet().stream().filter(e -> e.getValue() == body).findFirst();
-                if (node.isPresent()){
-                    cleanUp(node.get().getKey(), body);
-                }
+                node.ifPresent(nodeBodyEntry -> cleanUp(nodeBodyEntry.getKey()));
 
             }
             destroyQueue.removeAll(removeList);
         }
     }
 
-    private void cleanUp(Node node, Body body) {
+    private void cleanUp(Node node) {
         nodeBodyMap.remove(node);
+        nodeFixtureMap.remove(node);
+        fixtureListenersMap.get(node).RemoveListeners((Physical) node);
+        fixtureListenersMap.remove(node);
         if (node instanceof Pane){
             Pane pane = (Pane) node;
             pane.getChildren().removeListener(listChangeListener);
@@ -371,54 +396,24 @@ public class PhysicsGame {
 	}
 
     private <T extends Node & FixturePropertiesOwner & Physical & PhysicsShape> void addFixtureToBody(T node, Body body) {
-        FixtureDef fixtureDef = node.getFixturePropertyDefinitions().createFixtureDef();
-        fixtureDef.shape = shapeResolver.ResolveShape(node);
-        Fixture fixture = body.createFixture(fixtureDef);
-
-        //Shape and collision properties
-        node.densityProperty().addListener((observable, oldValue, newValue) -> onDensityChanged(fixture, newValue));
-        node.frictionProperty().addListener((observable, oldValue, newValue) -> onFrictionChanged(fixture, newValue));
-        node.restitutionProperty().addListener((observable, oldValue, newValue) -> onRestitutionChanged(fixture, newValue));
-        node.filterMaskProperty().addListener((observable, oldValue, newValue) -> onFilterChanged(fixture, node));
-        node.filterCategoryProperty().addListener((observable, oldValue, newValue) -> onFilterChanged(fixture, node));
-        node.filterGroupProperty().addListener((observable, oldValue, newValue) -> onFilterChanged(fixture, node));
-        node.sensorProperty().addListener((observable, oldValue, newValue) -> onSensorChanged(fixture, newValue));
+        createFixture(node, body, shapeResolver.ResolveShape(node));
 
         node.setup(body, physicsShapeHelper);
+        node.addSizeChangedEventListener(e -> addToSizeChangedQueue(node));
 
-        node.addSizeChangedEventListener(e -> {
-            if (!isUpdating)
-                sizeChangeQueue.add(e.getNode());
-        });
-/*        physicsShape.addLayoutChangedEventListener(e -> { Shapes with bodies only for now!
-            if(!isUpdating)
-                layoutChangeQueue.add(e.getNode());
-        });*/
-        nodeFixtureMap.put(node, fixture);
+        if (node.getParent() instanceof ShapeComposition){
+            node.layoutXProperty().addListener((observable, oldValue, newValue) -> addToSizeChangedQueue(node));
+            node.layoutYProperty().addListener((observable, oldValue, newValue) -> addToSizeChangedQueue(node));
+            node.rotateProperty().addListener((observable, oldValue, newValue) -> addToSizeChangedQueue(node));
+            node.scaleXProperty().addListener((observable, oldValue, newValue) -> addToSizeChangedQueue(node));
+            node.scaleYProperty().addListener((observable, oldValue, newValue) -> addToSizeChangedQueue(node));
+        }
     }
 
-    private void onSensorChanged(Fixture fixture, Boolean newValue) {
-        fixture.setSensor(newValue);
-    }
-
-    private void onFilterChanged(Fixture fixture, Physical node) {
-        Filter filter = new Filter();
-        filter.maskBits = node.getFilterMask();
-        filter.groupIndex = node.getFilterGroup();
-        filter.categoryBits = node.getFilterCategory();
-        fixture.getFilterData().set(filter);
-    }
-
-    private void onRestitutionChanged(Fixture fixture, Double newValue) {
-        fixture.setRestitution(newValue.floatValue());
-    }
-
-    private void onFrictionChanged(Fixture fixture, Double newValue) {
-        fixture.setFriction(newValue.floatValue());
-    }
-
-    private void onDensityChanged(Fixture fixture, Double newValue) {
-        fixture.setDensity(newValue.floatValue());
+    private <T extends Node & FixturePropertiesOwner & Physical & PhysicsShape> void addToSizeChangedQueue(T node) {
+        if (!isUpdating) {
+            sizeChangeQueue.add(node);
+        }
     }
 
     private <T extends Node & BodyPropertiesOwner & Geometric> Body createBody(T node) {
@@ -427,7 +422,7 @@ public class PhysicsGame {
         Vec2 bodyPosition = getBodyPosition(node);
         bodyDefinition.position.set(bodyPosition);
 
-        double rotate = -node.getRotate(); //TODO confirm that rotation has to be inverted
+        double rotate = -node.getRotate();
         bodyDefinition.angle = positionHelper.getBodyRadians(rotate);
         bodyDefinition.linearVelocity = coordinateConverter.convertVectorToWorld(bodyPropertyDefinitions.getLinearVelocityX(), bodyPropertyDefinitions.getLinearVelocityY());
         bodyDefinition.angularVelocity = coordinateConverter.scaleVectorToWorld(bodyPropertyDefinitions.getAngularVelocity());
@@ -489,7 +484,7 @@ public class PhysicsGame {
     }
 
     private void onBodyTypeChanged(Node node) {
-        if (!isUpdating) //Must be queued
+        if (!isUpdating)
             typeChangeQueue.add(node);
     }
 
@@ -548,27 +543,7 @@ public class PhysicsGame {
 	private void updateNodeData(){
 		for (Node node : nodeBodyMap.keySet()){
 			Body body = nodeBodyMap.get(node);
-
-			Point2D nodePosition = coordinateConverter.convertWorldPointToScreen(body.getPosition(), node.getParent());
-            Point2D center = positionHelper.getGeometricCenter(node);
-			double x = nodePosition.getX() - center.getX();
-            double y = nodePosition.getY() - center.getY();
-            node.setLayoutX(x);
-            node.setLayoutY(y);
-			double fxAngle = positionHelper.getAngle(body.getAngle());
-			node.setRotate(fxAngle);
-
-            Vec2 linearVelocity = body.getLinearVelocity();
-            Point2D convertedVelocity = coordinateConverter.convertVectorToScreen(linearVelocity);
-
-            double scaledAngularVelocity = coordinateConverter.scaleVectorToScreen(body.getAngularVelocity());
-
-            Geometric geometric = (Geometric) node;
-            geometric.setLinearVelocityX(convertedVelocity.getX());
-            geometric.setLinearVelocityY(convertedVelocity.getY());
-            geometric.setAngularVelocity(scaledAngularVelocity);
-            geometric.setActive(body.isActive());
-            geometric.setAwake(body.isAwake());
+            physicsToNodeSynchronizer.updateNodeData(node, body);
 		}
 	}
 

@@ -83,7 +83,6 @@ public class Controller {
     private void handleCollision(Node object1, Node object2) {
         if (object1 == ball){
             if (hasStyle(object2, "brick")){
-                world.remove(object2);
                 brickContainer.getChildren().remove(object2);
 
                 if (!paddleIsResized && ((PhysicsRectangle)object2).getFill() == Color.RED){

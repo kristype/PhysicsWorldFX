@@ -36,18 +36,18 @@ public class GameController {
     @FXML
     private void handleStep() {
         if (keyIsPressed(KeyCode.RIGHT)){
-            leftThruster.applyForceUpToCenter(0, singleThrustForce);
+            leftThruster.applyUpwardForceToCenter(0, singleThrustForce);
             leftFlame.setVisible(true);
             rightFlame.setVisible(false);
         }
         else if (keyIsPressed(KeyCode.LEFT)){
-            rightThruster.applyForceUpToCenter(0, singleThrustForce);
+            rightThruster.applyUpwardForceToCenter(0, singleThrustForce);
             rightFlame.setVisible(true);
             leftFlame.setVisible(false);
         }
         else if (keyIsPressed(KeyCode.UP)){
-            leftThruster.applyForceUpToCenter(0, fullThrustForce);
-            rightThruster.applyForceUpToCenter(0, fullThrustForce);
+            leftThruster.applyUpwardForceToCenter(0, fullThrustForce);
+            rightThruster.applyUpwardForceToCenter(0, fullThrustForce);
             leftFlame.setVisible(true);
             rightFlame.setVisible(true);
         }
@@ -57,7 +57,7 @@ public class GameController {
         }
 
         if (physicsNodesTouching(leftThruster, landingPad) && physicsNodesTouching(rightThruster, landingPad)){
-            world.finishLevel(0);
+            world.finishLevel(true,0);
         }
     }
 }

@@ -7,12 +7,16 @@
 <?import framework.nodes.PhysicsRectangle?>
 <?import framework.nodes.ShapeComposition?>
 <?import java.lang.Double?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.shape.Polygon?>
 <?import javafx.scene.shape.Rectangle?>
 
-<PhysicsWorld fx:id="world" gravityY="-40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onBeginCollision="#onBeginCollision" onEndCollision="#onEndCollision" onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" onPhysicsStep="#onPhysicsStep" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jetpack.Controller">
+<PhysicsWorld fx:id="world" gravityY="-40.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onBeginCollision="#onBeginCollision" onEndCollision="#onEndCollision" onPhysicsStep="#onPhysicsStep" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jetpack.Controller">
    <children>
-      <PhysicsRectangle fx:id="endZone" bodyType="NonMovable" fill="#008bff" height="149.0" layoutX="1.0" layoutY="1.0" sensor="true" styleClass="endZone" width="199.0" />
+      <PhysicsRectangle fx:id="endZone" bodyType="NonMovable" fill="#004e8d" height="149.0" layoutX="1.0" layoutY="1.0" sensor="true" styleClass="endZone" width="150.0" />
       <ShapeComposition fx:id="jetman" bullet="true" fixedRotation="true" layoutX="80.0" layoutY="550.0">
          <children>
             <PhysicsCircle fx:id="head" density="1.0" layoutX="10.0" layoutY="-0.0" radius="5.0" />
@@ -250,8 +254,114 @@
       <PhysicsRectangle bodyType="NonMovable" height="60.0" layoutX="300.0" layoutY="390.0" width="20.0" />
       <PhysicsRectangle bodyType="NonMovable" height="60.0" layoutX="400.0" layoutY="330.0" width="20.0" />
       <PhysicsRectangle bodyType="NonMovable" height="60.0" layoutX="500.0" layoutY="390.0" width="20.0" />
-      <PhysicsCircle density="1.0" fill="#752d2d" friction="0.0" layoutX="60.0" layoutY="220.0" radius="40.0" restitution="1.0" styleClass="spike" />
+      <PhysicsCircle density="1.0" fill="#752d2d" friction="0.0" layoutX="80.0" layoutY="220.0" radius="40.0" restitution="1.0" styleClass="spike" />
       <PhysicsRectangle bodyType="NonMovable" height="30.0" layoutY="150.0" width="660.0" />
       <PhysicsCircle density="1.0" fill="#752d2d" friction="0.0" layoutX="710.0" layoutY="40.0" radius="40.0" restitution="1.0" styleClass="spike" />
+      <HBox layoutX="529.0" spacing="10.0">
+         <children>
+            <Label alignment="TOP_LEFT" text="Health">
+               <padding>
+                  <Insets right="10.0" />
+               </padding>
+            </Label>
+            <ProgressBar fx:id="health" prefWidth="200.0" progress="1.0" />
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <padding>
+            <Insets right="10.0" top="10.0" />
+         </padding>
+      </HBox>
+      <PhysicsPolygon bodyType="NonMovable" layoutX="400.0" layoutY="280.0" styleClass="spike">
+         <points>
+            <Double fx:value="0.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="10.0" />
+            <Double fx:value="0.0" />
+         </points>
+      </PhysicsPolygon>
+      <PhysicsPolygon bodyType="NonMovable" layoutX="420.0" layoutY="280.0" styleClass="spike">
+         <points>
+            <Double fx:value="0.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="10.0" />
+            <Double fx:value="0.0" />
+         </points>
+      </PhysicsPolygon>
+      <PhysicsPolygon bodyType="NonMovable" layoutX="380.0" layoutY="180.0" rotate="180.0" styleClass="spike">
+         <points>
+            <Double fx:value="0.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="10.0" />
+            <Double fx:value="0.0" />
+         </points>
+      </PhysicsPolygon>
+      <PhysicsPolygon bodyType="NonMovable" layoutX="380.0" layoutY="280.0" styleClass="spike">
+         <points>
+            <Double fx:value="0.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="10.0" />
+            <Double fx:value="0.0" />
+         </points>
+      </PhysicsPolygon>
+      <PhysicsPolygon bodyType="NonMovable" layoutX="400.0" layoutY="180.0" rotate="180.0" styleClass="spike">
+         <points>
+            <Double fx:value="0.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="10.0" />
+            <Double fx:value="0.0" />
+         </points>
+      </PhysicsPolygon>
+      <PhysicsPolygon bodyType="NonMovable" layoutX="420.0" layoutY="180.0" rotate="-180.0" styleClass="spike">
+         <points>
+            <Double fx:value="0.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="10.0" />
+            <Double fx:value="0.0" />
+         </points>
+      </PhysicsPolygon>
+      <PhysicsPolygon bodyType="NonMovable" layoutX="400.0" layoutY="390.0" rotate="180.0" styleClass="spike">
+         <points>
+            <Double fx:value="0.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="10.0" />
+            <Double fx:value="0.0" />
+         </points>
+      </PhysicsPolygon>
+      <PhysicsPolygon bodyType="NonMovable" layoutX="300.0" layoutY="370.0" styleClass="spike">
+         <points>
+            <Double fx:value="0.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="10.0" />
+            <Double fx:value="0.0" />
+         </points>
+      </PhysicsPolygon>
+      <PhysicsPolygon bodyType="NonMovable" layoutX="500.0" layoutY="370.0" styleClass="spike">
+         <points>
+            <Double fx:value="0.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="20.0" />
+            <Double fx:value="10.0" />
+            <Double fx:value="0.0" />
+         </points>
+      </PhysicsPolygon>
    </children>
 </PhysicsWorld>

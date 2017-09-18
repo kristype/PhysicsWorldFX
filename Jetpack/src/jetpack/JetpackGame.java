@@ -17,7 +17,7 @@ public class JetpackGame extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("jetpack.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("overlay.fxml"));
         Region root = loader.load();
 
         primaryStage.setTitle("Jetpack");
@@ -27,10 +27,5 @@ public class JetpackGame extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        PhysicsGame game = new PhysicsGame();
-        game.load(root);
-        //game.enableDebug();
-        game.startGame();
     }
 }

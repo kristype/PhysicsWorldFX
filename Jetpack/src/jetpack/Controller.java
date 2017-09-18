@@ -3,14 +3,12 @@ package jetpack;
 import framework.PhysicsWorld;
 import framework.events.CollisionEvent;
 import framework.events.PhysicsEvent;
-import framework.nodes.PhysicsPolyline;
 import framework.nodes.PhysicsRectangle;
 import framework.nodes.ShapeComposition;
 import javafx.fxml.FXML;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 
@@ -18,25 +16,29 @@ import static framework.PhysicsWorldFunctions.*;
 
 public class Controller {
 
+    @FXML private ProgressBar health;
     @FXML private PhysicsRectangle endZone;
     @FXML private PhysicsRectangle elevator;
     @FXML private PhysicsWorld world;
     @FXML private ShapeComposition jetman;
-    @FXML private PhysicsPolyline boundingBox;
     @FXML private Polygon flame;
     @FXML private Rectangle fuelIndicator;
 
     private int fuel = 100;
+    private int healthValue;
     private final int maxFuel = 100;
     private boolean gameOver;
     private double maxFuelIndicatorHeight;
 
     @FXML
     private void initialize(){
+        flame.setVisible(false);
         maxFuelIndicatorHeight = fuelIndicator.getHeight();
+        setHealth(100);
     }
 
-    @FXML private void onBeginCollision(CollisionEvent collisionEvent) {
+    @FXML
+    private void onBeginCollision(CollisionEvent collisionEvent) {
         handleCollision(collisionEvent.getObject1(), collisionEvent.getObject2());
         handleCollision(collisionEvent.getObject2(), collisionEvent.getObject1());
     }
@@ -44,66 +46,63 @@ public class Controller {
     private void handleCollision(Node object1, Node object2) {
         if (object1 == jetman){
             if (hasStyle(object2, "spike")){
-                world.finishLevel(false, 0);
-                jetman.setFixedRotation(false);
-                gameOver = true;
+                setHealth(-19);
+            }
+            else if (hasStyle(object2, "ball")){
+                setHealth(-51);
             }
         }
     }
 
-    @FXML private void onEndCollision(CollisionEvent collisionEvent) {
+    @FXML
+    private void onEndCollision(CollisionEvent collisionEvent) {
 
     }
 
-    @FXML private void onPhysicsStep(PhysicsEvent event) throws Exception {
+    @FXML
+    private void onPhysicsStep(PhysicsEvent event) throws Exception {
         if (!gameOver){
             if (keyIsPressed(KeyCode.UP) && fuel >= 5){
-                Point2D centerOfMass = getLocalCenterOfMass(jetman);
-                Point2D rotatedPoint = getRotatedPoint(jetman, centerOfMass.getX(), centerOfMass.getY());
-                jetman.applyForceUpToPoint(rotatedPoint.getX(), rotatedPoint.getY(), 0, -1500);
-                fuel -= 5;
-                setFuelIndicator();
-                flame.setVisible(true);
+                //Jetpack force upwards
+                jetman.applyUpwardForceToCenterOfMass(0, -1500);
+                setFuel(-5);
             }
-            else{
-                if (fuel < maxFuel){
-                    fuel += 1;
-                    setFuelIndicator();
-                }
-                flame.setVisible(false);
+            else if (fuel < maxFuel){
+                setFuel(1);
             }
 
             if (keyIsPressed(KeyCode.LEFT)){
-                Point2D centerOfMass = getLocalCenterOfMass(jetman);
-                Point2D rotatedPoint = getRotatedPoint(jetman, centerOfMass.getX(), centerOfMass.getY());
-                jetman.applyForceUpToPoint(rotatedPoint.getX(), rotatedPoint.getY(), -500, -0);
+                jetman.applyUpwardForceToCenterOfMass(-500, 0);
+                //Set jetman direction to force direction
                 if (jetman.getScaleX() > 0){
                     jetman.setScaleX(-1);
                 }
+
             }else if (keyIsPressed(KeyCode.RIGHT)){
-                Point2D centerOfMass = getLocalCenterOfMass(jetman);
-                Point2D rotatedPoint = getRotatedPoint(jetman, centerOfMass.getX(), centerOfMass.getY());
-                jetman.applyForceUpToPoint(rotatedPoint.getX(), rotatedPoint.getY(), 500, -0);
+                jetman.applyUpwardForceToCenterOfMass(500, 0);
+                //Set jetman direction to force direction
                 if (jetman.getScaleX() < 0){
                     jetman.setScaleX(1);
                 }
             }
 
-            double absVelocityX = Math.abs(jetman.getLinearVelocityX());
-            if (absVelocityX > 500){
-                jetman.setLinearVelocityX((jetman.getLinearVelocityX() / absVelocityX) * 500);
+            double currentSpeed = getHighestSpeedDirection(jetman);
+            if (currentSpeed > 500){
+                setSpeedToCurrentSpeedVector(jetman, 500);
             }
 
-            double absVelocityY = Math.abs(jetman.getLinearVelocityY());
-            if (absVelocityY > 500){
-                jetman.setLinearVelocityY((jetman.getLinearVelocityY() / absVelocityY) * 500);
+            if (physicsNodesTouching(jetman, endZone)){
+                gameOver = true;
+                world.finishLevel(true, 0);
             }
-
-            if (physicsNodesTouching(endZone, jetman)){
+            else if (healthValue < 0){
+                world.finishLevel(false, 0);
+                jetman.setFixedRotation(false);
                 gameOver = true;
             }
         }
 
+        //Elevator control
         if (elevator.getLayoutY() > 480){
             elevator.setLinearVelocityY(-100);
         }else if (elevator.getLayoutY() < 380){
@@ -111,17 +110,21 @@ public class Controller {
         }
     }
 
-    private void setFuelIndicator() {
+    private void setFuel(int fuelChange) {
+        fuel += fuelChange;
         double value = (fuel / (double) maxFuel) * maxFuelIndicatorHeight;
         fuelIndicator.setHeight(value);
         fuelIndicator.setTranslateY(maxFuelIndicatorHeight - value);
+
+        if (fuelChange < 0){
+            flame.setVisible(true);
+        }else {
+            flame.setVisible(false);
+        }
     }
 
-    @FXML private void onKeyPressed(KeyEvent event) {
-        registerKeyPressed(event.getCode());
-    }
-
-    @FXML private void onKeyReleased(KeyEvent event) {
-        registerKeyReleased(event.getCode());
+    private void setHealth(int healthChange) {
+        healthValue += healthChange;
+        health.setProgress(healthValue/100d);
     }
 }

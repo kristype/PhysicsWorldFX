@@ -55,11 +55,11 @@ public class PhysicsWorldFunctions {
 
     public static Point2D getRotatedLayoutPosition(Node node, double offsetX, int offsetY, double rotate) {
 
-        Bounds bounds = node.getBoundsInParent();
-        double x = bounds.getMinX() + offsetX;
-        double y = bounds.getMinY() + offsetY;
+        Bounds bounds = node.getLayoutBounds();
+        double x = node.getLayoutX() + offsetX;
+        double y = node.getLayoutY() + offsetY;
         Point2D center = positionHelper.getCenter(bounds);
-        return getRotated(rotate, x, y, center);
+        return getRotated(rotate, x, y, new Point2D(node.getLayoutX() + center.getX(), node.getLayoutY() + center.getY()));
     }
 
     private static Point2D getRotated(double rotate, double x, double y, Point2D center) {
@@ -142,12 +142,16 @@ public class PhysicsWorldFunctions {
         return positionHelper.getGeometricCenter(node);
     }
 
+    public static <T extends Node & Geometric> double getHighestSpeedDirection(T node){
+        return Math.max(Math.abs(node.getLinearVelocityX()), Math.abs(node.getLinearVelocityY()));
+    }
+
     public static <T extends Node & Geometric> double getCurrentSpeed(T node){
         return Math.abs(node.getLinearVelocityX())  + Math.abs(node.getLinearVelocityY());
     }
 
     public static <T extends Node & Geometric> void setSpeedToCurrentSpeedVector(T node, double speed){
-        double currentSpeed = getCurrentSpeed(node);
+        double currentSpeed = getHighestSpeedDirection(node);
         double directionX =  node.getLinearVelocityX() / currentSpeed;
         double directionY =  node.getLinearVelocityY() / currentSpeed;
         node.setLinearVelocityX(directionX * speed);

@@ -34,7 +34,7 @@
                 <Double fx:value="0.0" />
             </points>
         </PhysicsPolygon>
-        <PhysicsPolygon fx:id="landerBody" density="1" fill="darkgreen" friction="1" layoutX="12" layoutY="0" linearVelocityX="20.0" restitution="0">
+        <PhysicsPolygon fx:id="landerBody" density="1" fill="black" friction="1" layoutX="12" layoutY="0" linearVelocityX="20.0" restitution="0">
             <points>
                 <Double fx:value="0.0" />
                 <Double fx:value="30.0" />
