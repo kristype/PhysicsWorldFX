@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import bodies.BodyPropertyDefinitions;
+import framework.geometric.GeometricPropertyDefinitions;
 import framework.events.ChangedEvent;
 import framework.events.ChangedEventListener;
 import framework.SimulationType;
@@ -14,7 +14,7 @@ import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
 
 import javafx.scene.shape.Rectangle;
-import shapes.*;
+import framework.physical.*;
 import utilites.PhysicsShapeHelper;
 
 public class PhysicsRectangle extends Rectangle implements SingleShape {
@@ -25,26 +25,24 @@ public class PhysicsRectangle extends Rectangle implements SingleShape {
     private Vec2 localCenterOffset = new Vec2();
 
     private static final StyleablePropertyFactory<PhysicsRectangle> SPF = new StyleablePropertyFactory<>(Rectangle.getClassCssMetaData());
-    private FixturePropertyDefinitions<PhysicsRectangle> fixturePropertyDefinitions;
-    private BodyPropertyDefinitions<PhysicsRectangle> bodyPropertyDefinitions;
+    private PhysicalPropertyDefinitions<PhysicsRectangle> physicalPropertyDefinitions;
+    private GeometricPropertyDefinitions<PhysicsRectangle> geometricPropertyDefinitions;
 
     public PhysicsRectangle() {
         getStyleClass().add("physicsRectangle");
-        this.fixturePropertyDefinitions = new FixturePropertyDefinitions<>(this, SPF);
-        this.bodyPropertyDefinitions = new BodyPropertyDefinitions<>(this, SPF);
+        this.physicalPropertyDefinitions = new PhysicalPropertyDefinitions<>(this, SPF);
+        this.geometricPropertyDefinitions = new GeometricPropertyDefinitions<>(this, SPF);
         sizeChangedListeners = new ArrayList<>();
         widthProperty().addListener((observable, oldValue, newValue) -> raiseEvent(sizeChangedListeners));
         heightProperty().addListener((observable, oldValue, newValue) -> raiseEvent(sizeChangedListeners));
     }
 
-    @Override
-    public FixturePropertyDefinitions<? extends Styleable> getFixturePropertyDefinitions() {
-        return fixturePropertyDefinitions;
+    public PhysicalPropertyDefinitions<? extends Styleable> getPhysicalPropertyDefinitions() {
+        return physicalPropertyDefinitions;
     }
 
-    @Override
-    public BodyPropertyDefinitions<? extends Styleable> getBodyPropertyDefinitions() {
-        return bodyPropertyDefinitions;
+    public GeometricPropertyDefinitions<? extends Styleable> getGeometricPropertyDefinitions() {
+        return geometricPropertyDefinitions;
     }
 
     @Override
@@ -103,288 +101,288 @@ public class PhysicsRectangle extends Rectangle implements SingleShape {
     }
 
     @Override
-    public ObservableValue<SimulationType> bodyTypeProperty() {
-        return bodyPropertyDefinitions.bodyTypeProperty();
+    public ObservableValue<SimulationType> simulationTypeProperty() {
+        return geometricPropertyDefinitions.bodyTypeProperty();
     }
 
     @Override
-    public SimulationType getBodyType() {
-        return bodyPropertyDefinitions.getBodyType();
+    public SimulationType getSimulationType() {
+        return geometricPropertyDefinitions.getBodyType();
     }
 
     @Override
-    public void setBodyType(SimulationType bodyType) {
-        bodyPropertyDefinitions.setBodyType(bodyType);
+    public void setSimulationType(SimulationType bodyType) {
+        geometricPropertyDefinitions.setBodyType(bodyType);
     }
 
     @Override
     public ObservableValue<Double> linearDampingProperty() {
-        return bodyPropertyDefinitions.linearDampingProperty();
+        return geometricPropertyDefinitions.linearDampingProperty();
     }
 
     @Override
     public double getLinearDamping() {
-        return bodyPropertyDefinitions.getLinearDamping();
+        return geometricPropertyDefinitions.getLinearDamping();
     }
 
     @Override
     public void setLinearDamping(double linearDamping) {
-        bodyPropertyDefinitions.setLinearDamping(linearDamping);
+        geometricPropertyDefinitions.setLinearDamping(linearDamping);
     }
 
     @Override
     public ObservableValue<Double> linearVelocityXProperty() {
-        return bodyPropertyDefinitions.linearVelocityXProperty();
+        return geometricPropertyDefinitions.linearVelocityXProperty();
     }
 
     @Override
     public double getLinearVelocityX() {
-        return bodyPropertyDefinitions.getLinearVelocityX();
+        return geometricPropertyDefinitions.getLinearVelocityX();
     }
 
     @Override
     public void setLinearVelocityX(double linearVelocityX) {
-        bodyPropertyDefinitions.setLinearVelocityX(linearVelocityX);
+        geometricPropertyDefinitions.setLinearVelocityX(linearVelocityX);
     }
 
     @Override
     public ObservableValue<Double> linearVelocityYProperty() {
-        return bodyPropertyDefinitions.linearVelocityYProperty();
+        return geometricPropertyDefinitions.linearVelocityYProperty();
     }
 
     @Override
     public double getLinearVelocityY() {
-        return bodyPropertyDefinitions.getLinearVelocityY();
+        return geometricPropertyDefinitions.getLinearVelocityY();
     }
 
     @Override
     public void setLinearVelocityY(double linearVelocityY) {
-        bodyPropertyDefinitions.setLinearVelocityY(linearVelocityY);
+        geometricPropertyDefinitions.setLinearVelocityY(linearVelocityY);
     }
 
     @Override
     public ObservableValue<Double> angularVelocityProperty() {
-        return bodyPropertyDefinitions.angularVelocityProperty();
+        return geometricPropertyDefinitions.angularVelocityProperty();
     }
 
     @Override
     public double getAngularVelocity() {
-        return bodyPropertyDefinitions.getAngularVelocity();
+        return geometricPropertyDefinitions.getAngularVelocity();
     }
 
     @Override
     public void setAngularVelocity(double angularVelocity) {
-        bodyPropertyDefinitions.setAngularVelocity(angularVelocity);
+        geometricPropertyDefinitions.setAngularVelocity(angularVelocity);
     }
 
     @Override
     public ObservableValue<Double> angularDampingProperty() {
-        return bodyPropertyDefinitions.angularDampingProperty();
+        return geometricPropertyDefinitions.angularDampingProperty();
     }
 
     @Override
     public double getAngularDamping() {
-        return bodyPropertyDefinitions.getAngularDamping();
+        return geometricPropertyDefinitions.getAngularDamping();
     }
 
     @Override
     public void setAngularDamping(double angularDamping) {
-        bodyPropertyDefinitions.setAngularDamping(angularDamping);
+        geometricPropertyDefinitions.setAngularDamping(angularDamping);
     }
 
     @Override
     public ObservableValue<Double> gravityScaleProperty() {
-        return bodyPropertyDefinitions.gravityScaleProperty();
+        return geometricPropertyDefinitions.gravityScaleProperty();
     }
 
     @Override
     public double getGravityScale() {
-        return bodyPropertyDefinitions.getGravityScale();
+        return geometricPropertyDefinitions.getGravityScale();
     }
 
     @Override
     public void setGravityScale(double gravityScale) {
-        bodyPropertyDefinitions.setGravityScale(gravityScale);
+        geometricPropertyDefinitions.setGravityScale(gravityScale);
     }
 
     @Override
     public ObservableValue<Boolean> allowSleepProperty() {
-        return bodyPropertyDefinitions.allowSleepProperty();
+        return geometricPropertyDefinitions.allowSleepProperty();
     }
 
     @Override
     public boolean isAllowSleep() {
-        return bodyPropertyDefinitions.isAllowSleep();
+        return geometricPropertyDefinitions.isAllowSleep();
     }
 
     @Override
     public void setAllowSleep(boolean allowSleep) {
-        bodyPropertyDefinitions.setAllowSleep(allowSleep);
+        geometricPropertyDefinitions.setAllowSleep(allowSleep);
     }
 
     @Override
     public ObservableValue<Boolean> awakeProperty() {
-        return bodyPropertyDefinitions.awakeProperty();
+        return geometricPropertyDefinitions.awakeProperty();
     }
 
     @Override
     public boolean isAwake() {
-        return bodyPropertyDefinitions.isAwake();
+        return geometricPropertyDefinitions.isAwake();
     }
 
     @Override
     public void setAwake(boolean awake) {
-        bodyPropertyDefinitions.setAwake(awake);
+        geometricPropertyDefinitions.setAwake(awake);
     }
 
     @Override
     public ObservableValue<Boolean> fixedRotationProperty() {
-        return bodyPropertyDefinitions.fixedRotationProperty();
+        return geometricPropertyDefinitions.fixedRotationProperty();
     }
 
     @Override
     public boolean isFixedRotation() {
-        return bodyPropertyDefinitions.isFixedRotation();
+        return geometricPropertyDefinitions.isFixedRotation();
     }
 
     @Override
     public void setFixedRotation(boolean fixedRotation) {
-        bodyPropertyDefinitions.setFixedRotation(fixedRotation);
+        geometricPropertyDefinitions.setFixedRotation(fixedRotation);
     }
 
     @Override
     public ObservableValue<Boolean> activeProperty() {
-        return bodyPropertyDefinitions.activeProperty();
+        return geometricPropertyDefinitions.activeProperty();
     }
 
     @Override
     public boolean isActive() {
-        return bodyPropertyDefinitions.isActive();
+        return geometricPropertyDefinitions.isActive();
     }
 
     @Override
     public void setActive(boolean active) {
-        bodyPropertyDefinitions.setActive(active);
+        geometricPropertyDefinitions.setActive(active);
     }
 
     @Override
     public ObservableValue<Boolean> bulletProperty() {
-        return bodyPropertyDefinitions.bulletProperty();
+        return geometricPropertyDefinitions.bulletProperty();
     }
 
     @Override
     public boolean isBullet() {
-        return bodyPropertyDefinitions.isBullet();
+        return geometricPropertyDefinitions.isBullet();
     }
 
     @Override
     public void setBullet(boolean bullet) {
-        bodyPropertyDefinitions.setBullet(bullet);
+        geometricPropertyDefinitions.setBullet(bullet);
     }
 
     @Override
     public ObservableValue<Double> densityProperty() {
-        return fixturePropertyDefinitions.densityProperty();
+        return physicalPropertyDefinitions.densityProperty();
     }
 
     @Override
     public double getDensity() {
-        return fixturePropertyDefinitions.getDensity();
+        return physicalPropertyDefinitions.getDensity();
     }
 
     @Override
     public void setDensity(double density) {
-        fixturePropertyDefinitions.setDensity(density);
+        physicalPropertyDefinitions.setDensity(density);
     }
 
     @Override
     public ObservableValue<Double> frictionProperty() {
-        return fixturePropertyDefinitions.frictionProperty();
+        return physicalPropertyDefinitions.frictionProperty();
     }
 
     @Override
     public double getFriction() {
-        return fixturePropertyDefinitions.getFriction();
+        return physicalPropertyDefinitions.getFriction();
     }
 
     @Override
     public void setFriction(double friction) {
-        fixturePropertyDefinitions.setFriction(friction);
+        physicalPropertyDefinitions.setFriction(friction);
     }
 
     @Override
     public ObservableValue<Double> restitutionProperty() {
-        return fixturePropertyDefinitions.restitutionProperty();
+        return physicalPropertyDefinitions.restitutionProperty();
     }
 
     @Override
     public double getRestitution() {
-        return fixturePropertyDefinitions.getRestitution();
+        return physicalPropertyDefinitions.getRestitution();
     }
 
     @Override
     public void setRestitution(double restitution) {
-        fixturePropertyDefinitions.setRestitution(restitution);
+        physicalPropertyDefinitions.setRestitution(restitution);
     }
 
     @Override
     public ObservableValue<Boolean> sensorProperty() {
-        return fixturePropertyDefinitions.sensorProperty();
+        return physicalPropertyDefinitions.sensorProperty();
     }
 
     @Override
     public boolean isSensor() {
-        return fixturePropertyDefinitions.isSensor();
+        return physicalPropertyDefinitions.isSensor();
     }
 
     @Override
     public void setSensor(boolean sensor) {
-        fixturePropertyDefinitions.setSensor(sensor);
+        physicalPropertyDefinitions.setSensor(sensor);
     }
 
     @Override
-    public ObservableValue<Integer> filterMaskProperty() {
-        return fixturePropertyDefinitions.filterMaskProperty();
+    public ObservableValue<Integer> collisionFilterMaskProperty() {
+        return physicalPropertyDefinitions.filterMaskProperty();
     }
 
     @Override
-    public int getFilterMask() {
-        return fixturePropertyDefinitions.getFilterMask();
+    public int getCollisionFilterMask() {
+        return physicalPropertyDefinitions.getFilterMask();
     }
 
     @Override
-    public void setFilterMask(int filterMask) {
-        fixturePropertyDefinitions.setFilterMask(filterMask);
+    public void setCollisionFilterMask(int filterMask) {
+        physicalPropertyDefinitions.setFilterMask(filterMask);
     }
 
     @Override
-    public ObservableValue<Integer> filterCategoryProperty() {
-        return fixturePropertyDefinitions.filterCategoryProperty();
+    public ObservableValue<Integer> collisionFilterCategoryProperty() {
+        return physicalPropertyDefinitions.filterCategoryProperty();
     }
 
     @Override
-    public int getFilterCategory() {
-        return fixturePropertyDefinitions.getFilterCategory();
+    public int getCollisionFilterCategory() {
+        return physicalPropertyDefinitions.getFilterCategory();
     }
 
     @Override
-    public void setFilterCategory(int filterCategory) {
-        fixturePropertyDefinitions.setFilterCategory(filterCategory);
+    public void setCollisionFilterCategory(int filterCategory) {
+        physicalPropertyDefinitions.setFilterCategory(filterCategory);
     }
 
     @Override
-    public ObservableValue<Integer> filterGroupProperty() {
-        return fixturePropertyDefinitions.filterGroupProperty();
+    public ObservableValue<Integer> collisionFilterGroupProperty() {
+        return physicalPropertyDefinitions.filterGroupProperty();
     }
 
     @Override
-    public int getFilterGroup() {
-        return fixturePropertyDefinitions.getFilterGroup();
+    public int getCollisionFilterGroup() {
+        return physicalPropertyDefinitions.getFilterGroup();
     }
 
     @Override
-    public void setFilterGroup(int filterGroup) {
-        fixturePropertyDefinitions.setFilterGroup(filterGroup);
+    public void setCollisionFilterGroup(int filterGroup) {
+        physicalPropertyDefinitions.setFilterGroup(filterGroup);
     }
 
     private void raiseEvent(List<ChangedEventListener> eventListeners){

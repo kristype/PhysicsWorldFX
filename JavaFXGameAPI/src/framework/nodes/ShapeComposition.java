@@ -1,8 +1,8 @@
 package framework.nodes;
 
-import bodies.BodyPropertiesOwner;
-import bodies.BodyPropertyDefinitions;
-import bodies.Geometric;
+import framework.geometric.GeometricPropertiesOwner;
+import framework.geometric.GeometricPropertyDefinitions;
+import framework.geometric.Geometric;
 import framework.SimulationType;
 import javafx.beans.value.ObservableValue;
 import javafx.css.CssMetaData;
@@ -11,14 +11,14 @@ import javafx.css.StyleablePropertyFactory;
 import javafx.scene.layout.Pane;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Body;
-import shapes.PhysicsShape;
+import framework.physical.PhysicsShape;
 import utilites.PhysicsShapeHelper;
 
 import java.util.List;
 
-public class ShapeComposition extends Pane implements BodyPropertiesOwner, Geometric, PhysicsShape {
+public class ShapeComposition extends Pane implements GeometricPropertiesOwner, Geometric, PhysicsShape {
 
-    private final BodyPropertyDefinitions<ShapeComposition> bodyPropertyDefinitions;
+    private final GeometricPropertyDefinitions<ShapeComposition> geometricPropertyDefinitions;
 
     private Body body;
     private PhysicsShapeHelper helper;
@@ -27,14 +27,13 @@ public class ShapeComposition extends Pane implements BodyPropertiesOwner, Geome
     public ShapeComposition() {
         super();
         getStyleClass().add("shapeComposition");
-        this.bodyPropertyDefinitions = new BodyPropertyDefinitions<>(this, SPF);
+        this.geometricPropertyDefinitions = new GeometricPropertyDefinitions<>(this, SPF);
     }
 
     private static final StyleablePropertyFactory<ShapeComposition> SPF = new StyleablePropertyFactory<>(Pane.getClassCssMetaData());
 
-    @Override
-    public BodyPropertyDefinitions<? extends Styleable> getBodyPropertyDefinitions() {
-        return bodyPropertyDefinitions;
+    public GeometricPropertyDefinitions<? extends Styleable> getGeometricPropertyDefinitions() {
+        return geometricPropertyDefinitions;
     }
 
     @Override
@@ -84,182 +83,182 @@ public class ShapeComposition extends Pane implements BodyPropertiesOwner, Geome
     }
 
     @Override
-    public ObservableValue<SimulationType> bodyTypeProperty() {
-        return bodyPropertyDefinitions.bodyTypeProperty();
+    public ObservableValue<SimulationType> simulationTypeProperty() {
+        return geometricPropertyDefinitions.bodyTypeProperty();
     }
 
     @Override
-    public SimulationType getBodyType() {
-        return bodyPropertyDefinitions.getBodyType();
+    public SimulationType getSimulationType() {
+        return geometricPropertyDefinitions.getBodyType();
     }
 
     @Override
-    public void setBodyType(SimulationType bodyType) {
-        bodyPropertyDefinitions.setBodyType(bodyType);
+    public void setSimulationType(SimulationType bodyType) {
+        geometricPropertyDefinitions.setBodyType(bodyType);
     }
 
     @Override
     public ObservableValue<Double> linearDampingProperty() {
-        return bodyPropertyDefinitions.linearDampingProperty();
+        return geometricPropertyDefinitions.linearDampingProperty();
     }
 
     @Override
     public double getLinearDamping() {
-        return bodyPropertyDefinitions.getLinearDamping();
+        return geometricPropertyDefinitions.getLinearDamping();
     }
 
     @Override
     public void setLinearDamping(double linearDamping) {
-        bodyPropertyDefinitions.setLinearDamping(linearDamping);
+        geometricPropertyDefinitions.setLinearDamping(linearDamping);
     }
 
     @Override
     public ObservableValue<Double> linearVelocityXProperty() {
-        return bodyPropertyDefinitions.linearVelocityXProperty();
+        return geometricPropertyDefinitions.linearVelocityXProperty();
     }
 
     @Override
     public double getLinearVelocityX() {
-        return bodyPropertyDefinitions.getLinearVelocityX();
+        return geometricPropertyDefinitions.getLinearVelocityX();
     }
 
     @Override
     public void setLinearVelocityX(double linearVelocityX) {
-        bodyPropertyDefinitions.setLinearVelocityX(linearVelocityX);
+        geometricPropertyDefinitions.setLinearVelocityX(linearVelocityX);
     }
 
     @Override
     public ObservableValue<Double> linearVelocityYProperty() {
-        return bodyPropertyDefinitions.linearVelocityYProperty();
+        return geometricPropertyDefinitions.linearVelocityYProperty();
     }
 
     @Override
     public double getLinearVelocityY() {
-        return bodyPropertyDefinitions.getLinearVelocityY();
+        return geometricPropertyDefinitions.getLinearVelocityY();
     }
 
     @Override
     public void setLinearVelocityY(double linearVelocityY) {
-        bodyPropertyDefinitions.setLinearVelocityY(linearVelocityY);
+        geometricPropertyDefinitions.setLinearVelocityY(linearVelocityY);
     }
 
     @Override
     public ObservableValue<Double> angularVelocityProperty() {
-        return bodyPropertyDefinitions.angularVelocityProperty();
+        return geometricPropertyDefinitions.angularVelocityProperty();
     }
 
     @Override
     public double getAngularVelocity() {
-        return bodyPropertyDefinitions.getAngularVelocity();
+        return geometricPropertyDefinitions.getAngularVelocity();
     }
 
     @Override
     public void setAngularVelocity(double angularVelocity) {
-        bodyPropertyDefinitions.setAngularVelocity(angularVelocity);
+        geometricPropertyDefinitions.setAngularVelocity(angularVelocity);
     }
 
     @Override
     public ObservableValue<Double> angularDampingProperty() {
-        return bodyPropertyDefinitions.angularDampingProperty();
+        return geometricPropertyDefinitions.angularDampingProperty();
     }
 
     @Override
     public double getAngularDamping() {
-        return bodyPropertyDefinitions.getAngularDamping();
+        return geometricPropertyDefinitions.getAngularDamping();
     }
 
     @Override
     public void setAngularDamping(double angularDamping) {
-        bodyPropertyDefinitions.setAngularDamping(angularDamping);
+        geometricPropertyDefinitions.setAngularDamping(angularDamping);
     }
 
     @Override
     public ObservableValue<Double> gravityScaleProperty() {
-        return bodyPropertyDefinitions.gravityScaleProperty();
+        return geometricPropertyDefinitions.gravityScaleProperty();
     }
 
     @Override
     public double getGravityScale() {
-        return bodyPropertyDefinitions.getGravityScale();
+        return geometricPropertyDefinitions.getGravityScale();
     }
 
     @Override
     public void setGravityScale(double gravityScale) {
-        bodyPropertyDefinitions.setGravityScale(gravityScale);
+        geometricPropertyDefinitions.setGravityScale(gravityScale);
     }
 
     @Override
     public ObservableValue<Boolean> allowSleepProperty() {
-        return bodyPropertyDefinitions.allowSleepProperty();
+        return geometricPropertyDefinitions.allowSleepProperty();
     }
 
     @Override
     public boolean isAllowSleep() {
-        return bodyPropertyDefinitions.isAllowSleep();
+        return geometricPropertyDefinitions.isAllowSleep();
     }
 
     @Override
     public void setAllowSleep(boolean allowSleep) {
-        bodyPropertyDefinitions.setAllowSleep(allowSleep);
+        geometricPropertyDefinitions.setAllowSleep(allowSleep);
     }
 
     @Override
     public ObservableValue<Boolean> awakeProperty() {
-        return bodyPropertyDefinitions.awakeProperty();
+        return geometricPropertyDefinitions.awakeProperty();
     }
 
     @Override
     public boolean isAwake() {
-        return bodyPropertyDefinitions.isAwake();
+        return geometricPropertyDefinitions.isAwake();
     }
 
     @Override
     public void setAwake(boolean awake) {
-        bodyPropertyDefinitions.setAwake(awake);
+        geometricPropertyDefinitions.setAwake(awake);
     }
 
     @Override
     public ObservableValue<Boolean> fixedRotationProperty() {
-        return bodyPropertyDefinitions.fixedRotationProperty();
+        return geometricPropertyDefinitions.fixedRotationProperty();
     }
 
     @Override
     public boolean isFixedRotation() {
-        return bodyPropertyDefinitions.isFixedRotation();
+        return geometricPropertyDefinitions.isFixedRotation();
     }
 
     @Override
     public void setFixedRotation(boolean fixedRotation) {
-        bodyPropertyDefinitions.setFixedRotation(fixedRotation);
+        geometricPropertyDefinitions.setFixedRotation(fixedRotation);
     }
 
     @Override
     public ObservableValue<Boolean> activeProperty() {
-        return bodyPropertyDefinitions.activeProperty();
+        return geometricPropertyDefinitions.activeProperty();
     }
 
     @Override
     public boolean isActive() {
-        return bodyPropertyDefinitions.isActive();
+        return geometricPropertyDefinitions.isActive();
     }
 
     @Override
     public void setActive(boolean active) {
-        bodyPropertyDefinitions.setActive(active);
+        geometricPropertyDefinitions.setActive(active);
     }
 
     @Override
     public ObservableValue<Boolean> bulletProperty() {
-        return bodyPropertyDefinitions.bulletProperty();
+        return geometricPropertyDefinitions.bulletProperty();
     }
 
     @Override
     public boolean isBullet() {
-        return bodyPropertyDefinitions.isBullet();
+        return geometricPropertyDefinitions.isBullet();
     }
 
     @Override
     public void setBullet(boolean bullet) {
-        bodyPropertyDefinitions.setBullet(bullet);
+        geometricPropertyDefinitions.setBullet(bullet);
     }
 }

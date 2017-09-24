@@ -1,7 +1,6 @@
-package shapes;
+package framework.physical;
 
-import bodies.StyleFactory;
-import com.sun.org.apache.xpath.internal.operations.Bool;
+import utilites.StyleFactory;
 import javafx.beans.value.ObservableValue;
 import org.jbox2d.dynamics.FixtureDef;
 
@@ -9,7 +8,7 @@ import javafx.css.Styleable;
 import javafx.css.StyleableProperty;
 import javafx.css.StyleablePropertyFactory;
 
-public class FixturePropertyDefinitions<S extends Styleable> extends StyleFactory<S> {
+public class PhysicalPropertyDefinitions<S extends Styleable> extends StyleFactory<S> {
 
 	private final StyleableProperty<Number> density;
 	private final StyleableProperty<Number> friction;
@@ -19,15 +18,15 @@ public class FixturePropertyDefinitions<S extends Styleable> extends StyleFactor
     private final StyleableProperty<Number> filterCategory;
     private final StyleableProperty<Number> filterGroup;
 
-    public FixturePropertyDefinitions(S owner, StyleablePropertyFactory<S> spf) {
+    public PhysicalPropertyDefinitions(S owner, StyleablePropertyFactory<S> spf) {
 		super(owner, spf);
-		this.filterMask = createStyleableNumberProperty("filterMask", s -> ((FixturePropertiesOwner)s).getFixturePropertyDefinitions().filterMask, 0xFFFF);
-		this.filterCategory = createStyleableNumberProperty("filterCategory", s -> ((FixturePropertiesOwner)s).getFixturePropertyDefinitions().filterCategory, 0x0001);
-		this.filterGroup = createStyleableNumberProperty("filterGroup", s -> ((FixturePropertiesOwner)s).getFixturePropertyDefinitions().filterGroup, 0);
-		this.density = createStyleableNumberProperty("density", s -> ((FixturePropertiesOwner)s).getFixturePropertyDefinitions().density, 0.0);
-		this.friction = createStyleableNumberProperty("friction", s -> ((FixturePropertiesOwner)s).getFixturePropertyDefinitions().friction, 0.2);
-		this.restitution = createStyleableNumberProperty("restitution", s -> ((FixturePropertiesOwner)s).getFixturePropertyDefinitions().restitution, 0.0);
-		this.sensor = createStyleableBooleanProperty("sensor", s -> ((FixturePropertiesOwner)s).getFixturePropertyDefinitions().sensor, false);
+		this.filterMask = createStyleableNumberProperty("filterMask", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().filterMask, 0xFFFF);
+		this.filterCategory = createStyleableNumberProperty("filterCategory", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().filterCategory, 0x0001);
+		this.filterGroup = createStyleableNumberProperty("filterGroup", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().filterGroup, 0);
+		this.density = createStyleableNumberProperty("density", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().density, 0.0);
+		this.friction = createStyleableNumberProperty("friction", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().friction, 0.2);
+		this.restitution = createStyleableNumberProperty("restitution", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().restitution, 0.0);
+		this.sensor = createStyleableBooleanProperty("sensor", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().sensor, false);
 	}
 
 	public FixtureDef createFixtureDef() {
@@ -35,7 +34,7 @@ public class FixturePropertyDefinitions<S extends Styleable> extends StyleFactor
 		fixtureDef.density = (float)getDensity();
 		fixtureDef.friction = (float)getFriction();
 		fixtureDef.restitution = (float)getRestitution();
-		fixtureDef.isSensor = this.isSensor();
+		fixtureDef.isSensor = isSensor();
 		fixtureDef.filter.maskBits = getFilterMask();
 		fixtureDef.filter.categoryBits = getFilterCategory();
         fixtureDef.filter.groupIndex = getFilterGroup();

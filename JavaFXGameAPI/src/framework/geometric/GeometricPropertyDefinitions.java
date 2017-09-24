@@ -1,15 +1,15 @@
-package bodies;
+package framework.geometric;
 
 import framework.SimulationType;
 import javafx.beans.value.ObservableValue;
 import javafx.css.Styleable;
 import javafx.css.StyleableProperty;
 import javafx.css.StyleablePropertyFactory;
-import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.BodyDef;
 import utilites.SimulationTypeToBodyTypeConverter;
+import utilites.StyleFactory;
 
-public class BodyPropertyDefinitions<S extends Styleable> extends StyleFactory<S> {
+public class GeometricPropertyDefinitions<S extends Styleable> extends StyleFactory<S> {
 
 	private final StyleableProperty<SimulationType> bodyType;
 	private final StyleableProperty<Number> linearDamping;
@@ -24,20 +24,20 @@ public class BodyPropertyDefinitions<S extends Styleable> extends StyleFactory<S
     private final StyleableProperty<Number> angularVelocity;
     private final StyleableProperty<Boolean> bullet;
 
-    public BodyPropertyDefinitions(S owner, StyleablePropertyFactory<S> spf) {
+    public GeometricPropertyDefinitions(S owner, StyleablePropertyFactory<S> spf) {
 		super(owner, spf);
-		this.bodyType = createStyleableEnumProperty("bodyType", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().bodyType, SimulationType.class, SimulationType.Full);
-		this.linearDamping = createStyleableNumberProperty("linearDamping", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().linearDamping, 0.0);
-		this.linearVelocityX = createStyleableNumberProperty("linearVelocityX", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().linearVelocityX, 0.0);
-		this.linearVelocityY = createStyleableNumberProperty("linearVelocityY", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().linearVelocityY, 0.0);
-		this.angularDamping = createStyleableNumberProperty("angularDamping", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().angularDamping, 0.0);
-		this.angularVelocity = createStyleableNumberProperty("angularVelocity", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().angularVelocity, 0.0);
-		this.gravityScale = createStyleableNumberProperty("gravityScale", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().gravityScale, 1.0);
-		this.allowSleep = createStyleableBooleanProperty("allowSleep", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().allowSleep, true);
-		this.awake = createStyleableBooleanProperty("awake", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().awake, true);
-		this.fixedRotation = createStyleableBooleanProperty("fixedRotation", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().fixedRotation, false);
-		this.active = createStyleableBooleanProperty("active", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().active, true);
-		this.bullet = createStyleableBooleanProperty("bullet", s -> ((BodyPropertiesOwner)s).getBodyPropertyDefinitions().bullet, false);
+		this.bodyType = createStyleableEnumProperty("bodyType", s -> ((GeometricPropertiesOwner)s).getGeometricPropertyDefinitions().bodyType, SimulationType.class, SimulationType.Full);
+		this.linearDamping = createStyleableNumberProperty("linearDamping", s -> ((GeometricPropertiesOwner)s).getGeometricPropertyDefinitions().linearDamping, 0.0);
+		this.linearVelocityX = createStyleableNumberProperty("linearVelocityX", s -> ((GeometricPropertiesOwner)s).getGeometricPropertyDefinitions().linearVelocityX, 0.0);
+		this.linearVelocityY = createStyleableNumberProperty("linearVelocityY", s -> ((GeometricPropertiesOwner)s).getGeometricPropertyDefinitions().linearVelocityY, 0.0);
+		this.angularDamping = createStyleableNumberProperty("angularDamping", s -> ((GeometricPropertiesOwner)s).getGeometricPropertyDefinitions().angularDamping, 0.0);
+		this.angularVelocity = createStyleableNumberProperty("angularVelocity", s -> ((GeometricPropertiesOwner)s).getGeometricPropertyDefinitions().angularVelocity, 0.0);
+		this.gravityScale = createStyleableNumberProperty("gravityScale", s -> ((GeometricPropertiesOwner)s).getGeometricPropertyDefinitions().gravityScale, 1.0);
+		this.allowSleep = createStyleableBooleanProperty("allowSleep", s -> ((GeometricPropertiesOwner)s).getGeometricPropertyDefinitions().allowSleep, true);
+		this.awake = createStyleableBooleanProperty("awake", s -> ((GeometricPropertiesOwner)s).getGeometricPropertyDefinitions().awake, true);
+		this.fixedRotation = createStyleableBooleanProperty("fixedRotation", s -> ((GeometricPropertiesOwner)s).getGeometricPropertyDefinitions().fixedRotation, false);
+		this.active = createStyleableBooleanProperty("active", s -> ((GeometricPropertiesOwner)s).getGeometricPropertyDefinitions().active, true);
+		this.bullet = createStyleableBooleanProperty("bullet", s -> ((GeometricPropertiesOwner)s).getGeometricPropertyDefinitions().bullet, false);
 	}
 
 	public BodyDef createBodyDef(SimulationTypeToBodyTypeConverter converter) {

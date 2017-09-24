@@ -1,4 +1,4 @@
-package shapes;
+package framework.physical;
 
 import org.jbox2d.dynamics.Body;
 import utilites.PhysicsShapeHelper;

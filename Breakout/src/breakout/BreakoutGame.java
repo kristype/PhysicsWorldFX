@@ -3,7 +3,6 @@ package breakout;
 import framework.PhysicsGame;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
@@ -13,7 +12,7 @@ public class BreakoutGame extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("level1/level1.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("breakout.fxml"));
         Region root = loader.load();
 
         primaryStage.setTitle("Breakout");

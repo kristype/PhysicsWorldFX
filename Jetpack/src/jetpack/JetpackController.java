@@ -14,7 +14,7 @@ import javafx.scene.shape.Rectangle;
 
 import static framework.PhysicsWorldFunctions.*;
 
-public class Controller {
+public class JetpackController {
 
     @FXML private ProgressBar health;
     @FXML private PhysicsRectangle endZone;
@@ -86,9 +86,9 @@ public class Controller {
                 }
             }
 
-            double currentSpeed = getHighestSpeedDirection(jetman);
+            double currentSpeed = getHighestVelocity(jetman);
             if (currentSpeed > 500){
-                setSpeedToCurrentSpeedVector(jetman, 500);
+                setVelocityToCurrentTravelVector(jetman, 500);
             }
 
             if (physicsNodesTouching(jetman, endZone)){

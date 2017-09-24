@@ -6,9 +6,9 @@
 <?import framework.nodes.PhysicsRectangle?>
 <?import javafx.scene.shape.Polygon?>
 <PhysicsWorld xmlns:fx="http://javafx.com/fxml" fx:controller="lunar.GameController" fx:id="world" prefWidth="800" prefHeight="600"
-              gravityX="0" gravityY="-5" physicsScale="15" onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp"
+              gravityX="0" gravityY="75" physicsScale="15" onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp"
               onPhysicsStep="#handleStep" >
-    <ShapeComposition bodyType="Full" fx:id="lander" layoutX="40" layoutY="40" >
+    <ShapeComposition simulationType="Full" fx:id="lander" layoutX="40" layoutY="40" >
         <PhysicsPolygon fx:id="leftThruster" layoutX="0" layoutY="18" restitution="0" density="0.2" friction="1" >
             <points>
                 <Double fx:value="0.0" />
@@ -74,8 +74,8 @@
         </Polygon>
 
     </ShapeComposition>
-    <PhysicsRectangle bodyType="NonMovable" layoutX="0" layoutY="590" width="300" height="10" fill="black" friction="1" restitution="0" />
-    <PhysicsRectangle bodyType="NonMovable" layoutX="300" layoutY="590" width="70" height="10" fill="darkblue" friction="1" restitution="0" fx:id="landingPad" />
-    <PhysicsRectangle bodyType="NonMovable" layoutX="370" layoutY="590" width="430" height="10" fill="black" friction="1" restitution="0" />
+    <PhysicsRectangle simulationType="NonMovable" layoutX="0" layoutY="590" width="300" height="10" fill="black" friction="1" restitution="0" />
+    <PhysicsRectangle simulationType="NonMovable" layoutX="300" layoutY="590" width="70" height="10" fill="darkblue" friction="1" restitution="0" fx:id="landingPad" />
+    <PhysicsRectangle simulationType="NonMovable" layoutX="370" layoutY="590" width="430" height="10" fill="black" friction="1" restitution="0" />
 </PhysicsWorld>
 

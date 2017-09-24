@@ -14,7 +14,7 @@ import javafx.scene.shape.Rectangle;
 
 import static framework.PhysicsWorldFunctions.*;
 
-public class Controller {
+public class PongController {
 
     @FXML private PhysicsRectangle paddle1;
     @FXML private PhysicsRectangle paddle2;
@@ -28,9 +28,12 @@ public class Controller {
 
     private int leftScore = 0;
     private int rightScore = 0;
+    private double ballSpeed;
 
     @FXML
     private void initialize() {
+
+        ballSpeed = getHighestVelocity(ball);
 
         paddle1.setLayoutY((world.getPrefHeight() / 2)-(paddle1.getHeight()/2));
         paddle1.setLayoutX(wallLeft.getLayoutX() + wallLeft.getWidth() + 40);
@@ -47,9 +50,9 @@ public class Controller {
 
     private void setPaddleSpeed(PhysicsRectangle paddle, boolean movePaddleUp, boolean movePaddleDown) {
         if (movePaddleUp && paddle.getLayoutY() > wallLeft.getWidth()){
-            paddle.setLinearVelocityY(50);
+            paddle.setLinearVelocityY(-500);
         }else if (movePaddleDown && (paddle.getLayoutY() + paddle.getHeight()) < wallLeft.getHeight()-wallLeft.getWidth()){
-            paddle.setLinearVelocityY(-50);
+            paddle.setLinearVelocityY(500);
         }else{
             paddle.setLinearVelocityY(0);
         }
@@ -69,6 +72,9 @@ public class Controller {
     private void handlePhysicsStep(PhysicsEvent physicsEvent) {
         setPaddleSpeed(paddle1, keyIsPressed(KeyCode.A), keyIsPressed(KeyCode.Z));
         setPaddleSpeed(paddle2, keyIsPressed(KeyCode.K), keyIsPressed(KeyCode.M));
+
+        //keeps the speed constant
+        setVelocityToCurrentTravelVector(ball, ballSpeed);
     }
 
     @FXML

@@ -1,4 +1,4 @@
-package breakout.level1;
+package breakout;
 
 import framework.events.CollisionEvent;
 import framework.events.PhysicsEvent;
@@ -15,7 +15,7 @@ import framework.nodes.PhysicsRectangle;
 
 import static framework.PhysicsWorldFunctions.*;
 
-public class Controller {
+public class BreakoutController {
 
     @FXML private PhysicsRectangle paddle;
     @FXML private PhysicsCircle ball;
@@ -26,9 +26,12 @@ public class Controller {
     @FXML private PhysicsRectangle wallRight;
 
     private boolean paddleIsResized = false;
+    private double ballSpeed;
 
     @FXML
     private void initialize() {
+
+        ballSpeed = getHighestVelocity(ball);
 
         double width = brickContainer.getPrefWidth() / 10;
         Color[] colors = new Color[] {Color.RED, Color.ORANGE, Color.YELLOW, Color.BROWN};
@@ -37,7 +40,7 @@ public class Controller {
                 double height = 20;
                 PhysicsRectangle brick = new PhysicsRectangle();
                 brick.getStyleClass().add("brick");
-                brick.setBodyType(SimulationType.NonMovable);
+                brick.setSimulationType(SimulationType.NonMovable);
                 brick.setStroke(Color.BLACK);
                 brick.setFill(colors[j]);
                 brick.setLayoutX(i*width);
@@ -62,6 +65,9 @@ public class Controller {
     @FXML
     private void handleStep(PhysicsEvent physicsEvent) {
         setPaddleSpeed(paddle);
+
+        //keeps the speed constant
+        setVelocityToCurrentTravelVector(ball, ballSpeed);
     }
 
     private void setPaddleSpeed(PhysicsRectangle paddle) {

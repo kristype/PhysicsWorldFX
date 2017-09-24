@@ -8,8 +8,8 @@
 <?import java.lang.Double?>
 <?import javafx.scene.shape.Polygon?>
 
-<PhysicsWorld fx:id="world" gravityX="0" gravityY="-5" onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp" onPhysicsStep="#handleStep" physicsScale="15" prefHeight="600.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.111" fx:controller="lunar.GameController">
-    <ShapeComposition fx:id="lander" bodyType="Full" layoutX="0" layoutY="20" linearVelocityX="10">
+<PhysicsWorld fx:id="world" gravityX="0" gravityY="75" onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp" onPhysicsStep="#handleStep" physicsScale="15" prefHeight="600.0" prefWidth="800.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.111" fx:controller="lunar.GameController">
+    <ShapeComposition fx:id="lander" simulationType="Full" layoutX="0" layoutY="20" linearVelocityX="10">
         <PhysicsPolygon fx:id="leftThruster" density="0.2" friction="1" layoutX="0" layoutY="18" restitution="0">
             <points>
                 <Double fx:value="0.0" />
@@ -76,7 +76,7 @@
 
     </ShapeComposition>
 
-    <PhysicsPolyline bodyType="NonMovable" layoutX="0" layoutY="470" restitution="0">
+    <PhysicsPolyline simulationType="NonMovable" layoutX="0" layoutY="470" restitution="0">
         <points>
             <Double fx:value="0.0" />
             <Double fx:value="0.0" />
@@ -98,8 +98,8 @@
 
         </points>
     </PhysicsPolyline>
-    <PhysicsRectangle fx:id="landingPad" bodyType="NonMovable" fill="darkblue" friction="1" height="10" layoutX="500" layoutY="470" restitution="0" width="70" />
-    <PhysicsPolyline bodyType="NonMovable" layoutX="570" layoutY="470" restitution="0">
+    <PhysicsRectangle fx:id="landingPad" simulationType="NonMovable" fill="darkblue" friction="1" height="10" layoutX="500" layoutY="470" restitution="0" width="70" />
+    <PhysicsPolyline simulationType="NonMovable" layoutX="570" layoutY="470" restitution="0">
         <points>
             <Double fx:value="0.0" />
             <Double fx:value="0.0" />

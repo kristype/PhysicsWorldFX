@@ -5,6 +5,9 @@ import javafx.event.Event;
 import javafx.event.EventType;
 import javafx.scene.Node;
 
+/**
+ * The order of the objects is not predictable
+ */
 public class CollisionEvent extends Event {
 
     public static final EventType<CollisionEvent> COLLISION = new EventType<>(Event.ANY, "COLLISION");

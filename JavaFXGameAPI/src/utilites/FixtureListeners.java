@@ -3,7 +3,7 @@ package utilites;
 import javafx.beans.value.ChangeListener;
 import org.jbox2d.dynamics.Filter;
 import org.jbox2d.dynamics.Fixture;
-import shapes.Physical;
+import framework.physical.Physical;
 
 public class FixtureListeners {
 
@@ -24,9 +24,9 @@ public class FixtureListeners {
         node.densityProperty().addListener(densityChangedListener);
         node.frictionProperty().addListener(frictionChangedListener);
         node.restitutionProperty().addListener(restitutionChangedListener);
-        node.filterMaskProperty().addListener(filterChangedListener);
-        node.filterCategoryProperty().addListener(filterChangedListener);
-        node.filterGroupProperty().addListener(filterChangedListener);
+        node.collisionFilterMaskProperty().addListener(filterChangedListener);
+        node.collisionFilterCategoryProperty().addListener(filterChangedListener);
+        node.collisionFilterGroupProperty().addListener(filterChangedListener);
         node.sensorProperty().addListener(sensorChangedListener);
     }
 
@@ -34,9 +34,9 @@ public class FixtureListeners {
         node.densityProperty().removeListener(densityChangedListener);
         node.frictionProperty().removeListener(frictionChangedListener);
         node.restitutionProperty().removeListener(restitutionChangedListener);
-        node.filterMaskProperty().removeListener(filterChangedListener);
-        node.filterCategoryProperty().removeListener(filterChangedListener);
-        node.filterGroupProperty().removeListener(filterChangedListener);
+        node.collisionFilterMaskProperty().removeListener(filterChangedListener);
+        node.collisionFilterCategoryProperty().removeListener(filterChangedListener);
+        node.collisionFilterGroupProperty().removeListener(filterChangedListener);
         node.sensorProperty().removeListener(sensorChangedListener);
     }
 
@@ -46,9 +46,9 @@ public class FixtureListeners {
 
     private void onFilterChanged(Fixture fixture, Physical node) {
         Filter filter = new Filter();
-        filter.maskBits = node.getFilterMask();
-        filter.groupIndex = node.getFilterGroup();
-        filter.categoryBits = node.getFilterCategory();
+        filter.maskBits = node.getCollisionFilterMask();
+        filter.groupIndex = node.getCollisionFilterGroup();
+        filter.categoryBits = node.getCollisionFilterCategory();
         fixture.getFilterData().set(filter);
     }
 

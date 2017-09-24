@@ -10,7 +10,7 @@ import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Fixture;
-import shapes.*;
+import framework.physical.*;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -1,6 +1,6 @@
 package utilites;
 
-import bodies.Geometric;
+import framework.geometric.Geometric;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import org.jbox2d.common.Vec2;

@@ -1,0 +1,24 @@
+<?import framework.nodes.*?>
+<?import framework.PhysicsWorld?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.Pane?>
+<PhysicsWorld xmlns:fx="http://javafx.com/fxml" fx:controller="breakout.BreakoutController"
+              maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0"
+              fx:id="world" gravityX="0" gravityY="0" physicsScale="15" stylesheets="@breakout.css"
+              onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp" onPhysicsStep="#handleStep" onBeginCollision="#handleCollision">
+
+        <PhysicsRectangle fx:id="wallLeft" simulationType="NonMovable" fill="black" layoutX="0" layoutY="0" width="10" height="480" friction="0" />
+        <PhysicsRectangle fx:id="wallRight" simulationType="NonMovable" fill="black" layoutX="630" layoutY="0" width="10" height="480" friction="0"  />
+        <PhysicsRectangle fx:id="roof" simulationType="NonMovable" fill="black" layoutX="10" layoutY="0" width="620" height="10" friction="0" />
+        <PhysicsRectangle fx:id="floor" simulationType="NonMovable" fill="black" layoutX="10" layoutY="470" width="620" height="10" friction="0" />
+
+        <PhysicsCircle fx:id="ball" simulationType="Full" restitution="1" linearVelocityX="10" linearVelocityY="400" fill="#7a1fff" layoutX="320.0" layoutY="270.0" radius="10.0" stroke="BLACK" strokeType="INSIDE" />
+
+        <Pane fx:id="brickContainer" layoutX="20.0" layoutY="20.0" prefHeight="200.0" prefWidth="600.0">
+            <padding>
+                <javafx.geometry.Insets  top="0" right="0" left="0" bottom="0"/>
+            </padding>
+        </Pane>
+
+        <PhysicsRectangle fx:id="paddle" simulationType="Movable" arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="20.0" layoutX="270.0" layoutY="400.0" stroke="BLACK" strokeType="INSIDE" width="100.0" />
+</PhysicsWorld>

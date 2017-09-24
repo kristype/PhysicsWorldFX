@@ -1,6 +1,6 @@
 package framework;
 
-import bodies.StyleFactory;
+import utilites.StyleFactory;
 import framework.events.*;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -37,36 +37,80 @@ public class PhysicsWorld extends Pane {
 
     }
 
+    /**
+     * Gravity x property
+     * @return the gravity x property
+     */
     public ObservableValue<Double> gravityXProperty() {
         return (ObservableValue<Double>) gravityX;
     }
+
+    /**
+     * Gets the gravity x value
+     * @return the gravity x value
+     */
     public double getGravityX() {
         return gravityX.getValue().doubleValue();
     }
+
+    /**
+     * Sets the gravity x value, this value determines the gravity along the x axis in the world
+     * @param gravityX the gravity x value
+     */
     public void setGravityX(double gravityX) {
         this.gravityX.setValue(gravityX);
     }
 
+    /**
+     * Gravity y property
+     * @return the gravity y property
+     */
     public ObservableValue<Double> gravityYProperty() {
         return (ObservableValue<Double>) gravityY;
     }
+
+    /**
+     * Gets the gravity y value
+     * @return the gravity y value
+     */
     public double getGravityY() {
         return gravityY.getValue().doubleValue();
     }
+
+    /**
+     * Sets the gravity y value, this value determines the gravity along the y axis in the world
+     * A positive gravity y value will give gravity down
+     * @param gravityY the gravity y value
+     */
     public void setGravityY(double gravityY) {
         this.gravityY.setValue(gravityY);
     }
 
 
-    /** Can only be set before loading
+    /**
+     * Physics scale property
      * @return physics scale property
      */
     public ObservableValue<Double> physicsScaleProperty() {
         return (ObservableValue<Double>)physicsScale;
     }
+
+    /**
+     * Gets the physics scale value
+     * @return the physics scale value
+     */
     public double getPhysicsScale() {
         return physicsScaleProperty().getValue().doubleValue();
     }
+
+    /**
+     * Can only be set before loading
+     * Sets the physics scale value
+     * This value determines how many pixels one meter is in the physics world,
+     * this impacts the performance of the physics calculations,
+     * and how much an object moves across the screen at a given velocity
+     * @param value the physics scale value
+     */
     public void setPhysicsScale(double value){
         physicsScale.setValue(value);
     }
@@ -82,44 +126,86 @@ public class PhysicsWorld extends Pane {
         return getClassCssMetaData();
     }
 
-    public final void setOnPhysicsStep(
-            EventHandler<? super PhysicsEvent> value) {
+
+    /**
+     * Sets the physics step handler, this event will fire after each physics calculation
+     * @param value physics step handler
+     */
+    public final void setOnPhysicsStep(EventHandler<? super PhysicsEvent> value) {
         onPhysicsStepProperty().set(value);
     }
 
+    /**
+     * Gets the physics step handler
+     * @return the physics step handler
+     */
     public final EventHandler<? super PhysicsEvent> getOnPhysicsStep() {
         return onPhysicsStepProperty().get();
     }
 
-    public final ObjectProperty<EventHandler<? super PhysicsEvent>>
-    onPhysicsStepProperty() {
+
+    /**
+     * Physics step property
+     * @return the physics step property
+     */
+    public final ObjectProperty<EventHandler<? super PhysicsEvent>> onPhysicsStepProperty() {
         return physicsStepProperty;
     }
 
+    /**
+     * Sets the begin collision handler, this event will fire when two objects collide,
+     * but before collision forces have been calculated
+     * @param value
+     */
     public final void setOnBeginCollision(EventHandler<? super CollisionEvent> value) {
         onBeginCollisionProperty().set(value);
     }
 
+    /**
+     * Gets the begin collision event handler
+     * @return the begin collision event handler
+     */
     public final EventHandler<? super CollisionEvent> getOnBeginCollision() {
         return onBeginCollisionProperty().get();
     }
 
+    /**
+     * Begin collision property
+     * @return the begin collision property
+     */
     public final ObjectProperty<EventHandler<? super CollisionEvent>> onBeginCollisionProperty() {
         return beginCollisionProperty;
     }
 
+    /**
+     * Sets the end collision event handler, this event will fire after two objects have separated and are no longer touching
+     * @param value end collision event handler
+     */
     public final void setOnEndCollision(EventHandler<? super CollisionEvent> value) {
         onEndCollisionProperty().set(value);
     }
 
+    /**
+     * Gets the end collision event handler
+     * @return the end collision event handler
+     */
     public final EventHandler<? super CollisionEvent> getOnEndCollision() {
         return onEndCollisionProperty().get();
     }
 
+    /**
+     * End collision property
+     * @return the end collision property
+     */
     public final ObjectProperty<EventHandler<? super CollisionEvent>> onEndCollisionProperty() {
         return endCollisionProperty;
     }
 
+    /**
+     * Sends a message to the PhysicsGame that holds this PhysicsWorld that the level has ended
+     * @param completed has the level finished because of failure or success
+     * @param endState the end state, this can be points earned on the level
+     */
     public void finishLevel(boolean completed, int endState){
         if (onLevelFinish != null){
             EventType<LevelFinishedEvent> eventType = completed ?

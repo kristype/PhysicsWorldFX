@@ -1,8 +1,8 @@
 package framework;
 
-import bodies.BodyPropertiesOwner;
-import bodies.BodyPropertyDefinitions;
-import bodies.Geometric;
+import framework.geometric.GeometricPropertiesOwner;
+import framework.geometric.GeometricPropertyDefinitions;
+import framework.geometric.Geometric;
 import framework.events.*;
 import framework.nodes.ShapeComposition;
 import javafx.animation.AnimationTimer;
@@ -26,10 +26,10 @@ import org.jbox2d.collision.shapes.Shape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 import org.jbox2d.dynamics.contacts.Contact;
-import shapes.FixturePropertiesOwner;
-import shapes.PhysicsShape;
-import shapes.Physical;
-import shapes.SingleShape;
+import framework.physical.PhysicalPropertiesOwner;
+import framework.physical.PhysicsShape;
+import framework.physical.Physical;
+import framework.physical.SingleShape;
 import utilites.*;
 import utilites.debug.DebugDrawJavaFX;
 
@@ -77,6 +77,9 @@ public class PhysicsGame {
         typeConverter = new SimulationTypeToBodyTypeConverter();
 	}
 
+    /**
+     * Enables debug overlay
+     */
 	public void enableDebug(){
         if (overlay == null){
             overlay = new Canvas();
@@ -93,11 +96,18 @@ public class PhysicsGame {
         drawDebug = true;
     }
 
+    /**
+     * Disables debug overlay
+     */
     public void disableDebug(){
         overlay.setVisible(false);
         drawDebug = false;
     }
 
+    /**
+     * Loads the fxml and gives physical nodes physical behaviour
+     * @param gameContainer the gameContainer must be a PhysicsWorld, or contain a PhysicsWorld
+     */
 	public void load(Region gameContainer){
 
         this.gameWorld = findWorld(gameContainer);
@@ -105,9 +115,10 @@ public class PhysicsGame {
 		if(this.gameWorld != null){
 		    //Calculate the layout so non visible and scaled nodes get the correct center
 		    gameWorld.layout();
+            coordinateConverter = new CoordinateConverter(this.gameWorld);
 
 			world = new World(getGravity());
-			gameWorld.gravityXProperty().addListener((observable, oldValue, newValue) -> world.setGravity(getGravity()));
+            gameWorld.gravityXProperty().addListener((observable, oldValue, newValue) -> world.setGravity(getGravity()));
 			gameWorld.gravityYProperty().addListener((observable, oldValue, newValue) -> world.setGravity(getGravity()));
 			gameWorld.setOnLevelFinish(e -> {
 			    if (e.getEventType() == LevelFinishedEvent.LEVEL_COMPLETE){
@@ -123,7 +134,6 @@ public class PhysicsGame {
             });
 
 			positionHelper = new PositionHelper();
-            coordinateConverter = new CoordinateConverter(this.gameWorld);
             physicsShapeHelper = new PhysicsShapeHelper(coordinateConverter, positionHelper);
             shapeResolver = new ShapeResolver(coordinateConverter, positionHelper);
             physicsToNodeSynchronizer = new PhysicsToNodeSynchronizer(coordinateConverter, positionHelper);
@@ -177,7 +187,7 @@ public class PhysicsGame {
 	}
 
     private Vec2 getGravity() {
-        return new Vec2((float)gameWorld.getGravityX(), (float)gameWorld.getGravityY());
+	    return coordinateConverter.convertVectorToWorld(gameWorld.getGravityX(), gameWorld.getGravityY());
     }
 
     //changes are queued because some things has to happen after a world step
@@ -205,7 +215,7 @@ public class PhysicsGame {
             for (Node node : typeChangeQueue) {
                 Body body = nodeBodyMap.get(node);
                 Geometric geometric = (Geometric)node;
-                body.setType( typeConverter.Convert(geometric.getBodyType()));
+                body.setType( typeConverter.Convert(geometric.getSimulationType()));
             }
         }
     }
@@ -298,8 +308,8 @@ public class PhysicsGame {
     }
 
     private void createFixture(Node node, Body body, Shape shape) {
-        FixturePropertiesOwner physical = (FixturePropertiesOwner)node;
-        FixtureDef fixtureDef = physical.getFixturePropertyDefinitions().createFixtureDef();
+        PhysicalPropertiesOwner physical = (PhysicalPropertiesOwner)node;
+        FixtureDef fixtureDef = physical.getPhysicalPropertyDefinitions().createFixtureDef();
         fixtureDef.shape = shape;
         Fixture fixture = body.createFixture(fixtureDef);
         fixtureListenersMap.put(node, new FixtureListeners((Physical) node, fixture));
@@ -395,7 +405,7 @@ public class PhysicsGame {
         addFixtureToBody(node, body);
 	}
 
-    private <T extends Node & FixturePropertiesOwner & Physical & PhysicsShape> void addFixtureToBody(T node, Body body) {
+    private <T extends Node & PhysicalPropertiesOwner & Physical & PhysicsShape> void addFixtureToBody(T node, Body body) {
         createFixture(node, body, shapeResolver.ResolveShape(node));
 
         node.setup(body, physicsShapeHelper);
@@ -410,22 +420,22 @@ public class PhysicsGame {
         }
     }
 
-    private <T extends Node & FixturePropertiesOwner & Physical & PhysicsShape> void addToSizeChangedQueue(T node) {
+    private <T extends Node & PhysicalPropertiesOwner & Physical & PhysicsShape> void addToSizeChangedQueue(T node) {
         if (!isUpdating) {
             sizeChangeQueue.add(node);
         }
     }
 
-    private <T extends Node & BodyPropertiesOwner & Geometric> Body createBody(T node) {
-        BodyPropertyDefinitions<? extends Styleable> bodyPropertyDefinitions = node.getBodyPropertyDefinitions();
-        BodyDef bodyDefinition = bodyPropertyDefinitions.createBodyDef(typeConverter);
+    private <T extends Node & GeometricPropertiesOwner & Geometric> Body createBody(T node) {
+        GeometricPropertyDefinitions<? extends Styleable> geometricPropertyDefinitions = node.getGeometricPropertyDefinitions();
+        BodyDef bodyDefinition = geometricPropertyDefinitions.createBodyDef(typeConverter);
         Vec2 bodyPosition = getBodyPosition(node);
         bodyDefinition.position.set(bodyPosition);
 
         double rotate = -node.getRotate();
         bodyDefinition.angle = positionHelper.getBodyRadians(rotate);
-        bodyDefinition.linearVelocity = coordinateConverter.convertVectorToWorld(bodyPropertyDefinitions.getLinearVelocityX(), bodyPropertyDefinitions.getLinearVelocityY());
-        bodyDefinition.angularVelocity = coordinateConverter.scaleVectorToWorld(bodyPropertyDefinitions.getAngularVelocity());
+        bodyDefinition.linearVelocity = coordinateConverter.convertVectorToWorld(geometricPropertyDefinitions.getLinearVelocityX(), geometricPropertyDefinitions.getLinearVelocityY());
+        bodyDefinition.angularVelocity = coordinateConverter.scaleVectorToWorld(geometricPropertyDefinitions.getAngularVelocity());
         Body body = world.createBody(bodyDefinition);
         this.nodeBodyMap.put(node, body);
 
@@ -433,7 +443,7 @@ public class PhysicsGame {
         node.activeProperty().addListener((observable, oldValue, newValue) -> onActiveChanged(node));
         node.allowSleepProperty().addListener((observable, oldValue, newValue) -> onSleepingAllowed(body, newValue));
         node.awakeProperty().addListener((observable, oldValue, newValue) -> onAwakeChanged(body, newValue));
-        node.bodyTypeProperty().addListener((observable, oldValue, newValue) -> onBodyTypeChanged(node));
+        node.simulationTypeProperty().addListener((observable, oldValue, newValue) -> onBodyTypeChanged(node));
         node.bulletProperty().addListener((observable, oldValue, newValue) -> onBulletChanged(body, newValue));
         node.fixedRotationProperty().addListener((observable, oldValue, newValue) -> onFixedRotationChanged(body, newValue));
         node.gravityScaleProperty().addListener((observable, oldValue, newValue) -> onGravityScaleChanged(body, newValue));
@@ -453,7 +463,7 @@ public class PhysicsGame {
         return body;
     }
 
-    private <T extends Node & BodyPropertiesOwner & Geometric> void onScaleChanged(T node) {
+    private <T extends Node & GeometricPropertiesOwner & Geometric> void onScaleChanged(T node) {
         if (!sizeChangeQueue.contains(node))
 	        sizeChangeQueue.add(node);
     }
@@ -531,10 +541,23 @@ public class PhysicsGame {
         return coordinateConverter.convertNodePointToWorld(cX, cY, node.getParent());
     }
 
+    /**
+     * Starts the loaded game
+     */
     public void startGame(){
 	    worldTimer.start();
     }
 
+    /**
+     * Pauses the game, call startGame() to continue
+     */
+    public void pauseGame(){
+        worldTimer.stop();
+    }
+
+    /**
+     * Stops the loaded game, it is not possible to restart without reloading using this function
+     */
     public void stopGame(){
         worldTimer.stop();
         worldTimer = null;
@@ -547,14 +570,26 @@ public class PhysicsGame {
 		}
 	}
 
+    /**
+     * Sets the level complete event handler, this event will fire when PhysicsWorld.finishLevel is called with completeState true
+     * @param onLevelCompleteListener event handler
+     */
     public void setOnLevelComplete(LevelFinishEventListener onLevelCompleteListener) {
         this.onLevelCompleteListener = onLevelCompleteListener;
     }
 
+    /**
+     * Sets the level failed event handler, this event will fire when PhysicsWorld.finishLevel is called with completeState false
+     * @param onLevelFailedListener event handler
+     */
     public void setOnLevelFailed(LevelFinishEventListener onLevelFailedListener) {
         this.onLevelFailedListener = onLevelFailedListener;
     }
 
+    /**
+     * Checks if debug is enabled
+     * @return true if debug is enabled, false if it is disabled
+     */
     public boolean isDebugEnabled() {
         return drawDebug;
     }

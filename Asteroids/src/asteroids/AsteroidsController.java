@@ -19,7 +19,7 @@ import java.util.Random;
 
 import static framework.PhysicsWorldFunctions.*;
 
-public class Controller {
+public class AsteroidsController {
 
     private final int minX = -30;
     private final int maxX = 805;
@@ -89,7 +89,7 @@ public class Controller {
             newAsteroid.setScaleX(scale);
             newAsteroid.setScaleY(scale);
 
-            Point2D travelVector = getOffsetSpeedVector(asteroid, velocityAngleOffset);
+            Point2D travelVector = getOffsetTravelVector(asteroid, velocityAngleOffset);
             newAsteroid.setLinearVelocityX(travelVector.getX());
             newAsteroid.setLinearVelocityY(travelVector.getY());
             newAsteroid.setAngularVelocity(asteroid.getAngularVelocity());
@@ -122,9 +122,9 @@ public class Controller {
             }
 
             //Max speed
-            double currentSpeed = getHighestSpeedDirection(playerShip);
+            double currentSpeed = getHighestVelocity(playerShip);
             if (currentSpeed > 400) {
-                setSpeedToCurrentSpeedVector(playerShip, 400);
+                setVelocityToCurrentTravelVector(playerShip, 400);
             }
 
             //Rotate on left/right, stop when no key is down
