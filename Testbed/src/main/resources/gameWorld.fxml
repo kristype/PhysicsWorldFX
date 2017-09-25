@@ -7,7 +7,7 @@
 <?import framework.nodes.PhysicsRectangle?>
 <?import java.lang.Double?>
 
-<PhysicsWorld gravityY="1200.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onBeginCollision="#handleBeginCollision" onEndCollision="#handleEndCollision" onPhysicsStep="#handlePhysicsStep" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="testbed.GameController">
+<PhysicsWorld gravityY="1200.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onBeginCollision="#handleBeginCollision" onEndCollision="#handleEndCollision" onPhysicsStep="#handlePhysicsStep" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.GameController">
    <children>
       <PhysicsRectangle density="1.0" height="10.0" layoutX="300.0" layoutY="560.0" rotate="17.0" width="200.0" />
       <PhysicsPolyline density="1.0" simulationType="NonMovable">

@@ -3,4 +3,8 @@
 */.settings/
 */.classpath
 *.idea/
+*.iml
+*.project
+*.settings/
+*.classpath
 out/*

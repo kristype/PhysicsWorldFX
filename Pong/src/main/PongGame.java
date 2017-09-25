@@ -1,4 +1,4 @@
-package pong;
+package main;
 
 import framework.PhysicsGame;
 import javafx.application.Application;
@@ -12,7 +12,7 @@ public class PongGame extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("pong.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/pong.fxml"));
         Region root = loader.load();
 
         primaryStage.setTitle("Pong");

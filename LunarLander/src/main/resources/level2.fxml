@@ -7,7 +7,7 @@
 <?import java.lang.Double?>
 <?import javafx.scene.shape.Polygon?>
 
-<PhysicsWorld fx:id="world" gravityX="0" gravityY="75" onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp" onPhysicsStep="#handleStep" physicsScale="15" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lunar.GameController">
+<PhysicsWorld fx:id="world" gravityX="0" gravityY="75" onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp" onPhysicsStep="#handleStep" physicsScale="15" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.GameController">
     <ShapeComposition fx:id="lander" simulationType="Full" layoutX="0" layoutY="0" linearVelocityX="150">
         <PhysicsPolygon fx:id="leftThruster" density="0.2" friction="1" layoutX="0" layoutY="18" restitution="0">
             <points>

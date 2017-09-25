@@ -1,4 +1,4 @@
-package lunar;
+package main;
 
 import framework.PhysicsWorld;
 import framework.nodes.PhysicsPolygon;

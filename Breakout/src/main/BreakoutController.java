@@ -1,4 +1,4 @@
-package breakout;
+package main;
 
 import framework.events.CollisionEvent;
 import framework.events.PhysicsEvent;

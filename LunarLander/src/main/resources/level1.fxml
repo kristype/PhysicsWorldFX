@@ -5,7 +5,7 @@
 
 <?import framework.nodes.PhysicsRectangle?>
 <?import javafx.scene.shape.Polygon?>
-<PhysicsWorld xmlns:fx="http://javafx.com/fxml" fx:controller="lunar.GameController" fx:id="world" prefWidth="800" prefHeight="600"
+<PhysicsWorld xmlns:fx="http://javafx.com/fxml" fx:controller="main.GameController" fx:id="world" prefWidth="800" prefHeight="600"
               gravityX="0" gravityY="75" physicsScale="15" onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp"
               onPhysicsStep="#handleStep" >
     <ShapeComposition simulationType="Full" fx:id="lander" layoutX="40" layoutY="40" >

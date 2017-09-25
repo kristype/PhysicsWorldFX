@@ -7,7 +7,7 @@
 <?import java.lang.String?>
 <?import javafx.scene.shape.Polygon?>
 
-<PhysicsWorld fx:id="physicsWorld" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onBeginCollision="#handleCollision" onEndCollision="#handleCollisionEnded" onPhysicsStep="#handlePhysicsStep" physicsScale="15.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@../asteroids.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="asteroids.AsteroidsController">
+<PhysicsWorld fx:id="physicsWorld" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onBeginCollision="#handleCollision" onEndCollision="#handleCollisionEnded" onPhysicsStep="#handlePhysicsStep" physicsScale="15.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@asteroids.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.AsteroidsController">
    <children>
       <ShapeComposition fx:id="playerShip" layoutX="400.0" layoutY="300.0">
          <children>

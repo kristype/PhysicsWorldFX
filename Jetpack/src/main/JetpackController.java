@@ -1,4 +1,4 @@
-package jetpack;
+package main;
 
 import framework.PhysicsWorld;
 import framework.events.CollisionEvent;

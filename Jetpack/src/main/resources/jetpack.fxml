@@ -14,7 +14,7 @@
 <?import javafx.scene.shape.Polygon?>
 <?import javafx.scene.shape.Rectangle?>
 
-<PhysicsWorld fx:id="world" gravityY="1200.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onBeginCollision="#onBeginCollision" onEndCollision="#onEndCollision" onPhysicsStep="#onPhysicsStep" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="jetpack.JetpackController">
+<PhysicsWorld fx:id="world" gravityY="1200.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onBeginCollision="#onBeginCollision" onEndCollision="#onEndCollision" onPhysicsStep="#onPhysicsStep" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.JetpackController">
    <children>
       <PhysicsRectangle fx:id="endZone" simulationType="NonMovable" fill="#004e8d" height="149.0" layoutX="1.0" layoutY="1.0" sensor="true" styleClass="endZone" width="150.0" />
       <ShapeComposition fx:id="jetman" bullet="true" fixedRotation="true" layoutX="80.0" layoutY="550.0">

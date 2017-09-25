@@ -1,4 +1,4 @@
-package testbed;
+package main;
 
 import framework.PhysicsGame;
 import javafx.application.Application;
@@ -14,7 +14,7 @@ public class Game extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("gameWorld.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/gameWorld.fxml"));
         Region root = loader.load();
         primaryStage.setTitle("Physics game");
         Scene scene = new Scene(root);

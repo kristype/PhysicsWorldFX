@@ -1,6 +1,5 @@
-package jetpack;
+package main;
 
-import framework.PhysicsGame;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -17,7 +16,7 @@ public class JetpackGame extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("overlay.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/overlay.fxml"));
         Region root = loader.load();
 
         primaryStage.setTitle("Jetpack");

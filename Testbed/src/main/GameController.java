@@ -1,4 +1,4 @@
-package testbed;
+package main;
 
 import framework.PhysicsWorld;
 import framework.events.CollisionEvent;
@@ -6,8 +6,7 @@ import framework.events.PhysicsEvent;
 import javafx.fxml.FXML;
 import javafx.scene.input.KeyEvent;
 
-import static framework.PhysicsWorldFunctions.registerKeyPressed;
-import static framework.PhysicsWorldFunctions.registerKeyReleased;
+import static framework.PhysicsWorldFunctions.*;
 
 public class GameController {
 

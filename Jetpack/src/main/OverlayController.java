@@ -1,4 +1,4 @@
-package jetpack;
+package main;
 
 import framework.PhysicsGame;
 import javafx.fxml.FXML;
@@ -30,7 +30,7 @@ public class OverlayController {
 
         game = new PhysicsGame();
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("jetpack.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/jetpack.fxml"));
             Region asteroids = loader.load();
             gameContainer.getChildren().add(asteroids);
 

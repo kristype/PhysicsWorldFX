@@ -1,6 +1,5 @@
-package lunar;
+package main;
 
-import framework.PhysicsGame;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,7 +11,7 @@ public class LunarLanderGame extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("overlay.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/overlay.fxml"));
         Region root = loader.load();
 
         primaryStage.setTitle("Lunar lander");

@@ -1,4 +1,4 @@
-package lunar;
+package main;
 
 import framework.PhysicsGame;
 import javafx.fxml.FXML;
@@ -22,7 +22,7 @@ public class OverlayController {
 
     private int scoreValue = 0;
 
-    private String[] levels = {"level1.fxml","level2.fxml","level3.fxml"};
+    private String[] levels = {"/level1.fxml","/level2.fxml","/level3.fxml"};
     private int currentLevel = 0;
 
     private PhysicsGame game;

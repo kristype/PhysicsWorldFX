@@ -1,4 +1,4 @@
-package pong;
+package main;
 
 import framework.events.CollisionEvent;
 import framework.events.PhysicsEvent;

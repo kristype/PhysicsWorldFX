@@ -1,4 +1,4 @@
-package asteroids;
+package main;
 
 import framework.PhysicsGame;
 import javafx.fxml.FXML;
@@ -30,7 +30,7 @@ public class StartScreenController {
 
         game = new PhysicsGame();
         try{
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("resources/asteroids.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/asteroids.fxml"));
             Region asteroids = loader.load();
             gameContainer.getChildren().add(asteroids);
 

@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="root" onKeyPressed="#handleKeyPressed" onKeyReleased="#handleKeyReleased" prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="asteroids.StartScreenController">
+<Pane fx:id="root" onKeyPressed="#handleKeyPressed" onKeyReleased="#handleKeyReleased" prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.StartScreenController">
     <Pane fx:id="gameContainer" />
     <Pane fx:id="titleContainer">
         <Label fx:id="title" layoutX="315.0" layoutY="200.0" text="Asteroids">

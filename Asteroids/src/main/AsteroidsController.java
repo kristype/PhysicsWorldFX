@@ -1,4 +1,4 @@
-package asteroids;
+package main;
 
 import framework.events.CollisionEvent;
 import framework.PhysicsWorld;
@@ -83,7 +83,7 @@ public class AsteroidsController {
     private void spawnAsteroid(PhysicsPolygon asteroid, String newTypes, double scale, double velocityAngleOffset, double spanwPointAngleOffset, int spawnOffset, int spawnOffsetY) {
         try {
             int randomNumber = random.nextInt(3) + 1;
-            PhysicsPolygon newAsteroid = loadFxmlResource(getClass(), "resources/asteroid"+randomNumber+".fxml");
+            PhysicsPolygon newAsteroid = loadFxmlResource(getClass(), "/asteroid"+randomNumber+".fxml");
 
             newAsteroid.getStyleClass().add(newTypes);
             newAsteroid.setScaleX(scale);
@@ -189,7 +189,7 @@ public class AsteroidsController {
 
     private void shoot() {
         try {
-            PhysicsCircle bullet = loadFxmlResource(getClass(), "resources/bullet.fxml");
+            PhysicsCircle bullet = loadFxmlResource(getClass(), "/bullet.fxml");
             Point2D point = getVectorForDegrees(playerShip.getRotate(), 600);
             bullet.setLinearVelocityX(point.getX() + playerShip.getLinearVelocityX());
             bullet.setLinearVelocityY(point.getY() + playerShip.getLinearVelocityY());
