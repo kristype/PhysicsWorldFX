@@ -1,6 +1,5 @@
 package asteroids;
 
-import framework.PhysicsGame;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,7 +11,8 @@ public class AsteroidsGame extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("startScreen.fxml"));
+        System.out.println(getClass().getResource(""));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("resources/startScreen.fxml"));
         Region root = loader.load();
 
         primaryStage.setTitle("Asteroids");
