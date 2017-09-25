@@ -1,10 +1,11 @@
 # JavaFXGameAPI
 
-2D game api for JavaFX and fxml in combination with SceneBuilder
+2D game api for JavaFX and fxml in combination with SceneBuilder.
+
 This framework uses JBox2D as a physics engine, and supports the bodies, fixtures and shapes functionality from JBox2D. Joints functionality is not yet supported.
 
-Includes demo games of Pong, Breakout, Asteroids and a 2D-platform game Jetpack
-This API was written as a prototype for a master thesis at NTNU
+Includes demo games of Pong, Breakout, Asteroids and a 2D-platform game Jetpack.
+This API was written as a prototype for a master thesis at NTNU.
 
 Examples included in this repository:
 ![Asteroids](https://user-images.githubusercontent.com/1080738/30784306-25b9f02a-a153-11e7-9c9c-fa47edad3290.png)
