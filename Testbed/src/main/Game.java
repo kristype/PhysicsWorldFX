@@ -2,12 +2,12 @@ package main;
 
 import framework.PhysicsGame;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
+
+import static framework.PhysicsWorldFunctions.*;
 
 public class Game extends Application {
 
@@ -19,18 +19,14 @@ public class Game extends Application {
         primaryStage.setTitle("Physics game");
         Scene scene = new Scene(root);
 
-        //Transfer key presses to PhysicsWorld
+        //Register key pressed
         scene.setOnKeyPressed(e -> {
-            EventHandler<? super KeyEvent> onKeyPressed = root.getOnKeyPressed();
-            if (onKeyPressed != null)
-                onKeyPressed.handle(e);
+            registerKeyPressed(e.getCode());
         });
 
-        //Transfer key releases to PhysicsWorld
+        //Register key released
         scene.setOnKeyReleased(e -> {
-            EventHandler<? super KeyEvent> onKeyReleased = root.getOnKeyReleased();
-            if (onKeyReleased != null)
-                onKeyReleased.handle(e);
+            registerKeyReleased(e.getCode());
         });
 
         primaryStage.setScene(scene);
