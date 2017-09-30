@@ -16,21 +16,25 @@ import utilites.PhysicsShapeHelper;
 
 import java.util.List;
 
-public class ShapeComposition extends Pane implements GeometricPropertiesOwner, Geometric, PhysicsShape {
+/**
+ * This class can be used to combine nodes into a single geometric node.
+ * This node's geometric properties overrides child nodes geometric properties.
+ */
+public class GeometricComposition extends Pane implements GeometricPropertiesOwner, Geometric, PhysicsShape {
 
-    private final GeometricPropertyDefinitions<ShapeComposition> geometricPropertyDefinitions;
+    private final GeometricPropertyDefinitions<GeometricComposition> geometricPropertyDefinitions;
 
     private Body body;
     private PhysicsShapeHelper helper;
     private Vec2 localCenterOffset = new Vec2();
 
-    public ShapeComposition() {
+    public GeometricComposition() {
         super();
-        getStyleClass().add("shapeComposition");
+        getStyleClass().add("geometricComposition");
         this.geometricPropertyDefinitions = new GeometricPropertyDefinitions<>(this, SPF);
     }
 
-    private static final StyleablePropertyFactory<ShapeComposition> SPF = new StyleablePropertyFactory<>(Pane.getClassCssMetaData());
+    private static final StyleablePropertyFactory<GeometricComposition> SPF = new StyleablePropertyFactory<>(Pane.getClassCssMetaData());
 
     public GeometricPropertyDefinitions<? extends Styleable> getGeometricPropertyDefinitions() {
         return geometricPropertyDefinitions;
@@ -84,17 +88,17 @@ public class ShapeComposition extends Pane implements GeometricPropertiesOwner, 
 
     @Override
     public ObservableValue<SimulationType> simulationTypeProperty() {
-        return geometricPropertyDefinitions.bodyTypeProperty();
+        return geometricPropertyDefinitions.simulationTypeProperty();
     }
 
     @Override
     public SimulationType getSimulationType() {
-        return geometricPropertyDefinitions.getBodyType();
+        return geometricPropertyDefinitions.getSimulationType();
     }
 
     @Override
     public void setSimulationType(SimulationType bodyType) {
-        geometricPropertyDefinitions.setBodyType(bodyType);
+        geometricPropertyDefinitions.setSimulationType(bodyType);
     }
 
     @Override

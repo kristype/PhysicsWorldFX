@@ -102,17 +102,17 @@ public class PhysicsCircle extends Circle implements GeometricPropertiesOwner, P
 
     @Override
     public ObservableValue<SimulationType> simulationTypeProperty() {
-        return geometricPropertyDefinitions.bodyTypeProperty();
+        return geometricPropertyDefinitions.simulationTypeProperty();
     }
 
     @Override
     public SimulationType getSimulationType() {
-        return geometricPropertyDefinitions.getBodyType();
+        return geometricPropertyDefinitions.getSimulationType();
     }
 
     @Override
     public void setSimulationType(SimulationType bodyType) {
-        geometricPropertyDefinitions.setBodyType(bodyType);
+        geometricPropertyDefinitions.setSimulationType(bodyType);
     }
 
     @Override
@@ -387,9 +387,9 @@ public class PhysicsCircle extends Circle implements GeometricPropertiesOwner, P
 
     private void raiseEvent(List<ChangedEventListener> eventListeners){
         ChangedEvent event = new ChangedEvent(this);
-        Iterator i = eventListeners.iterator();
+        Iterator<ChangedEventListener> i = eventListeners.iterator();
         while(i.hasNext())  {
-            ((ChangedEventListener) i.next()).handleChangedEvent(event);
+            (i.next()).handleChangedEvent(event);
         }
     }
 }

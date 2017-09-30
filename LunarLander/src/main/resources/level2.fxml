@@ -3,12 +3,12 @@
 <?import framework.PhysicsWorld?>
 <?import framework.nodes.PhysicsPolygon?>
 <?import framework.nodes.PhysicsRectangle?>
-<?import framework.nodes.ShapeComposition?>
+<?import framework.nodes.GeometricComposition?>
 <?import java.lang.Double?>
 <?import javafx.scene.shape.Polygon?>
 
-<PhysicsWorld fx:id="world" gravityX="0" gravityY="75" onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp" onPhysicsStep="#handleStep" physicsScale="15" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.GameController">
-    <ShapeComposition fx:id="lander" simulationType="Full" layoutX="0" layoutY="0" linearVelocityX="150">
+<PhysicsWorld fx:id="world" gravityX="0" gravityY="75" onKeyPressed="#handleKeyDown" onKeyReleased="#handleKeyUp" onPhysicsStep="#handleStep" physicsScale="15" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.LunarLanderController">
+    <GeometricComposition fx:id="lander" simulationType="Full" layoutX="0" layoutY="0" linearVelocityX="150">
         <PhysicsPolygon fx:id="leftThruster" density="0.2" friction="1" layoutX="0" layoutY="18" restitution="0">
             <points>
                 <Double fx:value="0.0" />
@@ -73,7 +73,7 @@
             </points>
         </Polygon>
 
-    </ShapeComposition>
+    </GeometricComposition>
     <PhysicsRectangle simulationType="NonMovable" fill="black" friction="1" height="10" layoutX="0" layoutY="590.0" restitution="0" width="600.0" />
     <PhysicsRectangle fx:id="landingPad" simulationType="NonMovable" fill="#006f8a" friction="1" height="10" layoutX="600.0" layoutY="590.0" restitution="0" width="70" />
     <PhysicsRectangle simulationType="NonMovable" fill="black" friction="1" height="10" layoutX="670.0" layoutY="590.0" restitution="0" width="130.0" />

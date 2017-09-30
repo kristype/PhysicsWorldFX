@@ -142,6 +142,13 @@ public interface Physical {
      */
     void setCollisionFilterGroup(int filterGroup);
 
+    /**
+     * For internal use
+     */
     void addSizeChangedEventListener(ChangedEventListener eventListener);
+
+    /**
+     * For internal use
+     */
     void setLocalCenterOffset(Vec2 vec2);
 }

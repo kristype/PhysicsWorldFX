@@ -10,7 +10,7 @@ import javafx.scene.shape.Polygon;
 
 import static framework.PhysicsWorldFunctions.*;
 
-public class GameController {
+public class LunarLanderController {
 
     public static final int singleThrustForce = -80;
     public static final int fullThrustForce = -200;

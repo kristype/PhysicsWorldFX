@@ -5,7 +5,7 @@
 <?import framework.nodes.PhysicsPolygon?>
 <?import framework.nodes.PhysicsPolyline?>
 <?import framework.nodes.PhysicsRectangle?>
-<?import framework.nodes.ShapeComposition?>
+<?import framework.nodes.GeometricComposition?>
 <?import java.lang.Double?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
@@ -17,7 +17,7 @@
 <PhysicsWorld fx:id="world" gravityY="1200.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onBeginCollision="#onBeginCollision" onEndCollision="#onEndCollision" onPhysicsStep="#onPhysicsStep" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.JetpackController">
    <children>
       <PhysicsRectangle fx:id="endZone" simulationType="NonMovable" fill="#004e8d" height="149.0" layoutX="1.0" layoutY="1.0" sensor="true" styleClass="endZone" width="150.0" />
-      <ShapeComposition fx:id="jetman" bullet="true" fixedRotation="true" layoutX="80.0" layoutY="550.0">
+      <GeometricComposition fx:id="jetman" bullet="true" fixedRotation="true" layoutX="80.0" layoutY="550.0">
          <children>
             <PhysicsCircle fx:id="head" density="1.0" layoutX="10.0" layoutY="-0.0" radius="5.0" />
             <PhysicsRectangle fx:id="pack" density="1.0" height="10.0" layoutY="7.0" width="5.0" />
@@ -37,7 +37,7 @@
             <PhysicsRectangle fx:id="legs" density="1.0" friction="0.8" height="8.0" layoutX="6.0" layoutY="20.0" width="8.0" />
             <Rectangle fx:id="fuelIndicator" fill="#1fffaf" height="10.0" layoutY="7.0" width="5.0" />
          </children>
-      </ShapeComposition>
+      </GeometricComposition>
       <PhysicsPolyline fx:id="boundingBox" simulationType="NonMovable" density="1.0">
          <points>
             <Double fx:value="0.0" />

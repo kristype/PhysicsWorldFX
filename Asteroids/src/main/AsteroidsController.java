@@ -4,7 +4,7 @@ import framework.events.CollisionEvent;
 import framework.PhysicsWorld;
 import framework.nodes.PhysicsCircle;
 import framework.nodes.PhysicsPolygon;
-import framework.nodes.ShapeComposition;
+import framework.nodes.GeometricComposition;
 import javafx.fxml.FXML;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -32,7 +32,7 @@ public class AsteroidsController {
     @FXML private PhysicsPolygon rightWing;
     @FXML private PhysicsPolygon leftWing;
     @FXML private PhysicsPolygon shipBody;
-    @FXML private ShapeComposition playerShip;
+    @FXML private GeometricComposition playerShip;
     @FXML private PhysicsWorld physicsWorld;
 
     private boolean gameOver;

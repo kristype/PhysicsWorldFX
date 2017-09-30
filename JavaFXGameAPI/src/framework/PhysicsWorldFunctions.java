@@ -1,6 +1,7 @@
 package framework;
 
 import framework.geometric.Geometric;
+import framework.nodes.GeometricComposition;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -192,8 +193,8 @@ public class PhysicsWorldFunctions {
      * Retrieves the center of mass point in the world node
      * @param node the physics node to retrieve center of mass point from
      * @return the center of mass location in the world node
-     * @throws Exception when physics node is contained in a framework.nodes.ShapeComposition
-     * @see framework.nodes.ShapeComposition
+     * @throws Exception when physics node is contained in a framework.nodes.GeometricComposition
+     * @see GeometricComposition
      */
     public static Point2D getWorldCenterOfMass(Node node) throws Exception {
         if (!nodeBodyMap.containsKey(node))
@@ -207,8 +208,8 @@ public class PhysicsWorldFunctions {
      * Retrieves the center of mass point in the node layout bounds
      * @param node the physics node to retrieve center of mass point from
      * @return the center of mass location in the node layout bounds
-     * @throws Exception when physics node is contained in a framework.nodes.ShapeComposition
-     * @see framework.nodes.ShapeComposition
+     * @throws Exception when physics node is contained in a framework.nodes.GeometricComposition
+     * @see GeometricComposition
      */
     public static Point2D getLocalCenterOfMass(Node node) throws Exception {
         if (!nodeBodyMap.containsKey(node))

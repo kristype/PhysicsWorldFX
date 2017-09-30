@@ -2,14 +2,14 @@
 
 <?import framework.PhysicsWorld?>
 <?import framework.nodes.PhysicsPolygon?>
-<?import framework.nodes.ShapeComposition?>
+<?import framework.nodes.GeometricComposition?>
 <?import java.lang.Double?>
 <?import java.lang.String?>
 <?import javafx.scene.shape.Polygon?>
 
 <PhysicsWorld fx:id="physicsWorld" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onBeginCollision="#handleCollision" onEndCollision="#handleCollisionEnded" onPhysicsStep="#handlePhysicsStep" physicsScale="15.0" prefHeight="600.0" prefWidth="800.0" stylesheets="@asteroids.css" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.AsteroidsController">
    <children>
-      <ShapeComposition fx:id="playerShip" layoutX="400.0" layoutY="300.0">
+      <GeometricComposition fx:id="playerShip" layoutX="400.0" layoutY="300.0">
          <children>
             <Polygon fx:id="flame" fill="darkred" layoutX="10.0" layoutY="25.0" rotate="180.0">
               <points>
@@ -38,7 +38,7 @@
                     <Double fx:value="0.0" />
                 </points>
             </PhysicsPolygon>
-            <PhysicsPolygon fx:id="rightWing" fill="#007267" layoutX="10.0" layoutY="2.0" restitution="0.0" rotate="40.0" scaleX="0.3" scaleY="0.4">
+            <PhysicsPolygon fx:id="rightWing" density="0" fill="#007267" layoutX="10.0" layoutY="2.0" restitution="0.0" rotate="40.0" scaleX="0.3" scaleY="0.4">
                <points>
                   <Double fx:value="0.0" />
                   <Double fx:value="30.0" />
@@ -50,7 +50,7 @@
                   <Double fx:value="0.0" />
                </points>
             </PhysicsPolygon>
-            <PhysicsPolygon fx:id="leftWing" fill="#007267" layoutX="-10.0" layoutY="2.0" restitution="0.0" rotate="-40.0" scaleX="0.3" scaleY="0.4">
+            <PhysicsPolygon fx:id="leftWing" density="0" fill="#007267" layoutX="-10.0" layoutY="2.0" restitution="0.0" rotate="-40.0" scaleX="0.3" scaleY="0.4">
                <points>
                   <Double fx:value="0.0" />
                   <Double fx:value="30.0" />
@@ -63,7 +63,7 @@
                </points>
             </PhysicsPolygon>
          </children>
-      </ShapeComposition>
+      </GeometricComposition>
       <PhysicsPolygon angularVelocity="30.0" density="1.0" friction="1.0" layoutX="250.0" layoutY="500.0" linearVelocityX="40.0" linearVelocityY="10.0" restitution="0.0" scaleX="2.0" scaleY="2.0">
       <points>
           <Double fx:value="10.0" />

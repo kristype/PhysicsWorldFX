@@ -46,7 +46,7 @@ public class ShapeResolver {
 
     private Shape mapCircle(PhysicsCircle node, Bounds bounds, Shape shape) {
 
-        if (node.getScaleX() == node.getScaleY() && !(node.getParent() instanceof ShapeComposition) ){
+        if (node.getScaleX() == node.getScaleY() && !(node.getParent() instanceof GeometricComposition) ){
             double world = Math.abs(converter.scaleVectorToWorld(bounds.getWidth()));
             float radius = (float) world / 2f;
             radius *= node.getScaleX();
@@ -110,8 +110,8 @@ public class ShapeResolver {
 
     private <T extends Node & Physical> Vec2[] getVertices(T node, List<Double> nodePoints) {
         Vec2[] vertices;
-        if (node.getParent() instanceof ShapeComposition){
-            ShapeComposition parent = (ShapeComposition) node.getParent();
+        if (node.getParent() instanceof GeometricComposition){
+            GeometricComposition parent = (GeometricComposition) node.getParent();
 
             Point2D center = positionHelper.getGeometricCenter(parent);
             double cX = center.getX();

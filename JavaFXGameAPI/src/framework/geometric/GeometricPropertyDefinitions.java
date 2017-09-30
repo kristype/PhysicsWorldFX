@@ -11,7 +11,7 @@ import utilites.StyleFactory;
 
 public class GeometricPropertyDefinitions<S extends Styleable> extends StyleFactory<S> {
 
-	private final StyleableProperty<SimulationType> bodyType;
+	private final StyleableProperty<SimulationType> simulationType;
 	private final StyleableProperty<Number> linearDamping;
 	private final StyleableProperty<Number> linearVelocityX;
 	private final StyleableProperty<Number> linearVelocityY;
@@ -26,7 +26,7 @@ public class GeometricPropertyDefinitions<S extends Styleable> extends StyleFact
 
     public GeometricPropertyDefinitions(S owner, StyleablePropertyFactory<S> spf) {
 		super(owner, spf);
-		this.bodyType = createStyleableEnumProperty("bodyType", s -> ((GeometricPropertiesOwner)s).getGeometricPropertyDefinitions().bodyType, SimulationType.class, SimulationType.Full);
+		this.simulationType = createStyleableEnumProperty("simulationType", s -> ((GeometricPropertiesOwner)s).getGeometricPropertyDefinitions().simulationType, SimulationType.class, SimulationType.Full);
 		this.linearDamping = createStyleableNumberProperty("linearDamping", s -> ((GeometricPropertiesOwner)s).getGeometricPropertyDefinitions().linearDamping, 0.0);
 		this.linearVelocityX = createStyleableNumberProperty("linearVelocityX", s -> ((GeometricPropertiesOwner)s).getGeometricPropertyDefinitions().linearVelocityX, 0.0);
 		this.linearVelocityY = createStyleableNumberProperty("linearVelocityY", s -> ((GeometricPropertiesOwner)s).getGeometricPropertyDefinitions().linearVelocityY, 0.0);
@@ -42,7 +42,7 @@ public class GeometricPropertyDefinitions<S extends Styleable> extends StyleFact
 
 	public BodyDef createBodyDef(SimulationTypeToBodyTypeConverter converter) {
 		BodyDef bodyDef = new BodyDef();
-		bodyDef.type = converter.Convert(this.getBodyType());
+		bodyDef.type = converter.Convert(this.getSimulationType());
 		bodyDef.linearDamping= (float)this.getLinearDamping();
 		bodyDef.angularDamping = (float)this.getAngularDamping();
 		bodyDef.gravityScale= (float)this.getGravityScale();
@@ -54,14 +54,14 @@ public class GeometricPropertyDefinitions<S extends Styleable> extends StyleFact
         return bodyDef;
 	}
 
-	public ObservableValue<SimulationType> bodyTypeProperty() {
-		return (ObservableValue<SimulationType>) bodyType;
+	public ObservableValue<SimulationType> simulationTypeProperty() {
+		return (ObservableValue<SimulationType>) simulationType;
 	}
-	public final SimulationType getBodyType() {
-		return bodyType.getValue();
+	public final SimulationType getSimulationType() {
+		return simulationType.getValue();
 	}
-	public final void setBodyType(SimulationType bodyType) {
-		this.bodyType.setValue(bodyType);
+	public final void setSimulationType(SimulationType simulationType) {
+		this.simulationType.setValue(simulationType);
 	}
 	
 	public ObservableValue<Double> linearDampingProperty() {

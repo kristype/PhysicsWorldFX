@@ -23,7 +23,7 @@ public class PhysicalPropertyDefinitions<S extends Styleable> extends StyleFacto
 		this.filterMask = createStyleableNumberProperty("filterMask", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().filterMask, 0xFFFF);
 		this.filterCategory = createStyleableNumberProperty("filterCategory", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().filterCategory, 0x0001);
 		this.filterGroup = createStyleableNumberProperty("filterGroup", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().filterGroup, 0);
-		this.density = createStyleableNumberProperty("density", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().density, 0.0);
+		this.density = createStyleableNumberProperty("density", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().density, 1.0);
 		this.friction = createStyleableNumberProperty("friction", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().friction, 0.2);
 		this.restitution = createStyleableNumberProperty("restitution", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().restitution, 0.0);
 		this.sensor = createStyleableBooleanProperty("sensor", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().sensor, false);

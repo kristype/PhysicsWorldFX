@@ -4,7 +4,7 @@ import framework.PhysicsWorld;
 import framework.events.CollisionEvent;
 import framework.events.PhysicsEvent;
 import framework.nodes.PhysicsRectangle;
-import framework.nodes.ShapeComposition;
+import framework.nodes.GeometricComposition;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.ProgressBar;
@@ -20,7 +20,7 @@ public class JetpackController {
     @FXML private PhysicsRectangle endZone;
     @FXML private PhysicsRectangle elevator;
     @FXML private PhysicsWorld world;
-    @FXML private ShapeComposition jetman;
+    @FXML private GeometricComposition jetman;
     @FXML private Polygon flame;
     @FXML private Rectangle fuelIndicator;
 

@@ -4,7 +4,7 @@ import framework.geometric.GeometricPropertiesOwner;
 import framework.geometric.GeometricPropertyDefinitions;
 import framework.geometric.Geometric;
 import framework.events.*;
-import framework.nodes.ShapeComposition;
+import framework.nodes.GeometricComposition;
 import javafx.animation.AnimationTimer;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;
@@ -280,9 +280,9 @@ public class PhysicsGame {
             for (Node node : sizeChangeQueue) {
                 if (nodeFixtureMap.containsKey(node)){
                     updateShape(node);
-                }else if(nodeBodyMap.containsKey(node) && node instanceof ShapeComposition){
+                }else if(nodeBodyMap.containsKey(node) && node instanceof GeometricComposition){
 
-                    ShapeComposition compositionNode = (ShapeComposition)node;
+                    GeometricComposition compositionNode = (GeometricComposition)node;
                     for (Node child : compositionNode.getChildrenUnmodifiable()) {
                         if (nodeFixtureMap.containsKey(child)) {
                             updateShape(child);
@@ -366,8 +366,8 @@ public class PhysicsGame {
                 pane.getChildren().addListener(listChangeListener);
             }
 
-            if (node instanceof ShapeComposition){
-                addShapeContainer((ShapeComposition) node);
+            if (node instanceof GeometricComposition){
+                addShapeContainer((GeometricComposition) node);
             }else{
                 for(Node childNode : ((Parent)node).getChildrenUnmodifiable()){
                     add(childNode);
@@ -391,7 +391,7 @@ public class PhysicsGame {
         return null;
     }
 
-    private void addShapeContainer(ShapeComposition node) {
+    private void addShapeContainer(GeometricComposition node) {
         Body body = createBody(node);
         for (Node child : node.getChildrenUnmodifiable()){
             if (child instanceof SingleShape)
@@ -411,7 +411,7 @@ public class PhysicsGame {
         node.setup(body, physicsShapeHelper);
         node.addSizeChangedEventListener(e -> addToSizeChangedQueue(node));
 
-        if (node.getParent() instanceof ShapeComposition){
+        if (node.getParent() instanceof GeometricComposition){
             node.layoutXProperty().addListener((observable, oldValue, newValue) -> addToSizeChangedQueue(node));
             node.layoutYProperty().addListener((observable, oldValue, newValue) -> addToSizeChangedQueue(node));
             node.rotateProperty().addListener((observable, oldValue, newValue) -> addToSizeChangedQueue(node));
