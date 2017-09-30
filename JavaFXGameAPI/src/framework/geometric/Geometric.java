@@ -91,8 +91,23 @@ public interface Geometric {
      */
     void setSimulationType(SimulationType bodyType);
 
+    /**
+     * Linear dampening property
+     * @return the linear dampening property
+     */
     ObservableValue<Double> linearDampingProperty();
+
+    /**
+     * Gets the linear dampening value
+     * @return the linear dampening value
+     */
     double getLinearDamping();
+
+    /**
+     * Sets the linear dampening value
+     * This value slows the linear velocity for each physics step
+     * @param linearDamping
+     */
     void setLinearDamping(double linearDamping);
 
     /**
@@ -152,8 +167,23 @@ public interface Geometric {
      */
     void setAngularVelocity(double angularVelocity);
 
+    /**
+     * Angular dampening property
+     * @return the linear angular property
+     */
     ObservableValue<Double> angularDampingProperty();
+
+    /**
+     * Gets the angular dampening value
+     * @return the angular dampening value
+     */
     double getAngularDamping();
+
+    /**
+     * Sets the angular dampening value
+     * This value slows the angular velocity for each physics step
+     * @param angularDamping
+     */
     void setAngularDamping(double angularDamping);
 
     /**
@@ -179,12 +209,43 @@ public interface Geometric {
      */
     void setGravityScale(double gravityScale);
 
+    /**
+     * Allow sleep property
+     * @return the allow sleep property
+     */
     ObservableValue<Boolean> allowSleepProperty();
+
+    /**
+     * Gets the allow sleep value
+     * @return true if allow sleep and false if not
+     */
     boolean isAllowSleep();
+
+    /**
+     * Set the allow sleep value.
+     * This value allows the node to skip physics simulations when not needed
+     * @param allowSleep
+     */
     void setAllowSleep(boolean allowSleep);
 
+    /**
+     * Awake property
+     * @return the awake property
+     */
     ObservableValue<Boolean> awakeProperty();
+
+    /**
+     * Gets the awake value
+     * @return true if awake and false if not
+     */
     boolean isAwake();
+
+    /**
+     * Set the awake value.
+     * This value allows the node to skip physics simulations when not needed,
+     * but is woken up when a node collides with this node
+     * @param awake
+     */
     void setAwake(boolean awake);
 
     /**
@@ -205,8 +266,23 @@ public interface Geometric {
      */
     void setFixedRotation(boolean fixedRotation);
 
+    /**
+     * Active property
+     * @return the active property
+     */
     ObservableValue<Boolean> activeProperty();
+
+    /**
+     * Gets the active value
+     * @return true if active and false if not
+     */
     boolean isActive();
+
+    /**
+     * Set the active value.
+     * This value allows the node to skip physics simulations
+     * @param active
+     */
     void setActive(boolean active);
 
     /**
