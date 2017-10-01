@@ -67,6 +67,7 @@ public interface Geometric {
 
     /**
      * Simulation type property
+     * Default value: Full
      * @return the simulation type property
      */
     ObservableValue<SimulationType> simulationTypeProperty();
@@ -93,6 +94,7 @@ public interface Geometric {
 
     /**
      * Linear dampening property
+     * Default value: 0
      * @return the linear dampening property
      */
     ObservableValue<Double> linearDampingProperty();
@@ -112,6 +114,7 @@ public interface Geometric {
 
     /**
      * Linear velocity property for the direction along the x axis
+     * Default value: 0
      * @return the linear velocity x property
      */
     ObservableValue<Double> linearVelocityXProperty();
@@ -131,6 +134,7 @@ public interface Geometric {
 
     /**
      * Linear velocity property for the direction along the y axis
+     * Default value: 0
      * @return the linear velocity y property
      */
     ObservableValue<Double> linearVelocityYProperty();
@@ -150,6 +154,7 @@ public interface Geometric {
 
     /**
      * Angular velocity property
+     * Default value: 0
      * @return the angular velocity property
      */
     ObservableValue<Double> angularVelocityProperty();
@@ -169,6 +174,7 @@ public interface Geometric {
 
     /**
      * Angular dampening property
+     * Default value: 0
      * @return the linear angular property
      */
     ObservableValue<Double> angularDampingProperty();
@@ -188,6 +194,7 @@ public interface Geometric {
 
     /**
      * Gravity scale property
+     * Default value: 1
      * @return the gravity scale property
      */
     ObservableValue<Double> gravityScaleProperty();
@@ -211,6 +218,7 @@ public interface Geometric {
 
     /**
      * Allow sleep property
+     * Default value: true
      * @return the allow sleep property
      */
     ObservableValue<Boolean> allowSleepProperty();
@@ -230,6 +238,7 @@ public interface Geometric {
 
     /**
      * Awake property
+     * Default value: true
      * @return the awake property
      */
     ObservableValue<Boolean> awakeProperty();
@@ -250,6 +259,7 @@ public interface Geometric {
 
     /**
      * Fixed rotation property
+     * Default value: false
      * @return the fixed rotation property
      */
     ObservableValue<Boolean> fixedRotationProperty();
@@ -268,6 +278,7 @@ public interface Geometric {
 
     /**
      * Active property
+     * Default value: true
      * @return the active property
      */
     ObservableValue<Boolean> activeProperty();
@@ -287,6 +298,7 @@ public interface Geometric {
 
     /**
      * Bullet property
+     * Default value: false
      * @return the bullet property
      */
     ObservableValue<Boolean> bulletProperty();

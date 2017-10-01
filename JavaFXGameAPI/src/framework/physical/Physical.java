@@ -9,6 +9,7 @@ public interface Physical {
 
     /**
      * Density property
+     * Default value: 1
      * @return the density property
      */
     ObservableValue<Double> densityProperty();
@@ -27,6 +28,7 @@ public interface Physical {
 
     /**
      * Friction property
+     * Default value: 0.2
      * @return the friction property
      */
     ObservableValue<Double> frictionProperty();
@@ -46,6 +48,7 @@ public interface Physical {
 
     /**
      * Restitution property
+     * Default value: 0
      * @return the restitution property
      */
     ObservableValue<Double> restitutionProperty();
@@ -67,6 +70,7 @@ public interface Physical {
 
     /**
      * Sensor property
+     * Default value: false
      * @return the sensor property
      */
     ObservableValue<Boolean> sensorProperty();
@@ -87,6 +91,7 @@ public interface Physical {
 
     /**
      * Collision filter mask property
+     * Default value: 0x0001
      * @return The collision filter category property
      */
     ObservableValue<Integer> collisionFilterCategoryProperty();
@@ -105,6 +110,7 @@ public interface Physical {
 
     /**
      * Collision filter mask property
+     * Default value: 0xFFFF
      * @return The collision filter mask property
      */
     ObservableValue<Integer> collisionFilterMaskProperty();
@@ -123,7 +129,8 @@ public interface Physical {
     void setCollisionFilterMask(int filterMask);
 
     /**
-     * Collision filter mask property
+     * Collision filter group property
+     * Default value: 0
      * @return The collision filter group property
      */
     ObservableValue<Integer> collisionFilterGroupProperty();

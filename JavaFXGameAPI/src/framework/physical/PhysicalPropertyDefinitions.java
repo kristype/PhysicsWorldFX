@@ -20,9 +20,9 @@ public class PhysicalPropertyDefinitions<S extends Styleable> extends StyleFacto
 
     public PhysicalPropertyDefinitions(S owner, StyleablePropertyFactory<S> spf) {
 		super(owner, spf);
-		this.filterMask = createStyleableNumberProperty("filterMask", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().filterMask, 0xFFFF);
-		this.filterCategory = createStyleableNumberProperty("filterCategory", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().filterCategory, 0x0001);
-		this.filterGroup = createStyleableNumberProperty("filterGroup", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().filterGroup, 0);
+		this.filterMask = createStyleableNumberProperty("collisionFilterMask", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().filterMask, 0xFFFF);
+		this.filterCategory = createStyleableNumberProperty("collisionFilterCategory", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().filterCategory, 0x0001);
+		this.filterGroup = createStyleableNumberProperty("collisionFilterGroup", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().filterGroup, 0);
 		this.density = createStyleableNumberProperty("density", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().density, 1.0);
 		this.friction = createStyleableNumberProperty("friction", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().friction, 0.2);
 		this.restitution = createStyleableNumberProperty("restitution", s -> ((PhysicalPropertiesOwner)s).getPhysicalPropertyDefinitions().restitution, 0.0);
