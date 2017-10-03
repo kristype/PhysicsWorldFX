@@ -1,49 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import framework.PhysicsWorld?>
-<?import framework.nodes.PhysicsCircle?>
-<?import framework.nodes.PhysicsPolygon?>
-<?import framework.nodes.PhysicsPolyline?>
-<?import framework.nodes.PhysicsRectangle?>
-<?import java.lang.Double?>
+<?import javafx.scene.layout.Pane?>
 
-<PhysicsWorld gravityY="1200.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onBeginCollision="#handleBeginCollision" onEndCollision="#handleEndCollision" onPhysicsStep="#handlePhysicsStep" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.GameController">
+<PhysicsWorld fx:id="world" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onBeginCollision="#handleBeginCollision" onEndCollision="#handleEndCollision" onPhysicsStep="#handlePhysicsStep" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.GameController">
    <children>
-      <PhysicsRectangle density="1.0" height="10.0" layoutX="300.0" layoutY="560.0" rotate="17.0" width="200.0" />
-      <PhysicsPolyline density="1.0" simulationType="NonMovable">
-          <points>
-              <Double fx:value="0.0" />
-              <Double fx:value="0.0" />
-
-              <Double fx:value="0.0" />
-              <Double fx:value="600.0" />
-
-              <Double fx:value="800.0" />
-              <Double fx:value="600.0" />
-
-              <Double fx:value="800.0" />
-              <Double fx:value="0.0" />
-
-              <Double fx:value="0.0" />
-              <Double fx:value="0.0" />
-          </points>
-      </PhysicsPolyline>
-      <PhysicsCircle friction="1.0" layoutX="390.0" layoutY="584.0" radius="15.0" simulationType="NonMovable" />
-      <PhysicsPolygon density="1.0" friction="1.0" layoutX="480.0" layoutY="565.0" rotate="15.0">
-          <points>
-              <!-- Point1: X:0, Y:20 -->
-              <Double fx:value="0.0" />
-              <Double fx:value="20.0" />
-
-              <!-- Point2: X:20, Y:20 -->
-              <Double fx:value="20.0" />
-              <Double fx:value="20.0" />
-
-              <!-- Point3: X:10, Y:0 -->
-              <Double fx:value="10.0" />
-              <Double fx:value="0.0" />
-          </points>
-      </PhysicsPolygon>
-      <PhysicsRectangle angularVelocity="50.0" density="1.0" friction="1.0" height="50.0" layoutX="300.0" layoutY="100.0" linearVelocityY="-100.0" width="50.0" />
+      <Pane maxHeight="600.0" maxWidth="800.0" minHeight="600.0" minWidth="800.0" prefHeight="600.0" prefWidth="800.0" />
    </children>
 </PhysicsWorld>
