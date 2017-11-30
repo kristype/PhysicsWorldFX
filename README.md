@@ -1,9 +1,8 @@
-# JavaFXGameAPI
+# PhysicsWorldFX
 
-2D game api for JavaFX and fxml in combination with SceneBuilder.
+2D game api with physics engine for JavaFX and FXML in combination with SceneBuilder.
 
-This framework uses JBox2D as a physics engine, and supports the bodies, fixtures and shapes functionality from JBox2D. Joints functionality is not yet supported.
-
+This framework uses JBox2D as a physics engine, and supports the bodies, fixtures and shapes functionality from JBox2D.
 Includes demo games of Pong, Breakout, Asteroids and a 2D-platform game Jetpack.
 This API was written as a prototype for a master thesis at NTNU.
 
