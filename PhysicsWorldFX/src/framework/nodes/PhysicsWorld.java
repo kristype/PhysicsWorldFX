@@ -1,4 +1,4 @@
-package framework;
+package framework.nodes;
 
 import utilites.StyleFactory;
 import framework.events.*;
@@ -215,7 +215,7 @@ public class PhysicsWorld extends Pane {
         }
     }
 
-    void setOnLevelFinish(LevelFinishEventListener onLevelFinish) {
+    public void setOnLevelFinish(LevelFinishEventListener onLevelFinish) {
         this.onLevelFinish = onLevelFinish;
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import framework.PhysicsWorld?>
+<?import framework.nodes.PhysicsWorld?>
 <?import framework.nodes.PhysicsCircle?>
 <?import framework.nodes.PhysicsPolygon?>
 <?import framework.nodes.PhysicsPolyline?>

@@ -2,7 +2,7 @@ package main;
 
 import framework.events.CollisionEvent;
 import framework.events.PhysicsEvent;
-import framework.PhysicsWorld;
+import framework.nodes.PhysicsWorld;
 import framework.SimulationType;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -19,8 +19,6 @@ public class BreakoutController {
 
     @FXML private PhysicsRectangle paddle;
     @FXML private PhysicsCircle ball;
-    @FXML private PhysicsWorld world;
-    @FXML private PhysicsRectangle floor;
     @FXML private Pane brickContainer;
     @FXML private PhysicsRectangle wallLeft;
     @FXML private PhysicsRectangle wallRight;

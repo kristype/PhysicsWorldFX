@@ -23,9 +23,6 @@ public class LunarLanderGame extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-/*        PhysicsGame game = new PhysicsGame();
-        game.load(root);
-        game.startGame();*/
     }
 
     public static void main(String[] args) {

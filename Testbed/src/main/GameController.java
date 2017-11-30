@@ -1,11 +1,9 @@
 package main;
 
-import framework.PhysicsWorld;
+import framework.nodes.PhysicsWorld;
 import framework.events.CollisionEvent;
 import framework.events.PhysicsEvent;
 import javafx.fxml.FXML;
-
-import static framework.PhysicsWorldFunctions.*;
 
 public class GameController {
 

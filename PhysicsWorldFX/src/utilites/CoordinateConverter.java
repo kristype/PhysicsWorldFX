@@ -1,6 +1,6 @@
 package utilites;
 
-import framework.PhysicsWorld;
+import framework.nodes.PhysicsWorld;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;

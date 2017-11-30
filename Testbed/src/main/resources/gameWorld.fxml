@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import framework.PhysicsWorld?>
+<?import framework.nodes.PhysicsWorld?>
 <?import javafx.scene.layout.Pane?>
 
 <PhysicsWorld fx:id="world" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" onBeginCollision="#handleBeginCollision" onEndCollision="#handleEndCollision" onPhysicsStep="#handlePhysicsStep" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.GameController">

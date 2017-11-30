@@ -5,6 +5,7 @@ import framework.geometric.GeometricPropertyDefinitions;
 import framework.geometric.Geometric;
 import framework.events.*;
 import framework.nodes.GeometricComposition;
+import framework.nodes.PhysicsWorld;
 import javafx.animation.AnimationTimer;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ListChangeListener;

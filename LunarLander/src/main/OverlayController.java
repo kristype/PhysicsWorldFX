@@ -78,7 +78,6 @@ public class OverlayController {
 
             this.root.getChildren().add(0, root);
             game.load(this.root);
-            //game.enableDebug();
             game.startGame();
         }catch (IOException e){
             System.out.println(e.getMessage());

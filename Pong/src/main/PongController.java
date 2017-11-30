@@ -1,16 +1,14 @@
 package main;
 
 import framework.events.CollisionEvent;
-import framework.events.PhysicsEvent;
-import framework.PhysicsWorld;
+import framework.nodes.PhysicsCircle;
+import framework.nodes.PhysicsRectangle;
+import framework.nodes.PhysicsWorld;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import framework.nodes.PhysicsCircle;
-import framework.nodes.PhysicsRectangle;
 import javafx.scene.shape.Rectangle;
-
 
 import static framework.PhysicsWorldFunctions.*;
 
@@ -22,8 +20,6 @@ public class PongController {
     @FXML private Rectangle wallRight;
     @FXML private PhysicsCircle ball;
     @FXML private PhysicsWorld world;
-    @FXML private Rectangle roof;
-    @FXML private Rectangle floor;
     @FXML private Label score;
 
     private int leftScore = 0;
@@ -69,7 +65,7 @@ public class PongController {
     }
 
     @FXML
-    private void handlePhysicsStep(PhysicsEvent physicsEvent) {
+    private void handlePhysicsStep() {
         setPaddleSpeed(paddle1, keyIsPressed(KeyCode.A), keyIsPressed(KeyCode.Z));
         setPaddleSpeed(paddle2, keyIsPressed(KeyCode.K), keyIsPressed(KeyCode.M));
 

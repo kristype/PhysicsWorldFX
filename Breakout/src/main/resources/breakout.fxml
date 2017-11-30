@@ -1,5 +1,4 @@
 <?import framework.nodes.*?>
-<?import framework.PhysicsWorld?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.Pane?>
 <PhysicsWorld xmlns:fx="http://javafx.com/fxml" fx:controller="main.BreakoutController"

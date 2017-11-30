@@ -1,6 +1,6 @@
 package main;
 
-import framework.PhysicsWorld;
+import framework.nodes.PhysicsWorld;
 import framework.nodes.PhysicsPolygon;
 import framework.nodes.PhysicsRectangle;
 import javafx.fxml.FXML;

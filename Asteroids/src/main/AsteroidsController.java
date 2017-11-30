@@ -1,7 +1,7 @@
 package main;
 
 import framework.events.CollisionEvent;
-import framework.PhysicsWorld;
+import framework.nodes.PhysicsWorld;
 import framework.nodes.PhysicsCircle;
 import framework.nodes.PhysicsPolygon;
 import framework.nodes.GeometricComposition;

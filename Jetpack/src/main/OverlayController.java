@@ -35,7 +35,6 @@ public class OverlayController {
             gameContainer.getChildren().add(asteroids);
 
             game.load(gameContainer);
-            //game.enableDebug();
             game.startGame();
         }catch (IOException e){
             System.out.println(e.getMessage());

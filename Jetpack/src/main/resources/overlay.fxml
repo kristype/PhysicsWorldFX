@@ -6,7 +6,7 @@
 <Pane fx:id="root" onKeyPressed="#handleKeyPressed" onKeyReleased="#handleKeyReleased" maxHeight="600" prefHeight="600" maxWidth="800" prefWidth="800" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.OverlayController">
     <Pane fx:id="gameContainer" />
     <Pane fx:id="titleContainer">
-        <Label fx:id="title" layoutX="315.0" layoutY="200.0" text="Jetman">
+        <Label fx:id="title" layoutX="315.0" layoutY="200.0" text="Jetpack">
             <font>
                 <Font name="System Bold" size="30.0" />
             </font>

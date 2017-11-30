@@ -1,6 +1,6 @@
 package main;
 
-import framework.PhysicsWorld;
+import framework.nodes.PhysicsWorld;
 import framework.events.CollisionEvent;
 import framework.events.PhysicsEvent;
 import framework.nodes.PhysicsRectangle;
@@ -60,7 +60,7 @@ public class JetpackController {
     }
 
     @FXML
-    private void onPhysicsStep(PhysicsEvent event) throws Exception {
+    private void onPhysicsStep() throws Exception {
         if (!gameOver){
             if (keyIsPressed(KeyCode.UP) && fuel >= 5){
                 //Jetpack force upwards
